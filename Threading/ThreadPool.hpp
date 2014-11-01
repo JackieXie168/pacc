@@ -29,8 +29,8 @@
 * \file PACC/Threading/ThreadPool.hpp
  * \brief Class definition for the portable thread pool.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2005/09/17 03:50:14 $
+ * $Revision: 1.9 $
+ * $Date: 2006/05/14 02:19:34 $
  */
 
 #ifndef PACC_Threading_ThreadPool_hpp_
@@ -75,26 +75,25 @@ namespace PACC {
 			This class implements a thread pool of slave threads that process a FIFO queue of tasks derived from class Threading::Task. A task is simply an object with a Task::main method. Here is a simple usage example:
 			\code
 #include "Threading/Task.hpp"
-			
-			class MyTask : public Threading::Task
-		{
-public:
-			void main(void) {
-				cout << "Hello world task!" << endl;
-			}
-		};
+
+class MyTask : public Threading::Task {
+ public:
+	void main(void) {
+		cout << "Hello world task!" << endl;
+	}
+};
 		
 #include "Threading/ThreadPool.hpp"
 		
-		int void main(int argc, char** argv)
-		{
-			ThreadPool lPool(10);
-			MyTask ltask;
-			lPool.pushTask(lTask);
-			...
-				lTask.wait();
-			return 0;
-		}
+int void main(int argc, char** argv)
+{
+	ThreadPool lPool(10);
+	MyTask ltask;
+	lPool.pushTask(lTask);
+	...
+	lTask.wait();
+	return 0;
+}
 		\endcode
 			*/
 		class ThreadPool : public vector<SlaveThread*>, public Condition {      

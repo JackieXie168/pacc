@@ -29,8 +29,8 @@
 * \file PACC/SVG/Types.hpp
  * \brief Class definition for the basic SVG types.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/09/17 03:50:09 $
+ * $Revision: 1.5 $
+ * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Types_hpp_
@@ -49,9 +49,9 @@ namespace PACC {
 		//! \brief Basic %SVG color string.
 		//! \ingroup SVG
 		class Color : public string {
-			public:
+		 public:
 			/*!
-			* \brief  Constructor with color string.
+			 * \brief  Constructor with color string.
 			 * \param  inColorString  A string representing an" SVG color.
 			 * 
 			 * Here are the valid" SVG colors formats:
@@ -78,7 +78,7 @@ namespace PACC {
 			explicit Color(const string &inColorString) : string(inColorString) {}
 			
 			/*!
-			* \name  Color Constants Keywords
+			 * \name  Color Constants Keywords
 			 * 
 			 * Borowed from 
 			 * <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">SVG color
@@ -239,16 +239,15 @@ namespace PACC {
 		//! \brief Red, green, and blue color.
 		//! \ingroup SVG
 		class RGBColor : public Color {
-			public:
+		 public:
 			//! Construct with components \c inRed, \c inGreen, and \c inBlue.
 			RGBColor(float inRed, float inGreen, float inBlue);
-			
 		};
 		
 		//! \brief %Color as a shade of gray.
 		//! \ingroup SVG
 		class Gray : public RGBColor {
-			public:
+		 public:
 			//! Construct gray color of intensity \c inLevel.
 			Gray(float inLevel) : RGBColor(inLevel, inLevel, inLevel) {}
 		};
@@ -258,20 +257,25 @@ namespace PACC {
 		//! \brief Position of graphic component.
 		//! \ingroup SVG
 		class Point {
-			public:
+		 public:
 			//! Default constructor.
 			Point(void) : x(0), y(0) {}
+			
 			//! Construct with (\c inX,\c inY)..
 			Point(double inX, double inY) : x(inX), y(inY) {}
 			
 			//! return the angle with the origin.
 			double getAngle(void) const {return atan2(y,x);}
+			
 			//! Return the distance from the origin.
 			double getDistance(void) const {return sqrt(x*x+y*y);}
+			
 			//! Rotate by \c inAngle degrees.
 			void rotate(double inAngle) {*this = Point(x*cos(inAngle)-y*sin(inAngle), x*sin(inAngle)+y*cos(inAngle));}
+			
 			//! Translate by offset (\c inDX,\c inDY).
 			void translateBy(double inDX, double inDY) {x += inDX; y += inDY;}
+			
 			//! Scale by factor \c inFactor
 			void scaleBy(double inFactor) {x *= inFactor; y *= inFactor;}
 			
@@ -279,37 +283,41 @@ namespace PACC {
 			
 			//! Concatenate with point \c inPoint, and return new point list.
 			PointList operator+(const Point &inPoint) const;
+			
 			//! Concatenate with point list \c inList and return new point list.
 			PointList operator+(const PointList &inList) const;
 			
 			double x; //!< Horizontal coordinate.
 			double y; //!< Vertical coordinate.
-			
 		};
 		
 		/*!\brief List of points.
-			* \ingroup SVG
-			* 
-			* This class is a standard vector of point (std::vector<Point>) with some
-			* utility functions and + and += operators to facilitate the concatenation
-			* of point lists.
-			*/
+		 * \ingroup SVG
+		 * 
+		 * This class is a standard vector of point (std::vector<Point>) with some
+		 * utility functions and + and += operators to facilitate the concatenation
+		 * of point lists.
+		 */
 		class PointList : public vector<Point> {
-			public:
+		 public:
 			//! Make an empty point list.
 			PointList() {}
+			
 			//! Make a point list out of a single point \c inPoint.
 			PointList(const Point inPoint) : std::vector<Point>(1, inPoint) {}
 			
 			//! Return the result of cancatenating this list with point list \c inList.
 			PointList operator+(const PointList &inList) const {return PointList(*this) += inList;}
+			
 			//! Append point list \c inList to this list.
 			PointList &operator+=(const PointList &inList) {
 				for ( unsigned i = 0; i < inList.size(); i++ ) push_back(inList[i]);
 				return *this;
-			}				
+			}
+			
 			//! Return the result of cancatenating this list with single point \c inPoint.
 			PointList operator+(const Point &inPoint) const {return PointList(*this) += inPoint;}
+			
 			//! Append single point  \c inPoint to this list.
 			PointList &operator+=(const Point &inPoint) {
 				push_back(inPoint);
@@ -323,14 +331,16 @@ namespace PACC {
 		//! \brief %Size of graphic component.
 		//! \ingroup SVG
 		class Size {
-			public:
+		 public:
 			//! Default constructor.
 			Size() : width(0), height(0) {}
+			
 			//! Construct with width \c inWidth and height \c inHeight.
 			Size(double inWidth, double inHeight) : width(inWidth), height(inHeight) {}
 			
 			//! Return length of diagonal.
 			double getDiagonal(void) const {return sqrt(width*width + height*height);}
+			
 			//! Scale by factor \c inFactor.
 			void scaleBy(float inFactor) {width *= inFactor; height *= inFactor;}
 			

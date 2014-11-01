@@ -29,8 +29,8 @@
  * \file PACC/Socket/Port.hpp
  * \brief Class definition for the portable socket base class.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.31 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.34 $
+ * $Date: 2006/01/27 15:07:53 $
  */
 
 #ifndef PACC_Socket_Port_hpp_
@@ -49,9 +49,9 @@ namespace PACC {
 		\ingroup Socket
 		*/
 		enum Protocol {
-      eTCP, //!< Transfer Control Protocol
-      eUDP, //!< User Datagram Protocol
-      eOther //!< Other protocol
+			eTCP, //!< Transfer Control Protocol
+			eUDP, //!< User Datagram Protocol
+			eOther //!< Other protocol
 		};
 		
 		/*! 
@@ -60,15 +60,15 @@ namespace PACC {
 		\ingroup Socket
 		*/
 		enum Option {
-      eKeepAlive, //!< Keep connection alive
-      eLinger, //!< Time to linger on close (in seconds)
+			eKeepAlive, //!< Keep connection alive
+			eLinger, //!< Time to linger on close (in seconds)
 			eNoDelay, //!< Disable the Nagle algorithm for packet coalescing
-      eProtocolType, //!< %Socket protocol type
-      eReuseAddress, //!< Allow reuse of address
-      eRecvBufSize, //!< Size of receive buffer (in number of chars)
-      eSendBufSize, //!< Size of send buffer (in number of chars)
-      eRecvTimeOut, //!< Time out period for receive operations (in seconds)
-      eSendTimeOut //!< Time out period for send operations (in seconds)
+			eProtocolType, //!< %Socket protocol type
+			eReuseAddress, //!< Allow reuse of a TCP address without delay
+			eRecvBufSize, //!< Size of receive buffer (in number of chars)
+			eSendBufSize, //!< Size of send buffer (in number of chars)
+			eRecvTimeOut, //!< Time out period for receive operations (in seconds)
+			eSendTimeOut //!< Time out period for send operations (in seconds)
 		};
 		
 		/*!
@@ -81,43 +81,80 @@ namespace PACC {
 		 This class should be compatible with any POSIX Unix, and with any version of windows. It has been tested under Linux, MacOS X and Windows 2000/XP.
 		 */
 		class Port {
-			public:
-      //! Return socket descriptor
-      int getDescriptor() const {return mDescriptor;}
-      
-      Address getPeerAddress(void) const;
-      Protocol getProtocol(void) const;
-      Address getSockAddress(void) const;
-      double getSockOpt(Option inName) const;
-      void setSockOpt(Option inName, double inValue);
+		 public:
+			//! Return socket descriptor
+			int getDescriptor() const {return mDescriptor;}
 			
-			protected:
+			//! Return address of peer socket host.
+			Address getPeerAddress(void) const;
+			
+			//! Return protocol of socket.
+			Protocol getProtocol(void) const;
+			
+			//! Return address of socket host.
+			Address getSockAddress(void) const;
+			
+			//! Return value of socket option \c inName.
+			double getSockOpt(Option inName) const;
+
+			//! Set socket option \c inName to value \c inValue.
+			void setSockOpt(Option inName, double inValue);
+			
+		 protected:
 			int mDescriptor; //!< socket descriptor
 			
-      explicit Port(int inDescriptor) throw();
-      explicit Port(Protocol inProtocol=eTCP);
+			//! Construct using existing socket descriptor \c inDescriptor.
+			explicit Port(int inDescriptor) throw();
 			
-      ~Port();
-      
-      int  accept(void);
-      void bind(unsigned int inPortNumber);
-      void close(void);
-      void connect(const Address& inPeer);
-      int convertToNativeOption(Option inName) const;
-      void listen(unsigned int inMaxConnections);
-      void open(Protocol = eTCP);
-      unsigned int receive(char* outBuffer, unsigned inMaxCount);
-      unsigned int receiveFrom(char* outBuffer, unsigned inMaxCount, Address& outPeer);
-      void send(const char* inBuffer, unsigned int inCount);
-      void sendTo(const char* inBuffer, unsigned int inCount, const Address& inPeer);
-      bool waitForActivity(double inSeconds);
+			//! Construct new socket descriptor using protocol \c inProtocol (default=%TCP).
+			explicit Port(Protocol inProtocol=eTCP);
 			
-			private:
+			//! Close descriptor and deallocate receive buffer.
+			~Port();
+
+			//! Accept connection on bound port.
+			int  accept(void);
+			
+			//! Bind socket to port number \c inPortNumber.
+			void bind(unsigned int inPortNumber);
+			
+			//! Close socket port.
+			void close(void);
+			
+			//! Connect to peer socket \c inPeer.
+			void connect(const Address& inPeer);
+			
+			//! Convert socket option \c inName to native socket option code.
+			int convertToNativeOption(Option inName) const;
+			
+			//! Listen to socket using a queue of at least \c inMinPending pending connections.
+			void listen(unsigned int inMaxConnections);
+			
+			//! Open new socket descriptor.
+			void open(Protocol = eTCP);
+			
+			//! Receive data from connected socket.
+			unsigned int receive(char* outBuffer, unsigned inMaxCount);
+			
+			//! Receive data from unconnected socket.
+			unsigned int receiveFrom(char* outBuffer, unsigned inMaxCount, Address& outPeer);
+			
+			//! Send data to connected socket.
+			void send(const char* inBuffer, unsigned int inCount);
+			
+			//! Send data to unconnected socket.
+			void sendTo(const char* inBuffer, unsigned int inCount, const Address& inPeer);
+			
+			//! Wait for activity.
+			bool waitForActivity(double inSeconds);
+			
+		 private:
 			//! restrict (disable) copy constructor.
 			Port(const Port&);
-      //! restrict (disable) assignment operator.
-      void operator=(const Port&);
-      
+			
+			//! restrict (disable) assignment operator.
+			void operator=(const Port&);
+
 		};
 		
 	} // end of Socket namespace
@@ -125,6 +162,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Port_hpp_
-
-
-

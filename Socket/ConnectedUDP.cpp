@@ -29,8 +29,8 @@
  * \file PACC/Socket/ConnectedUDP.cpp
  * \brief Class methods for the portable connected %UDP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2005/04/19 18:19:39 $
+ * $Revision: 1.16 $
+ * $Date: 2005/10/27 04:21:08 $
  */
 
 #include "Socket/ConnectedUDP.hpp"
@@ -44,9 +44,9 @@ This function waits for a datagram from the connected peer socket, or until time
 */
 void Socket::ConnectedUDP::receiveDatagram(std::string& outDatagram)
 {
-   outDatagram.resize((unsigned int) getSockOpt(eRecvBufSize));
-   unsigned int lRecv = receive((char*)outDatagram.data(), outDatagram.size());
-   outDatagram.resize(lRecv);
+	outDatagram.resize((unsigned int) getSockOpt(eRecvBufSize));
+	unsigned int lRecv = receive(&outDatagram[0], outDatagram.size());
+	outDatagram.resize(lRecv);
 }
 
 /*! \brief Send datagram message to connected (UDP) server.
@@ -56,5 +56,5 @@ This function sends datagram string \c inDatagram to the connected peer socket. 
 */
 void Socket::ConnectedUDP::sendDatagram(const string& inDatagram)
 {
-   send(inDatagram.data(), inDatagram.size());
+	send(inDatagram.data(), inDatagram.size());
 }

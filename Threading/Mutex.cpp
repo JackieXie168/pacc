@@ -29,8 +29,8 @@
  * \file PACC/Threading/Mutex.cpp
  * \brief Class methods for the portable mutual exclusion lock.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.21 $
- * $Date: 2005/04/19 18:19:30 $
+ * $Revision: 1.22 $
+ * $Date: 2005/10/10 04:41:48 $
  */
 
 #include "Threading/Mutex.hpp"
@@ -51,32 +51,32 @@ Any error raised a Threading:Exception.
 */
 Threading::Mutex::Mutex(void)
 {
-   pthread_mutex_t* lMutex = new pthread_mutex_t;
+	pthread_mutex_t* lMutex = new pthread_mutex_t;
 #ifdef WIN32
-   if((*lMutex = ::CreateMutex(0, 0, 0)) == 0)
+	if((*lMutex = ::CreateMutex(0, 0, 0)) == 0)
 #else
-   if(::pthread_mutex_init(lMutex, 0))
+		if(::pthread_mutex_init(lMutex, 0))
 #endif
-      throw Exception(eOtherError, "Mutex::Mutex() can't create!");
-   mMutex = lMutex;
+			throw Exception(eOtherError, "Mutex::Mutex() can't create!");
+	mMutex = lMutex;
 }
 
 //! Destroy mutex and free allocated native structure.
 Threading::Mutex::~Mutex(void)
 {
-   pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
+	pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
 #ifdef WIN32
-   while(::CloseHandle(*lMutex) == 0)
+	while(::CloseHandle(*lMutex) == 0)
 #else
-   while(::pthread_mutex_destroy(lMutex) == EBUSY)
+		while(::pthread_mutex_destroy(lMutex) == EBUSY)
 #endif
-   {
-      // wait for mutex to unlock
-      lock();
-      unlock();
-   }
-   delete lMutex;
-   mMutex = 0;
+		{
+			// wait for mutex to unlock
+			lock();
+			unlock();
+		}
+			delete lMutex;
+	mMutex = 0;
 }
 
 /*! \brief Lock the mutex.
@@ -85,13 +85,13 @@ A thread should never lock a mutex twice consecutively (without calling method M
 */
 void Threading::Mutex::lock(void) const
 {
-   pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
+	pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
 #ifdef WIN32
-   if(::WaitForSingleObject(*lMutex, INFINITE) != WAIT_OBJECT_0)
+	if(::WaitForSingleObject(*lMutex, INFINITE) != WAIT_OBJECT_0)
 #else
-   if(::pthread_mutex_lock(lMutex) != 0) 
+		if(::pthread_mutex_lock(lMutex) != 0) 
 #endif
-      throw Exception(eWouldDeadLock, "Mutex::lock() can't lock!");
+			throw Exception(eWouldDeadLock, "Mutex::lock() can't lock!");
 }
 
 /*! \brief Try to lock the mutex without blocking.
@@ -102,18 +102,18 @@ Any error will raise a Threading::Exception.
 */
 bool Threading::Mutex::tryLock(void) const
 {
-   pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
+	pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
 #ifdef WIN32
-   int lValue = ::WaitForSingleObject(*lMutex, 0);
-   if(lValue == WAIT_TIMEOUT) return false;
-   if(lValue != WAIT_OBJECT_0)
+	int lValue = ::WaitForSingleObject(*lMutex, 0);
+	if(lValue == WAIT_TIMEOUT) return false;
+	if(lValue != WAIT_OBJECT_0)
 #else
-   int lValue = ::pthread_mutex_trylock(lMutex);
-   if(lValue == EBUSY) return false;
-   if(lValue != 0) 
+		int lValue = ::pthread_mutex_trylock(lMutex);
+	if(lValue == EBUSY) return false;
+	if(lValue != 0) 
 #endif
-      throw Exception(eOtherError, "Mutex::trylock() can't trylock!");
-   return true;
+		throw Exception(eOtherError, "Mutex::trylock() can't trylock!");
+	return true;
 }
 
 
@@ -123,11 +123,11 @@ A thread should never unlock a mutex twice consecutively (without calling method
 */
 void Threading::Mutex::unlock(void) const
 {
-   pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
+	pthread_mutex_t* lMutex = (pthread_mutex_t*) mMutex;
 #ifdef WIN32
-   if(::ReleaseMutex(*lMutex) == 0)
+	if(::ReleaseMutex(*lMutex) == 0)
 #else
-   if(::pthread_mutex_unlock(lMutex) != 0)
+		if(::pthread_mutex_unlock(lMutex) != 0)
 #endif
-      throw Exception(eMutexNotOwned, "Mutex::unlock() can't unlock!");
+			throw Exception(eMutexNotOwned, "Mutex::unlock() can't unlock!");
 }

@@ -30,8 +30,8 @@
  *  \brief  Definition of class Matrix.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.12 $
- *  $Date: 2005/09/19 06:23:00 $
+ *  $Revision: 1.15 $
+ *  $Date: 2006/05/12 15:06:28 $
  */
 
 #ifndef PACC_Matrix_hpp
@@ -59,7 +59,7 @@ namespace PACC {
 		\attention Row and column indices start at 0.
     */
 	class Matrix : protected vector<double> {
-		public:		
+	 public:		
 		//! Construct an empty matrix with name \c inName.
 		Matrix(const string& inName="") : mRows(0), mCols(0), mName(inName) {}
 		
@@ -109,17 +109,17 @@ namespace PACC {
 		//! Add matrix \c inMatrix to this matrix, and assign result to this matrix.
 		inline Matrix& operator+=(const Matrix& inMatrix) {return add(*this, inMatrix);}
 		
-		//! Substract scalar \c inScalar from this matrix, and return new matrix.
-		inline Matrix operator-(double inScalar) const {Matrix lMatrix; return substract(lMatrix, inScalar);}
+		//! Subtract scalar \c inScalar from this matrix, and return new matrix.
+		inline Matrix operator-(double inScalar) const {Matrix lMatrix; return subtract(lMatrix, inScalar);}
 		
-		//! Substract scalar \c inScalar from this matrix, and assign result to this matrix.
-		inline Matrix& operator-=(double inScalar) {return substract(*this, inScalar);}
+		//! Subtract scalar \c inScalar from this matrix, and assign result to this matrix.
+		inline Matrix& operator-=(double inScalar) {return subtract(*this, inScalar);}
 		
-		//! Substract matrix \c inMatrix from this matrix, and return new matrix.
-		inline Matrix operator-(const Matrix& inMatrix) const {Matrix lMatrix; return substract(lMatrix, inMatrix);}
+		//! Subtract matrix \c inMatrix from this matrix, and return new matrix.
+		inline Matrix operator-(const Matrix& inMatrix) const {Matrix lMatrix; return subtract(lMatrix, inMatrix);}
 		
-		//! Substract matrix \c inMatrix from this matrix, and assign result to this matrix.
-		inline Matrix& operator-=(const Matrix& inMatrix) {return substract(*this, inMatrix);}
+		//! Subtract matrix \c inMatrix from this matrix, and assign result to this matrix.
+		inline Matrix& operator-=(const Matrix& inMatrix) {return subtract(*this, inMatrix);}
 		
 		//! Multiply scalar \c inScalar with this matrix, and return new matrix.
 		inline Matrix operator*(double inScalar) const {Matrix lMatrix; return multiply(lMatrix, inScalar);}
@@ -171,11 +171,11 @@ namespace PACC {
 		//! Multiply this matrix with matrix \c inMatrix and return result through matrix \c outMatrix.
 		Matrix& multiply(Matrix& outMatrix, const Matrix& inMatrix) const;
 		
-		//! Substract this matrix with scalar \c inScalar and return result through matrix \c outMatrix.
-		Matrix& substract(Matrix& outMatrix, double inScalar) const;
+		//! Subtract this matrix with scalar \c inScalar and return result through matrix \c outMatrix.
+		Matrix& subtract(Matrix& outMatrix, double inScalar) const;
 		
-		//! Substract this matrix with matrix \c inMatrix and return result through matrix \c outMatrix.
-		Matrix& substract(Matrix& outMatrix, const Matrix& inMatrix) const;
+		//! Subtract this matrix with matrix \c inMatrix and return result through matrix \c outMatrix.
+		Matrix& subtract(Matrix& outMatrix, const Matrix& inMatrix) const;
 		
 		//! Return the transpose of this matrix.
 		Matrix transpose(void) const;
@@ -201,7 +201,7 @@ namespace PACC {
 		//! Write this matrix into streamer \c outStream using tag name \c inTag.
 		void write(XML::Streamer& outStream, const string& inTag="Matrix") const;
 		
-		protected:
+	 protected:
 		unsigned int mRows; //!< Number of rows.
 		unsigned int mCols; //!< Number of columns.
 		string mName; //!< Name of matrix.
@@ -210,7 +210,7 @@ namespace PACC {
 		void computeBackSubLU(const vector<unsigned int>& inIndexes, Matrix& ioMatrixB) const;
 		
 		//! Compute L-U decomposition.
-		void decomposeLU(Matrix& outDecompose, vector<unsigned int>& outIndexes, int& outD) const;
+		void decomposeLU(vector<unsigned int>& outIndexes, int& outD);
 		
 		//! Return sqrt(a^2 + b^2) without under/overflow (used internally by method tql2).
 		double hypot(double a, double b) const;
@@ -233,16 +233,16 @@ namespace PACC {
 		//! Throw runtime error with message \c inMessage using parse tree node \c inNode.
 		void throwError(const string& inMessage, const XML::Iterator& inNode) const;
 		
-		private:
-			// disabled methods
+	 private:
+		// disabled methods
 		Matrix& add(Vector&, double) const;
 		Matrix& add(Vector&, const Matrix&) const;
 		void computeEigens(Vector&, Vector&) const;
 		Matrix& extract(Vector&, unsigned int, unsigned int, unsigned int, unsigned int) const;
 		Matrix& extractRow(Vector&, unsigned int) const;
 		Matrix& invert(Vector&) const;
-		Matrix& substract(Vector&, double) const;
-		Matrix& substract(Vector&, const Matrix&) const;
+		Matrix& subtract(Vector&, double) const;
+		Matrix& subtract(Vector&, const Matrix&) const;
 		Matrix& multiply(Vector&, double) const;
 		Matrix& multiply(Vector&, const Matrix&) const;
 		Matrix& transpose(Vector&) const;

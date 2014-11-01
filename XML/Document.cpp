@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.cpp
  * \brief Class methods for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.39 $
- * $Date: 2005/09/15 14:13:33 $
+ * $Revision: 1.41 $
+ * $Date: 2006/01/03 17:38:23 $
  */
 
 #include "XML/Document.hpp"
@@ -220,7 +220,7 @@ void XML::Document::parse(const string& inFileName)
 {
 	// open file
 	ifstream lStream(inFileName.c_str());
-	if(!lStream.good()) throw runtime_error(string("<Document::parse> unable to open file ")+inFileName);
+	if(!lStream.good()) throw runtime_error(string("Document::parse() unable to open file ")+inFileName);
 	// parse file content
 	parse(lStream, inFileName);
 }
@@ -234,7 +234,7 @@ void XML::Document::parse(istream& inStream, const string& inName)
 	eraseRoots();
 	Node* lNode = 0;
 	// parse all elements
-	while(lNode = Node::parse(lTokenizer, mNoParseTags)) insertAsLastChild(lNode);
+	while((lNode=Node::parse(lTokenizer, mNoParseTags)) != NULL) insertAsLastChild(lNode);
 	if(lTokenizer.peekNextChar() != -1) {
 		// stream contains bad markup
 		lTokenizer.setDelimiters("", "\n\r");

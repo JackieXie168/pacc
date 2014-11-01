@@ -1,7 +1,9 @@
 h_sources = Matrix.hpp \
+            QRandSequencer.hpp \
             Vector.hpp
 
 cc_sources =    Matrix.cpp \
+                QRandSequencer.cpp \
                 Vector.cpp
                 
 library_includedir = $(includedir)/PACC/Math

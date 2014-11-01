@@ -29,8 +29,8 @@
  * \file PACC/Socket/UDP.cpp
  * \brief Class methods for the portable %UDP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2005/04/19 18:19:39 $
+ * $Revision: 1.17 $
+ * $Date: 2005/10/27 04:21:08 $
  */
 
 #include "Socket/UDP.hpp"
@@ -46,11 +46,11 @@ void Socket::UDP::receiveDatagram(string& outDatagram, Socket::Address& outPeer)
 {
 	// reserve adequate buffer space (if needed)
 	unsigned int lRecvBufSize = (unsigned int) getSockOpt(eRecvBufSize);
-   if(outDatagram.size() < lRecvBufSize) outDatagram.resize(lRecvBufSize);
+	if(outDatagram.size() < lRecvBufSize) outDatagram.resize(lRecvBufSize);
 	// receive message
-   unsigned int lRecv = receiveFrom((char*)outDatagram.data(), outDatagram.size(), outPeer);
+	unsigned int lRecv = receiveFrom(&outDatagram[0], outDatagram.size(), outPeer);
 	// resize output string
-   outDatagram.resize(lRecv);
+	outDatagram.resize(lRecv);
 }
 
 /*! \brief Send datagram message to unconnected server.
@@ -60,5 +60,5 @@ This function sends datagram string \c inDatagram to peer socket at address \c i
 */
 void Socket::UDP::sendDatagram(const string& inDatagram, const Socket::Address& inPeer)
 {
-   sendTo(inDatagram.data(), inDatagram.size(), inPeer);
+	sendTo(inDatagram.data(), inDatagram.size(), inPeer);
 }

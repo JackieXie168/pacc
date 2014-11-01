@@ -29,8 +29,8 @@
  * \file PACC/SVG/Group.hpp
  * \brief Class definition for the SVG primitive group.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/09/17 03:50:09 $
+ * $Revision: 1.5 $
+ * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Group_hpp_
@@ -55,7 +55,7 @@ namespace PACC {
 		* elements that do not define their own. Groups can also be nested.
 		*/
 		class Group : public Primitive {
-			public:
+		 public:
 			//! Make group with style \c inStyle.
 			explicit Group(const Style &inStyle = Style()) : Primitive("g", inStyle) {}
 			
@@ -79,7 +79,7 @@ namespace PACC {
 			//! Remove all primitives in this group.
 			void clear() {eraseChildren();}
 			
-			protected:
+		 protected:
 			//! Make group from name \c inName and attribute list \c inAttributes.
 			Group(const string& inName, const XML::AttributeList& inAttributes = XML::AttributeList()): Primitive(inName, inAttributes) {}
 			

@@ -29,8 +29,8 @@
  * \file PACC/Socket/UDPServer.hpp
  * \brief Class definition for the portable %UDP server.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.19 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.21 $
+ * $Date: 2005/11/30 18:29:34 $
  */
 
 #ifndef PACC_Socket_UDPServer_hpp_
@@ -50,19 +50,19 @@ namespace PACC {
 		 This class defines an abstract %UDP server that waits for datagrams on a specified port. Its \c main method needs to be overloaded in order to specify the server's function. Method \c acceptDatagrams enters an infinite loop and calls \c main for each received datagram. This infinite loop may be halted by calling method \c haltServer. Any error raises a Socket::Exception.
 		 */
 		class UDPServer : public UDP {
-			public:
-      //! Construct unconnected (%UDP) server bound to port number \c inPortNumber.
-      UDPServer(unsigned int inPortNumber) : mHalt(false) {setDefaultOptions(); bind(inPortNumber);}
-      //! Destroy server.
-      virtual ~UDPServer(void) {}
+		 public:
+			//! Construct unconnected (%UDP) server bound to port number \c inPortNumber.
+			UDPServer(unsigned int inPortNumber) : mHalt(false) {setDefaultOptions(); bind(inPortNumber);}
+			//! Destroy server.
+			virtual ~UDPServer(void) {}
 			
-      void setDefaultOptions(void);
+			void setDefaultOptions(void);
 			
-      void acceptDatagrams(void);
-      //! Halt server after completion of current connection
-      void haltServer() throw() {mHalt = true;}
+			void acceptDatagrams(void);
+			//! Halt server after completion of current connection
+			void haltServer() throw() {mHalt = true;}
 			
-      /*! \brief main function of server.
+			/*! \brief main function of server.
 				\return Wheter server should stop accepting connections.
 				
 				For instance, to make an echo server:
@@ -80,9 +80,9 @@ namespace PACC {
 			}
 			\endcode
 				*/
-      virtual bool main(const string& inDatagram, const Address& inPeer) = 0;
+			virtual bool main(const string& inDatagram, const Address& inPeer) = 0;
 			
-			protected:
+		 protected:
 			bool mHalt; //!< stop accepting connections
 			
 		};
@@ -92,4 +92,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_UDPServer_hpp_
-

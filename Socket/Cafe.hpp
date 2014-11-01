@@ -29,8 +29,8 @@
  * \file PACC/Socket/Cafe.hpp
  * \brief Class definition for the cafe protocol.
  * \author Marc Parizeau and Marc Dubreuil, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.22 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.27 $
+ * $Date: 2006/02/28 03:50:58 $
  */
 
 #ifndef PACC_Socket_Cafe_hpp_
@@ -48,27 +48,51 @@ namespace PACC {
 		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup Socket
 		
-		This class implements a custom protocol for socket communication. It encapsulates ASCII string messages over %TCP using a header containing a double word signature plus message length information. There are in fact two protocols. The first uses the \c 0xCAFE signature to encapsulate uncompressed messages. In that case, the next double word (4 bytes) contain the message length in network order. The second uses the \c 0xCCAFE signature to encapsulate compressed messages. In this case, the header contains two double words: the first being the compressed message length (in network order), and the second the uncompressed message length (again in network order).
+		This class implements a custom protocol for socket communication. It 
+		encapsulates ASCII string messages over %TCP using a header containing a 
+		double word signature plus message length information. There are in fact 
+		two protocols. The first uses the \c 0xCAFE signature to encapsulate 
+		uncompressed messages. In that case, the next double word (4 bytes) 
+		contains the message length in network order. The second protocol uses 
+		the \c 0xCCAFE signature to encapsulate compressed messages. In this 
+		case, the header contains two double words: the first being the 
+		compressed message length (in network order), and the second the 
+		uncompressed message length (again in network order).
 		
-		By default, this class does not allow message compression (compression level must be 0). In order to enable compression (levels 1 to 9), it needs to be compiled with variable PACC_ZLIB set, and the executable needs to be linked with the zlib library <http://www.gzip.org/zlib>. Also note that messages will be sent uncompressed whenever compression would result in longer messages.
+		By default, this class does not allow message compression (compression 
+		level must be 0). In order to enable compression (levels 1 to 9), it 
+		needs to be compiled with variable PACC_ZLIB set, and the executable 
+		needs to be linked with the zlib library <http://www.gzip.org/zlib>. 
+		Also note that messages will be sent uncompressed whenever compression 
+		would result in longer messages.
 		
 		Any error raises a Socket::Exception. 
 		*/
 		class Cafe : public TCP {
-			public:
+		 public:
 			//! Construct unconnected socket.
 			explicit Cafe(void) throw() {}
+			
 			//! Construct using existing socket descriptor \c inDescriptor.
 			Cafe(int inDescriptor) throw() : TCP(inDescriptor) {}
+			
 			//! Construct socket connected to peer \c inPeer.
 			Cafe(const Address& inPeer) : TCP(inPeer) {}
 			
+			//! Receive string message from connected server using the 0cafe protocol.
 			void receiveMessage(string& outMessage);
+			
+			//! Send string message \c inMessage to connected server using the cafe protocol.
 			void sendMessage(const string& inMessage, unsigned int inCompressionLevel = 0);
 			
-			protected:
+		 protected:
+			//! Compress string \c inMessage using compression level \c inCompressionLevel, and return result through string \c outMessage.
 			void compress(const string& inMessage, string& outMessage, unsigned int inCompressionLevel);
-			void uncompress(string& ioMessage, unsigned int inSize);
+			
+			//! Uncompress string \c ioMessage knowing that the uncompressed message length is \c inUncompressedSize, and return result through string \c ioMessage.
+			void uncompress(string& ioMessage, unsigned long inSize);
+			
+			//! Receive \c inCount bytes from socket.
 			void receive(char* inBuffer, unsigned int inCount);
 		};
 		
@@ -77,6 +101,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Cafe_hpp_
-
-
-

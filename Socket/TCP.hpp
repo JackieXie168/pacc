@@ -29,8 +29,8 @@
  * \file PACC/Socket/TCP.hpp
  * \brief Class definition for the portable %TCP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.20 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.24 $
+ * $Date: 2005/11/30 18:29:34 $
  */
 
 #ifndef PACC_Socket_TCP_hpp_
@@ -50,21 +50,21 @@ namespace PACC {
 		 This class defines a simple %TCP socket client that connects to a peer server. Any error raises a Socket::Exception.
 		 */
 		class TCP : public Port {
-			public:
-      //! Construct unconnected socket.
-      explicit TCP(void) : Port(eTCP) {}
-      //! Construct using existing socket descriptor \c inDescriptor.
-      explicit TCP(int inDescriptor) throw() : Port(inDescriptor) {}
-      //! Construct socket connected to peer \c inPeer.
-      explicit TCP(const Address& inPeer) : Port(eTCP) {connect(inPeer);}
+		 public:
+			//! Construct unconnected socket.
+			explicit TCP(void) : Port(eTCP) {}
+			//! Construct using existing socket descriptor \c inDescriptor.
+			explicit TCP(int inDescriptor) throw() : Port(inDescriptor) {}
+			//! Construct socket connected to peer \c inPeer.
+			explicit TCP(const Address& inPeer) : Port(eTCP) {Port::connect(inPeer);}
 			
-      //! Close connection.
-      void close(void) {Port::close();}
-      //! Connect to server \c inPeer.
-      void connect(const Address& inPeer) {close(); open(eTCP); Port::connect(inPeer);}
-      
-      void receiveMessage(string& outMessage);
-      void sendMessage(const string& inMessage);
+			//! Close connection.
+			void close(void) {Port::close();}
+			//! Connect to server \c inPeer.
+			void connect(const Address& inPeer) {close(); open(eTCP); Port::connect(inPeer);}
+			
+			void receiveMessage(string& outMessage);
+			void sendMessage(const string& inMessage);
 			
 		};
 		
@@ -73,5 +73,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_TCP_hpp_
-
-

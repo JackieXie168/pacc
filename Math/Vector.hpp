@@ -30,8 +30,8 @@
  *  \brief  Definition of class Vector.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.12 $
- *  $Date: 2005/09/19 06:23:00 $
+ *  $Revision: 1.14 $
+ *  $Date: 2006/05/05 19:04:59 $
  */
 
 #ifndef PACC_Vector_hpp
@@ -120,37 +120,37 @@ namespace PACC {
 			return (Vector&) add((Matrix&)*this, inMatrix);
 		}
 		
-		//! Substract scalar \c inScalar from this vector, and return new vector.
+		//! Subtract scalar \c inScalar from this vector, and return new vector.
 		inline Vector operator-(double inScalar) const {
 			Matrix lMatrix; 
-			return substract(lMatrix, inScalar);
+			return subtract(lMatrix, inScalar);
 		}
 		
-		//! Substract scalar \c inScalar from this vector, and assign result to this vector.
+		//! Subtract scalar \c inScalar from this vector, and assign result to this vector.
 		inline Vector& operator-=(double inScalar) {
-			return (Vector&) substract((Matrix&)*this,inScalar);
+			return (Vector&) subtract((Matrix&)*this,inScalar);
 		}
 		
-		//! Substract vector \c inVector from this vector, and return new vector.
+		//! Subtract vector \c inVector from this vector, and return new vector.
 		inline Vector operator-(const Vector& inVector) const {
 			Matrix lMatrix; 
-			return substract(lMatrix, inVector);
+			return subtract(lMatrix, inVector);
 		}
 		
-		//! Substract vector \c inVector from this vector, and assign result to this vector.
+		//! Subtract vector \c inVector from this vector, and assign result to this vector.
 		inline Vector& operator-=(const Vector& inVector) {
-			return (Vector&) substract((Matrix&)*this, inVector);
+			return (Vector&) subtract((Matrix&)*this, inVector);
 		}
 		
-		//! Substract matrix \c inMatrix from this vector, and return new vector.
+		//! Subtract matrix \c inMatrix from this vector, and return new vector.
 		inline Vector operator-(const Matrix& inMatrix) const {
 			Matrix lMatrix; 
-			return substract(lMatrix, inMatrix);
+			return subtract(lMatrix, inMatrix);
 		}
 		
-		//! Substract matrix \c inMatrix from this vector, and assign result to this vector.
+		//! Subtract matrix \c inMatrix from this vector, and assign result to this vector.
 		inline Vector& operator-=(const Matrix& inMatrix) {
-			return (Vector&) substract((Matrix&)*this, inMatrix);
+			return (Vector&) subtract((Matrix&)*this, inMatrix);
 		}
 		
 		//! Multiply scalar \c inScalar to this vector, and return new vector.
@@ -220,6 +220,18 @@ namespace PACC {
 		inline double getMax(void) const {
 			PACC_AssertM(mCols == 1, "getMax() invalid number of columns!");
 			return *max_element(begin(), end());
+		}
+		
+		//! Return index of min element.
+		inline int getArgMin(void) const {
+			PACC_AssertM(mCols == 1, "getArgMin() invalid number of columns!");
+			return distance(begin(), min_element(begin(), end()));
+		}
+		
+		//! Return min element.
+		inline double getMin(void) const {
+			PACC_AssertM(mCols == 1, "getMin() invalid number of columns!");
+			return *min_element(begin(), end());
 		}
 		
 		//! Return size of this vector.

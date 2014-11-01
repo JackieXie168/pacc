@@ -29,12 +29,15 @@
  * \file PACC/Socket/Address.cpp
  * \brief Class methods for the portable network address.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2005/04/19 18:19:39 $
+ * $Revision: 1.17 $
+ * $Date: 2006/02/02 14:17:33 $
  */
 
 #include "Socket/Address.hpp"
 #include "Socket/Exception.hpp"
+#include "Util/Tokenizer.hpp"
+#include "Util/StringFunc.hpp"
+#include <sstream>
 
 #ifdef WIN32
 ///////////// specifics for windows /////////////
@@ -52,32 +55,45 @@
 using namespace std;
 using namespace PACC;
 
-/*! \brief Construct a peer address.
-
- Determines the IP address of a host name host using port number \c inPort and host name \c inName. Host name can be either an IP address (e.g. 198.137.240.92) or an internet name (e.g. whitehouse.gov). Any error raises a Socket::exception.
+/*!
+This method is a helper constructor that parses a tipical "host:port" string. The host name can be either an IP address (e.g. 198.137.240.92) or an internet address (e.g. whitehouse.gov). Any error raises a Socket::exception.
  */
-Socket::Address::Address(unsigned int inPort, const string& inName) : mPortNumber(inPort)
+Socket::Address::Address(const string& inHostPort)
 {
-#if defined(WIN32)
-   WSADATA wsdata;
-   if (WSAStartup(MAKEWORD(2,2), &wsdata) != 0) {
-      throw Exception(eOtherError, "Address::address() failed to load WinSock2");
-   }
+	istringstream lStream(inHostPort);
+	Tokenizer lTokenizer(lStream);
+	lTokenizer.setDelimiters(" \t\n\r",":");
+	string lHost = lTokenizer.getNextToken();
+	if(lTokenizer.getNextToken() != ":") throw Exception(eOtherError, "Address::address() invalid host:port string");
+	mPortNumber = String::convertToInteger(lTokenizer.getNextToken());
+	lookupHost(lHost);
+}
+
+/*!
+Determines the IP address (e.g. 198.137.240.92) or internet name (e.g. whitehouse.gov) of host \c inHost. Any error raises a Socket::exception.
+ */
+void Socket::Address::lookupHost(const string& inHost)
+{
+#ifdef WIN32
+	WSADATA wsdata;
+	if (WSAStartup(MAKEWORD(2,2), &wsdata) != 0) {
+		throw Exception(eOtherError, "Address::address() failed to load WinSock2");
+	}
 #endif
-   struct hostent* lHost;
-   unsigned lIP;
-   if((lIP = inet_addr(inName.c_str())) != INADDR_NONE) {
+	struct hostent* lHost;
+	unsigned lIP;
+	if((lIP = inet_addr(inHost.c_str())) != INADDR_NONE) {
 		// name is an IP address
-		mIPAddress = inName;
+		mIPAddress = inHost;
 		// get corresponding host name
-      lHost = ::gethostbyaddr((char*)&lIP, sizeof(lIP), AF_INET);
-      if(lHost != 0) mHostName = lHost->h_name;
-		else mHostName = inName;
-   } else {
+		lHost = ::gethostbyaddr((char*)&lIP, sizeof(lIP), AF_INET);
+		if(lHost != 0) mHostName = lHost->h_name;
+		else mHostName = inHost;
+	} else {
 		// name is a host; retrieve IP address
-		mHostName = inName;
-      lHost = ::gethostbyname(inName.c_str());
-      if(lHost == 0) throw Exception(eOtherError, string("Address::Address() unable to lookup host name for IP ")+inName);
+		mHostName = inHost;
+		lHost = ::gethostbyname(inHost.c_str());
+		if(lHost == 0) throw Exception(eOtherError, string("Address::lookupHost() unable to lookup address for host ")+inHost);
 		mIPAddress = inet_ntoa(*((struct in_addr*)lHost->h_addr));
-   }
+	}
 }

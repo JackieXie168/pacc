@@ -29,8 +29,8 @@
  * \file PACC/XML/Iterator.hpp
  * \brief Class definition for the %XML node iterator.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2005/09/17 03:50:24 $
+ * $Revision: 1.16 $
+ * $Date: 2005/10/27 03:10:40 $
  */
 
 #ifndef PACC_XML_Iterator_hpp_
@@ -63,7 +63,7 @@ namespace PACC {
 		A boolean casting operator is also available to test for end of sequence (see second term of for-statement above). An iterator pointing to a valid node always returns true while an invalid iterator returns false. An invalid iterator should never be dereferenced, incremented, or decremented.
 		*/
 		class Iterator {
-			public:
+		 public:
 			//! Construct an empty iterator.
 			Iterator(void) : mNode(0) {}
 			//! Construct an iterator for node pointer \c inNode.
@@ -112,8 +112,10 @@ namespace PACC {
 			//! Cast Iterator into bool; return true for a valid iterator, false otherwise.
 			operator bool(void) const {return mNode != 0;}
 			
-			protected:
+		 protected:
 			Node* mNode; //!< Pointer to current node.
+			
+			friend class ConstIterator;
 			
 		};
 		
@@ -135,13 +137,13 @@ namespace PACC {
 		A boolean casting operator is also available to test for end of sequence (see second term of for-statement above). An iterator pointing to a valid node always returns true while an invalid iterator returns false. An invalid iterator should never be dereferenced, incremented, or decremented.
 		*/
 		class ConstIterator {
-			public:
+		 public:
 			//! Construct an empty const iterator.
 			ConstIterator(void) : mNode(0) {}
 			//! Construct a const iterator for node pointer \c inNode.
 			ConstIterator(const Node* inNode) : mNode(inNode) {}
-			//! Construct a const iteratoor from a non const iterator \c inPos.
-			ConstIterator(const Iterator& inPos) : mNode(&(*inPos)) {}
+			//! Construct a const iterator from a non const iterator \c inPos.
+			ConstIterator(const Iterator& inPos) : mNode(inPos.mNode) {}
 			
 			//! Iterate to next sibling of current node (prefix version); return iterator pointing to next sibling.
 			ConstIterator& operator++(void) {
@@ -186,7 +188,7 @@ namespace PACC {
 			//! Cast Iterator into bool; return true for a valid iterator, false otherwise.
 			operator bool(void) const {return mNode != 0;}
 			
-			protected:
+		 protected:
 			const Node* mNode; //!< Pointer to current node.
 			
 		};

@@ -29,8 +29,8 @@
  * \file   PACC/Math/Matrix.cpp
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.12 $
- * $Date: 2005/10/04 17:25:17 $
+ * $Revision: 1.14 $
+ * $Date: 2006/02/21 23:52:57 $
  */
 
 #include "Math/Matrix.hpp"
@@ -92,12 +92,12 @@ double Matrix::computeDeterminant(void) const
 {
 	PACC_AssertM(mRows > 0 && mCols > 0, "computeDeterminant() invalid matrix!");
 	PACC_AssertM(mRows == mCols, "computeDeterminant() matrix not square!");
-	Matrix lDecompose;
+	Matrix lTmp = *this;
 	vector<unsigned int> lIndexes(mRows);
 	int lD;
-	decomposeLU(lDecompose, lIndexes, lD);
+	lTmp.decomposeLU(lIndexes, lD);
 	double lResult = lD;
-	for(unsigned int i = 0; i < mRows; ++i) lResult *= lDecompose(i,i);
+	for(unsigned int i = 0; i < mRows; ++i) lResult *= lTmp(i,i);
 	return lResult;
 }
 
@@ -140,24 +140,23 @@ void Matrix::computeEigens(Vector& outValues, Matrix& outVectors) const
 
 /*!
 */
-void Matrix::decomposeLU(Matrix& outDecompose, vector<unsigned int>& outIndexes, int& outD) const
+void Matrix::decomposeLU(vector<unsigned int>& outIndexes, int& outD)
 {
 	outD = 1;
-	outDecompose = *this;
 	vector<double> lScales;
 	scaleLU(lScales);
 	for(unsigned int j = 0; j < mCols; ++j) {
 		for(unsigned int i = 0; i < j; ++i) {
-			double lSum = outDecompose(i, j);
-			for(unsigned int k = 0; k < i; ++k) lSum -= outDecompose(i,k) * outDecompose(k,j);
-			outDecompose(i, j) = lSum;
+			double lSum = (*this)(i, j);
+			for(unsigned int k = 0; k < i; ++k) lSum -= (*this)(i,k) * (*this)(k,j);
+			(*this)(i, j) = lSum;
 		}
 		double lMax = 0;
 		unsigned int l = j;
 		for(unsigned int i = j; i < mRows; ++i) {
-			double lSum = outDecompose(i,j);
-			for(unsigned int k = 0; k < j; ++k) lSum -= outDecompose(i,k) * outDecompose(k,j);
-			outDecompose(i, j) = lSum;
+			double lSum = (*this)(i,j);
+			for(unsigned int k = 0; k < j; ++k) lSum -= (*this)(i,k) * (*this)(k,j);
+			(*this)(i, j) = lSum;
 			double lTmp = lScales[i] * fabs(lSum);
 			if(lTmp >= lMax) {
 				l = i;
@@ -165,19 +164,19 @@ void Matrix::decomposeLU(Matrix& outDecompose, vector<unsigned int>& outIndexes,
 			}
 		}
 		if(j != l) {
-			for(unsigned int k = 0; k < outDecompose.mCols; ++k) {
-				double lTmp = outDecompose(l,k);
-				outDecompose(l,k) = outDecompose(j,k);
-				outDecompose(j,k) = lTmp;
+			for(unsigned int k = 0; k < (*this).mCols; ++k) {
+				double lTmp = (*this)(l,k);
+				(*this)(l,k) = (*this)(j,k);
+				(*this)(j,k) = lTmp;
 			}
 			outD = -outD;
 			lScales[l] = lScales[j];
 		}
 		outIndexes[j] = l;
-		if(outDecompose(j,j) == 0.0) outDecompose(j,j) = 1e-20;
+		if((*this)(j,j) == 0.0) (*this)(j,j) = 1e-20;
 		if(j != (mCols-1)) {
-			double lDummy = 1.0 / outDecompose(j,j);
-			for(unsigned int i = j+1; i < mRows; ++i) outDecompose(i,j) *= lDummy;
+			double lDummy = 1.0 / (*this)(j,j);
+			for(unsigned int i = j+1; i < mRows; ++i) (*this)(i,j) *= lDummy;
 		}
 	}
 }
@@ -258,16 +257,15 @@ This method also returns a reference to the result.
 Matrix& Matrix::invert(Matrix& outMatrix) const
 {
 	PACC_AssertM(mRows == mCols, "invert() matrix not square!");
-	outMatrix = *this;
-	Matrix lDecompose;
+	Matrix lTmp = *this;
 	vector<unsigned int> lIndexes(mRows);
 	int lD;
-	outMatrix.decomposeLU(lDecompose, lIndexes, lD);
+	lTmp.decomposeLU(lIndexes, lD);
 	outMatrix.setIdentity(mRows);
 	Matrix lB(mRows, 1);
 	for(unsigned int j = 0; j < mCols; ++j) {
 		for(unsigned int i = 0; i < mRows; ++i) lB(i,0) = outMatrix(i,j);
-		lDecompose.computeBackSubLU(lIndexes, lB);
+		lTmp.computeBackSubLU(lIndexes, lB);
 		for(unsigned int i = 0; i < mRows; ++i) outMatrix(i,j) = lB(i,0);
 	}
 	return outMatrix;
@@ -417,9 +415,9 @@ void Matrix::setIdentity(unsigned int inSize)
 /*!
 This method also returns a reference to the result.
  */
-Matrix& Matrix::substract(Matrix& outMatrix, double inScalar) const
+Matrix& Matrix::subtract(Matrix& outMatrix, double inScalar) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "substract() invalid matrix!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "subtract() invalid matrix!");
 	outMatrix.setRowsCols(mRows, mCols);
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] - inScalar;
 	return outMatrix;
@@ -428,10 +426,10 @@ Matrix& Matrix::substract(Matrix& outMatrix, double inScalar) const
 /*!
 This method also returns a reference to the result.
  */
-Matrix& Matrix::substract(Matrix& outMatrix, const Matrix& inMatrix) const
+Matrix& Matrix::subtract(Matrix& outMatrix, const Matrix& inMatrix) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "substract() invalid matrix!");
-	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "substract() matrix mismatch!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "subtract() invalid matrix!");
+	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "subtract() matrix mismatch!");
 	outMatrix.setRowsCols(mRows, mCols);
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] - inMatrix[i];
 	return outMatrix;

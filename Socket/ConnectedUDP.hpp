@@ -29,8 +29,8 @@
  * \file PACC/Socket/ConnectedUDP.hpp
  * \brief Class definition for the portable connected %UDP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.17 $
+ * $Date: 2005/11/30 18:29:34 $
  */
 
 #ifndef PACC_Socket_ConnectedUDP_hpp_
@@ -44,21 +44,20 @@ namespace PACC {
 	
 	namespace Socket {
 		
-		/*!
-    \brief Portable connected %UDP socket client.
-		 \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-		 \ingroup Socket
-		 
-		 This class defines a simple %UDP socket client that connects to a peer server. Any error raises a Socket::Exception.
+		/*!\brief Portable connected %UDP socket client.
+		 * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		 * \ingroup Socket
+		 *
+		 * This class defines a simple %UDP socket client that connects to a peer server. Any error raises a Socket::Exception.
 		 */
 		class ConnectedUDP : public UDP {
-			public:
+		 public:
 			//! Construct socket connected to peer \c inPeer.
 			explicit ConnectedUDP(const Address& inPeer) {connect(inPeer);}
 			
 			void receiveDatagram(string& outMessage);
 			void sendDatagram(const string& inMessage);
-      
+
 		};
 		
 	} // end of Socket namespace
@@ -66,5 +65,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_ConnectedUDP_hpp_
-
-

@@ -98,10 +98,12 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 h_sources = Matrix.hpp \
+            QRandSequencer.hpp \
             Vector.hpp
 
 
 cc_sources = Matrix.cpp \
+                QRandSequencer.cpp \
                 Vector.cpp
 
 
@@ -123,7 +125,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libpaccmath_la_DEPENDENCIES = ../Util/libpaccutil.la \
 	../XML/libpaccxml.la
 am__objects_1 =
-am__objects_2 = Matrix.lo Vector.lo
+am__objects_2 = Matrix.lo QRandSequencer.lo Vector.lo
 am_libpaccmath_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libpaccmath_la_OBJECTS = $(am_libpaccmath_la_OBJECTS)
 
@@ -134,7 +136,9 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Matrix.Plo ./$(DEPDIR)/Vector.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Matrix.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/QRandSequencer.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Vector.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -205,6 +209,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Matrix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/QRandSequencer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vector.Plo@am__quote@
 
 distclean-depend:

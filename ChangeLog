@@ -1,5 +1,16 @@
 PACC change log:
 
+1.3 (May 12th, 2006)
+
+- Added some error checking in Socket::Port and Threading::Thread
+- Fixed a potential bug with reference counted strings in the receive methods of Socket classes
+- Added a new helper constructor in Socket::Address to parse a host:port address string
+- Corrected bug in SVG::Canvas for operator=
+- The hardware time-stamp counter period in the Timer class is now a static member (calibrated once for all class objects); the use of the hardware time-stamp can now be deactivated
+- Corrected bug in parsing of XML CDATA section 
+- Added methods getArgMin and getMin to class Math::Vector
+- Added class Math::QRandSequencer
+
 1.2.1 (October 4th, 2005)
 
 - Corrected a bug in XML::AttributeList where an attribute would not be replaced by operator+= if already defined in the list

@@ -29,8 +29,8 @@
  * \file PACC/SVG/Frame.hpp
  * \brief Class definition for the %SVG clipping frame.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/09/17 03:50:09 $
+ * $Revision: 1.7 $
+ * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Frame_hpp_
@@ -53,7 +53,7 @@ namespace PACC {
 		* origin.
 		*/
 		class Frame : public Group {
-			public:
+		 public:
 			//! Make frame at origin \c inOrigin with size \c inSize, and using style \c inStyle.
 			Frame(const Point &inOrigin, const Size &inSize, const Style &inStyle = Style()) : Group("svg") {
 				setAttribute("x", inOrigin.x);
@@ -112,7 +112,7 @@ namespace PACC {
 				serialize(lStream);
 			}
 			
-			private:
+		 private:
 			// transforms are not allowed in frames
 			void clearTransform(void);
 			void setTransform(const Transform& inTransform);

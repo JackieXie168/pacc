@@ -29,8 +29,8 @@
  * \file PACC/Socket/UDPServer.cpp
  * \brief Class methods for the portable %UDP server.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2005/04/19 18:19:39 $
+ * $Revision: 1.14 $
+ * $Date: 2005/10/10 04:35:25 $
  */
 
 #include "Socket/UDPServer.hpp"
@@ -42,20 +42,20 @@ using namespace PACC;
 //! Process incomming connections by receiving datagrams and calling virtual function UDPServer::main.
 void Socket::UDPServer::acceptDatagrams()
 {
-   bool lHalt = false;
-   mHalt = false;
-   while(!lHalt && !mHalt)
-   {
-      try {
-         string lDatagram;
-         Address lPeer;
-         receiveDatagram(lDatagram, lPeer);
-         lHalt = main(lDatagram, lPeer);
-      } catch(const Exception& inError) {
+	bool lHalt = false;
+	mHalt = false;
+	while(!lHalt && !mHalt)
+	{
+		try {
+			string lDatagram;
+			Address lPeer;
+			receiveDatagram(lDatagram, lPeer);
+			lHalt = main(lDatagram, lPeer);
+		} catch(const Exception& inError) {
 			// report any error and ignore
 			cerr << inError.getMessage() << endl;
 		}
-   }
+	}
 }
 
 /*! \brief Set default socket options.
@@ -72,9 +72,9 @@ Any error raises a Socket::Exception.
 */
 void Socket::UDPServer::setDefaultOptions()
 {
-   setSockOpt(eReuseAddress, true);
-   setSockOpt(eRecvBufSize, 65535);
-   setSockOpt(eSendBufSize, 1024);
-   setSockOpt(eRecvTimeOut, 10);
-   setSockOpt(eSendTimeOut, 10);
+	setSockOpt(eReuseAddress, true);
+	setSockOpt(eRecvBufSize, 65535);
+	setSockOpt(eSendBufSize, 1024);
+	setSockOpt(eRecvTimeOut, 10);
+	setSockOpt(eSendTimeOut, 10);
 }

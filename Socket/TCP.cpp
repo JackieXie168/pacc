@@ -29,8 +29,8 @@
  * \file PACC/Socket/TCP.cpp
  * \brief Class methods for the portable %TCP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.19 $
- * $Date: 2005/04/19 18:19:39 $
+ * $Revision: 1.21 $
+ * $Date: 2005/10/27 04:21:08 $
  */
 
 #include "Socket/TCP.hpp"
@@ -46,11 +46,11 @@ void Socket::TCP::receiveMessage(string& outMessage)
 {
 	// reserve adequate buffer space (if needed)
 	unsigned int lRecvBufSize = (unsigned int) getSockOpt(eRecvBufSize);
-   if(outMessage.size() < lRecvBufSize) outMessage.resize(lRecvBufSize);
+	if(outMessage.size() < lRecvBufSize) outMessage.resize(lRecvBufSize);
 	// receive message
-   unsigned int lRecv = receive((char*)outMessage.data(), outMessage.size());
+	unsigned int lRecv = receive(&outMessage[0], outMessage.size());
 	// resize output string
-   outMessage.resize(lRecv);
+	outMessage.resize(lRecv);
 }
 
 /*! \brief Send string message to connected (TCP) server.
@@ -59,5 +59,5 @@ This function sends message string \c inMessage to the connected peer socket. An
 */
 void Socket::TCP::sendMessage(const string& inMessage)
 {
-   send(inMessage.data(), inMessage.size());
+	send(inMessage.data(), inMessage.size());
 }

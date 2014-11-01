@@ -29,8 +29,8 @@
  * \file PACC/SVG/Canvas.hpp
  * \brief Class definition for the SVG drawing canvas.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2005/09/17 03:50:09 $
+ * $Revision: 1.11 $
+ * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Canvas_hpp_
@@ -56,24 +56,28 @@ namespace PACC {
 		* canvas are updated in real-time on the viewer side.
 		*/
 		class Canvas : public Frame {
-			public:
+		 public:
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle and size \c inSize.
 			Canvas(const string &inTitle, const Size &inSize, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(Point(0, 0), inSize), mAddress(inAddress), mPort(inPort), mSocket(0) {
 				initCanvas(inTitle);
 			}
+			
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle, size \c inSize, and style \c inStyle.
 			Canvas(const string &inTitle, const Size &inSize, const Style &inStyle, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(Point(0, 0), inSize, inStyle), mAddress(inAddress), mPort(inPort), mSocket(0) {
 				initCanvas(inTitle);
-			}        
+			}
+			
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle and using frame \c inFrame.
 			Canvas(const string &inTitle, const Frame &inFrame, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(inFrame), mAddress(inAddress), mPort(inPort), mSocket(0) {
 				initCanvas(inTitle);
 			}
+			
 			//! Delete canvas.
 			~Canvas(void) {if(mSocket) delete mSocket;}
 			
 			//! Assign frame \c inFrame to this canvas.
 			Canvas &operator=(const Frame& inFrame);
+			
 			//! Insert graphic primitive \c inGraphic into this canvas.
 			Canvas &operator<<(const Primitive& inGraphic);
 			
@@ -82,13 +86,14 @@ namespace PACC {
 			
 			//! Return title of this canvas.
 			string getTitle() const;
+			
 			//! Set title of this canvas.
 			void setTitle(const string& inTitle);
 			
 			//! Wait up to \c inMaxDelay seconds for the user to click a mouse button.
 			Point waitForClick(int &outButtonClicked, double inMaxDelay=0) const;
 			
-			private:
+		 private:
 			string mAddress; //<! The IP address of the viewer.
 			unsigned int mPort; //!< The port number of the viewer.
 			Socket::Cafe *mSocket; //<! The network socket of this canvas.

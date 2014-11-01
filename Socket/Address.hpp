@@ -29,8 +29,8 @@
  * \file PACC/Socket/Address.hpp
  * \brief Class definition for the portable network address.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.20 $
+ * $Date: 2005/11/30 18:28:40 $
  */
 
 #ifndef PACC_Socket_Address_hpp_
@@ -53,8 +53,12 @@ namespace PACC {
 		Any error raises a Socket::Exception. 
 		*/
 		class Address {
-			public:
-			explicit Address(unsigned int inPort=0, const string& inName="localhost");
+		 public:
+			//! Construct a peer address for "host:port" \c inHostPort.
+			Address(const string& inHostPort);
+			
+			//! Construct a peer address for host \c inHost and port \c inPort.
+			explicit Address(unsigned int inPort=0, const string& inHost="localhost") : mPortNumber(inPort) {lookupHost(inHost);}
 			
 			//! Return host name.
 			const string& getHostName() const {return mHostName;}
@@ -63,11 +67,13 @@ namespace PACC {
 			//! Return port number.
 			unsigned int getPortNumber() const {return mPortNumber;}
 			
-			protected:
+		 protected:
 			unsigned int mPortNumber; //!< socket port number
 			string mIPAddress; //!< socket IP address
 			string mHostName; //!< host name
 			
+			//! Lookup host name/address \c inHost.
+			void lookupHost(const string& inHost);
 		};
 		
 	} // end of Socket namespace
@@ -75,6 +81,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Address_hpp_
-
-
-

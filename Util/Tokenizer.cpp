@@ -29,8 +29,8 @@
  * \file PACC/Util/Tokenizer.cpp
  * \brief Class methods for the input stream tokenizer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.22 $
- * $Date: 2005/09/15 14:13:24 $
+ * $Revision: 1.23 $
+ * $Date: 2006/01/27 20:55:38 $
  */
 
 #include "Util/Tokenizer.hpp"
@@ -39,6 +39,36 @@
 
 using namespace std;
 using namespace PACC;
+
+/*!
+The internal read buffer size can be set with argument \c inBufSize (default=1024). This buffer can also be disactivated by setting this argument to 0. The internal read buffer can greatly accelerate the parse of the stream. A size between 512 and 1024 appears to give good results in most circumstances. 
+
+ \attention It should be noted that the use of such a buffer implies that the stream must be fully parsed by this tokenizer, because there is no way to put it's content back into the stream.
+ */
+Tokenizer::Tokenizer(unsigned int inBufSize) 
+: mLine(1), mStream(0), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0) 
+{
+	setDelimiters(" \t\n\r", "");
+	setBufferSize(inBufSize);
+}
+
+/*!
+The internal read buffer size can be set with argument \c inBufSize (default=1024). This buffer can also be disactivated by setting this argument to 0. The internal read buffer can greatly accelerate the parse of the stream. A size between 512 and 1024 appears to give the best results in most circumstances. 
+
+ \attention It should be noted that the use of such a buffer implies that the stream must be fully parsed by this tokenizer, because there is no way to put it's content back into the stream.
+ */
+Tokenizer::Tokenizer(istream& inStream, unsigned int inBufSize) 
+: mLine(1), mStream(&inStream), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0)  
+{
+	setDelimiters(" \t\n\r", "");
+	setBufferSize(inBufSize);
+}
+
+/*!
+ */
+Tokenizer::~Tokenizer(void) {
+	if(mBuffer != 0) delete mBuffer;
+}
 
 /*!
 \return String of next token found.
@@ -61,13 +91,44 @@ string Tokenizer::getNextToken(void)
 bool Tokenizer::getNextToken(string& outToken)
 {
 	PACC_AssertM(mStream, "undefined input stream!");
-	// check for putback tokens
 	if(!mTokens.empty()) {
+		// use putback tokens if available
 		outToken = mTokens.top();
 		mTokens.pop();
+	} else if(mBufSize == 0) {
+		// DO NOT use the input read buffer
+		register unsigned char lChar;
+		// get rid of leading white space
+		do {
+			lChar = mStream->get();
+			if(mStream->eof()) {
+				outToken.clear();
+				return false;
+			}
+			if(lChar == '\n') ++mLine;
+		} while(mDelimiters[lChar] == eWhiteSpace);
+		outToken = lChar;
+		// append until next white space or single char token
+		char lOutBuffer[100];
+		while(mDelimiters[lChar] == 0 && !mStream->eof()) {
+			unsigned lOutCount = 0;
+			while(lOutCount < sizeof(lOutBuffer)) {
+				lChar = mStream->get();
+				if(mStream->eof()) break;
+				if(mDelimiters[lChar] != 0) {
+					// put character back into stream
+					mStream->putback(lChar);
+					break;
+				}
+				lOutBuffer[lOutCount++] = lChar;
+				// check for end-of-line counter
+				if(lChar == '\n') ++mLine;
+			}
+			outToken.append(lOutBuffer, lOutCount);
+		}
 	} else {
-		// otherwise, use buffer
-		unsigned char lChar;
+		// otherwise, use the input read buffer
+		register unsigned char lChar;
 		// get rid of leading white space
 		do {
 			if(mBufCount == 0 && fillBuffer() == 0) {
@@ -76,16 +137,16 @@ bool Tokenizer::getNextToken(string& outToken)
 			}
 			lChar = *(mBufPtr++); --mBufCount;
 			if(lChar == '\n') ++mLine;
-		} while(mDelimiters[lChar] == 1);
+		} while(mDelimiters[lChar] == eWhiteSpace);
 		outToken = lChar;
 		// append until next white space or single char token
-		char lOutBuffer[1024];
-		while(!mDelimiters[lChar] && mBufPtr != mBuffer) {
+		char lOutBuffer[100];
+		while(mDelimiters[lChar] == 0 && mBufPtr != mBuffer) {
 			unsigned lOutCount = 0;
 			while(lOutCount < sizeof(lOutBuffer)) {
 				if(mBufCount == 0 && fillBuffer() == 0) break;
 				lChar = *(mBufPtr++); --mBufCount;
-				if(mDelimiters[lChar]) {
+				if(mDelimiters[lChar] != 0) {
 					// put character back into buffer
 					--mBufPtr; ++mBufCount;
 					break;
@@ -118,8 +179,7 @@ string Tokenizer::getWhiteSpace(void) const
 	return lWhiteSpace;
 }
 
-/*!
-\return -1 if end-of-stream.
+/*! \return -1 if end-of-stream.
  
  This method returns the next character without removing it from the input stream. 
  */
@@ -128,6 +188,7 @@ int Tokenizer::peekNextChar(void)
 	PACC_AssertM(mStream, "undefined input stream!");
 	// check for putback tokens
 	if(!mTokens.empty()) return mTokens.top()[0];
+	else if(mBufSize == 0) return mStream->peek();
 	else {
 		// otherwise, use buffer
 		if(mBufCount == 0 && fillBuffer() == 0) return -1;
@@ -144,6 +205,21 @@ void Tokenizer::putbackToken(const string& inToken)
 	mTokens.push(inToken);
 }
 
+/*
+ The minimum buffer size is set to 10. A smaller buffer size will disable the use of the internal read buffer.
+ 
+\attention This method should be called prior to the first call of method Tokenizer::getNextToken, because it is an error to resize a buffer that is not empty. Method Tokenizer::setStream should be called explicitely to flush the buffer .
+ */
+void Tokenizer::setBufferSize(unsigned int inSize)
+{
+	if(mBuffer != 0) delete mBuffer;
+	if(inSize < 10) inSize = 0;	
+	if(inSize > 0) mBuffer = new char[inSize];
+	else mBuffer = 0;
+	mBufSize = inSize;
+	mBufCount = 0;
+}
+
 /*!
 The white space and single character delimiters are set to the characters contained in strings \c inWhiteSpace and \c inSingleCharTokens, respectively. The white space characters delimit tokens but are not tokens themselves. Single character tokens are tokens that delimit other tokens.
  */
@@ -151,10 +227,21 @@ void Tokenizer::setDelimiters(const string &inWhiteSpace, const string &inSingle
 {
 	memset(mDelimiters, 0, sizeof(mDelimiters));
 	for(string::const_iterator i = inWhiteSpace.begin(); i != inWhiteSpace.end(); ++i) {
-		mDelimiters[(unsigned)*i] = 1;
+		mDelimiters[(unsigned)*i] = eWhiteSpace;
 	}
 	for(string::const_iterator i = inSingleCharTokens.begin(); i != inSingleCharTokens.end(); ++i) {
 		PACC_AssertM(mDelimiters[(unsigned)*i] == 0, "a delimiter cannot be both white space and single char token!");
-		mDelimiters[(unsigned)*i] = 2;
+		mDelimiters[(unsigned)*i] = eSingleChar;
 	}
+}
+
+/*!
+This method sets a new stream to be tokenized. It also flushes the internal read buffer.
+ */
+void Tokenizer::setStream(istream& inStream) 
+{
+	mStream = &inStream; 
+	mLine = 1; 
+	mBufCount = 0; 
+	mTokens = stack<string>();
 }

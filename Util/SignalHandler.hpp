@@ -29,14 +29,14 @@
  * \file PACC/Util/SignalHandler.hpp
  * \brief Class definition for the portable signal handler.
  * \author Marc Dubreuil and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/09/17 03:50:19 $
+ * $Revision: 1.6 $
+ * $Date: 2006/01/16 00:51:44 $
  */
 
 #ifndef PACC_SIGNALHANDLER_HPP
 #define PACC_SIGNALHANDLER_HPP
 
-#include <vector>
+#include <stack>
 #include <signal.h>
 
 namespace PACC {
@@ -44,92 +44,111 @@ namespace PACC {
 	using namespace std;
 	
 	/*!
-	*  \class SignalHandler PACC/Util/SignalHandler.hpp "PACC/Util/SignalHandler.hpp"
 	 *  \brief Portable signal handling.
-	 *  \author Marc Dubreuil and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+	 *  \author Marc Dubreuil, Christian Gagne and Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 	 *  \ingroup Util
 	 *
-	 *  This class handle common signals (usually SIGINT and SIGTERM) to cleanly
-	 *  end a program.  This class should be public inherited.  To specify
-	 *  which method should be used when receiving a signal, see setHandler.
-	 *  To ignore some kind of signal, use ignoreSignal.  When specifying
-	 *  a signal (with setHandler), as long as the root process
-	 *  is alive, the signals will be changed to the new value.  If it is not desired,
-	 *  use restoreHandler to its old value.
+	 *  This class can be used to handle common signals. To define custom handlers,
+	 *  it should be subclassed and virtual method SignalHandler::main should be 
+	 *  overloaded. For example, the following code snippet defines a custom 
+	 *  handler for signal SignalType::eSigInt (Ctl-C):
+\verbatim
+class SigIntHandler : public SignalHandler {
+ public:
+    SigIntHandler(void) {setCustomAction(eSigInt);}
+
+    virtual void main(SignalType inType) {
+        switch(inType) {
+           case eSigInt: 
+             cout << "My custom handler!" << endl;
+             exit(-1);
+           default:
+             cout << "Unsupported signal!" << endl;
+             break;
+        }
+	}
+};
+\endverbatim
+Furthermore, for each signal type, a stack of actions can be managed using methods SignalHandler::pushAction and SignalHandler::popAction.
 	 */
 	class SignalHandler {
-		public:
-#ifdef WIN32
-		//negative numbers does not work under Windows.  Only ANSI code.
-		enum SignalNumber {
-			eSigHUp  = -1,      /* Hangup (POSIX).                  */
-			eSigInt  = SIGINT,  /* Interrupt (ANSI).                */
-			eSigQuit = -3,      /* Quit (POSIX).                    */
-			eSigIll  = SIGILL,  /* Illegal instruction (ANSI).      */
-			eSigTrap = -5,      /* Trace trap (POSIX).              */
-			eSigAbrt = SIGABRT, /* Abort (ANSI).                    */
-			eSigFPE  = SIGFPE,  /* Floating-point exception (ANSI). */
-			eSigKill = -9,      /* Kill, unblockable (POSIX).       */
-			eSigUsr1 = -10,     /* User-defined signal 1 (POSIX).   */
-			eSigSegV = SIGSEGV, /* Segmentation violation (ANSI).   */
-			eSigUsr2 = -12,     /* User-defined signal 2 (POSIX).   */
-			eSigPipe = -13,     /* Broken pipe (POSIX).             */
-			eSigAlrm = -14,     /* Alarm clock (POSIX).             */
-			eSigTerm = SIGTERM, /* Termination (ANSI).              */
-			eSigChld = -17,     /* Child status has changed (POSIX).*/
-			eSigCont = -18,     /* Continue (POSIX).                */
-			eSigStop = -19,     /* Stop, unblockable (POSIX).       */
-			eSigTStp = -20,     /* Keyboard stop (POSIX).           */
-			eSigTTin = -21,     /* Background read from tty (POSIX).*/
-			eSigTTou = -22      /* Background write to tty (POSIX). */
+	 public:
+		//! Enumeration of supported signal types.
+		enum SignalType {
+			eSigAbrt=0,  //!< Abort (ANSI).
+			eSigFPE,     //!< Floating-point exception (ANSI).
+			eSigIll,     //!< Illegal instruction (ANSI).
+			eSigInt,     //!< Interrupt (ANSI).
+			eSigSegV,    //!< Segmentation violation (ANSI).
+			eSigTerm,    //!< Termination (ANSI).
+			eSigAlrm,    //!< Alarm clock (POSIX).
+			eSigChld,    //!< Child status has changed (POSIX).
+			eSigCont,    //!< Continue (POSIX).
+			eSigHUp,     //!< Hangup (POSIX).
+			eSigKill,    //!< Kill, unblockable (POSIX).
+			eSigPipe,    //!< Broken pipe (POSIX).
+			eSigQuit,    //!< Quit (POSIX).
+			eSigStop,    //!< Stop, unblockable (POSIX).
+			eSigTStp,    //!< Keyboard stop (POSIX).
+			eSigTrap,    //!< Trace trap (POSIX).
+			eSigTTin,    //!< Background read from tty (POSIX).
+			eSigTTou,    //!< Background write to tty (POSIX).
+			eSigUsr1,    //!< User-defined signal 1 (POSIX).
+			eSigUsr2,    //!< User-defined signal 2 (POSIX).
+			NSIGNALS
 		};
-#else
-		enum SignalNumber{
-			eSigHUp  = SIGHUP,   /* Hangup (POSIX).                  */
-			eSigInt  = SIGINT,   /* Interrupt (ANSI).                */
-			eSigQuit = SIGQUIT,  /* Quit (POSIX).                    */
-			eSigIll  = SIGILL,   /* Illegal instruction (ANSI).      */
-			eSigTrap = SIGTRAP,  /* Trace trap (POSIX).              */
-			eSigAbrt = SIGABRT,  /* Abort (ANSI).                    */
-			eSigFPE  = SIGFPE,   /* Floating-point exception (ANSI). */
-			eSigKill = SIGKILL,  /* Kill, unblockable (POSIX).       */
-			eSigUsr1 = SIGUSR1,  /* User-defined signal 1 (POSIX).   */
-			eSigSegV = SIGSEGV,  /* Segmentation violation (ANSI).   */
-			eSigUsr2 = SIGUSR2,  /* User-defined signal 2 (POSIX).   */
-			eSigPipe = SIGPIPE,  /* Broken pipe (POSIX).             */
-			eSigAlrm = SIGALRM,  /* Alarm clock (POSIX).             */
-			eSigTerm = SIGTERM,  /* Termination (ANSI).              */
-			eSigChld = SIGCHLD,  /* Child status has changed (POSIX).*/
-			eSigCont = SIGCONT,  /* Continue (POSIX).                */
-			eSigStop = SIGSTOP,  /* Stop, unblockable (POSIX).       */
-			eSigTStp = SIGTSTP,  /* Keyboard stop (POSIX).           */
-			eSigTTin = SIGTTIN,  /* Background read from tty (POSIX).*/
-			eSigTTou = SIGTTOU   /* Background write to tty (POSIX). */
+		
+		//! Construct this signal handler.
+		SignalHandler(void) {}
+		
+		//! delete this signal handler.
+		virtual ~SignalHandler(void) {}
+		
+		/*! \brief Main function of signal handler.
+			
+			This pure virtual method must be overloaded in a subclass in order to
+			define custom signal actions. Argument \c inType specifies the signal
+			type that must be processed for the current pending signal.
+		 */
+		virtual void main(SignalType inType) = 0;
+		
+		//! Pop previous action for signals of type \c inType.
+		static void popAction(SignalType inType);
+		
+		//! Push current action for signals of type \c inType.
+		static void pushAction(SignalType inType);
+		
+		//! Make this signal handler process future signals of type \c inType.
+		void setCustomAction(SignalType inType);
+		
+		//! Make the default system action process future signals of type \c inType.
+		static void setDefaultAction(SignalType inType);
+		
+		//! Specifies that future signals of type \c inType should be ignored.
+		static void setIgnoreAction(SignalType inType);
+		
+	 protected:		
+		//! Convert native signal number into a portable signal type.
+		static SignalType convertFromNativeSignal(int inNativeNumber);
+		
+		//! Convert a portable signal type into a native signal number.
+		static int convertToNativeSignal(SignalType inType);
+		
+	 private:
+		//! Pointer to signal handler function.
+		typedef void (*HandlerPointer) (int);			
+
+		//! Action structure (pointer to either internal or external handler).
+		struct Action {
+			SignalHandler* mHandler;
+			HandlerPointer mFunc;
+			Action(SignalHandler* inHandler, HandlerPointer inFunc) : mHandler(inHandler), mFunc(inFunc) {}
 		};
-#endif
 		
-		//! Construct default signal handler.
-		SignalHandler() {}
-		//! delete signal handler.
-		virtual ~SignalHandler() {}
+		static stack<Action> smActions[NSIGNALS]; //!< Table of signal handler stacks.
 		
-		static SignalHandler* getHandler(int inSignalNumber);
-		virtual void handleSignal(int inSignalNumber) = 0;
-		static void ignoreSignal(int inSignalNumber);
-		static bool isSignalIgnored(int inSignalNumber);
-		static void reactivateSignal(int inSignalNumber);
-		static SignalHandler* restoreHandler(int inSignalNumber);
-		SignalHandler* setAsHandler(int inSignalNumber);
-		static SignalHandler* setHandler(int inSignalNumber, SignalHandler*);
-		
-		protected:
-			static void sighandle(int);
-		
-		private:
-			static SignalHandler* smHandlers[32];
-		
-		static void* smSigAction[32]; //!< static (Old) signal action.
-		static void* smOldSigIgn[32]; //!< static (Old) signal ignore.
+		//! Run the current custom action for native signal \c inSignal.
+		static void runAction(int inSignal);
 	};
 	
 } // end of PACC namespace

@@ -29,8 +29,8 @@
  * \file PACC/Socket/UDP.hpp
  * \brief Class definition for the portable %UDP client.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.20 $
+ * $Date: 2005/11/30 18:29:34 $
  */
 
 #ifndef PACC_Socket_UDP_hpp_
@@ -50,15 +50,15 @@ namespace PACC {
 		 This class defines a simple %UDP socket client. Any error raises a Socket::Exception.
 		 */
 		class UDP : public Port {
-			public:
-      //! Construct unconnected socket (see UDP::setDefaultOptions for default socket options).
-      explicit UDP(void) : Port(eUDP) {}
-      //! Construct using existing socket descriptor \c indescriptor.
-      explicit UDP(int inDescriptor) throw() : Port(inDescriptor) {}
-      
-      void receiveDatagram(string& outDatagram, Address& outPeer);
-      void sendDatagram(const string& inDatagram, const Address& inPeer);
-      
+		 public:
+			//! Construct unconnected socket (see UDP::setDefaultOptions for default socket options).
+			explicit UDP(void) : Port(eUDP) {}
+			//! Construct using existing socket descriptor \c indescriptor.
+			explicit UDP(int inDescriptor) throw() : Port(inDescriptor) {}
+
+			void receiveDatagram(string& outDatagram, Address& outPeer);
+			void sendDatagram(const string& inDatagram, const Address& inPeer);
+
 		};
 		
 	} // end of Socket namespace
@@ -66,5 +66,3 @@ namespace PACC {
 } // end of PACC namespace
 
 #endif  // Socket_UDP_hpp_
-
-

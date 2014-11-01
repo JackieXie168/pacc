@@ -29,8 +29,8 @@
  * \file PACC/XML/Attribute.hpp
  * \brief Class definition for the %XML tag attributes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2005/10/04 01:54:46 $
+ * $Revision: 1.15 $
+ * $Date: 2005/11/29 22:32:34 $
  */
 
 #ifndef PACC_XML_Attribute_hpp_
@@ -50,7 +50,7 @@ namespace PACC {
 		\ingroup XML
 		*/
 		class AttributeList : public map<string, string> {
-			public:
+		 public:
 
 			//! Construct an empty attribute list.
 			AttributeList() {}
@@ -70,8 +70,9 @@ namespace PACC {
 			
 			//! Return value of attribute \c inName, or empty string if it doesn't exist.
 			const string& getAttribute(const string& inName) const {
+				static const string lEmpty;
 				const_iterator lAttr = find(inName); 
-				return (lAttr != end() ? (*lAttr).second : mEmpty);}
+				return (lAttr != end() ? (*lAttr).second : lEmpty);}
 
 			//! Test wheter attribute name \c inName exists in this list.
 			bool isDefined(const std::string& inName) const {
@@ -91,9 +92,6 @@ namespace PACC {
 			void setAttribute(const string& inName, double inValue) {
 				(*this)[inName] = String::convert(inValue);
 			}
-			
-			private:
-			const string mEmpty;
 		};
 		
 	} // end of XML namespace

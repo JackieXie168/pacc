@@ -29,8 +29,8 @@
  * \file PACC/Util/Date.hpp
  * \brief Class definition for the portable time and date.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2005/09/17 03:50:19 $
+ * $Revision: 1.11 $
+ * $Date: 2006/01/15 22:50:49 $
  */
 
 #ifndef PACC_Date_hpp
@@ -48,7 +48,7 @@ namespace PACC {
 	\ingroup Util
 	*/
 	class Date {
-		public:
+	 public:
 		//! Construct using current system date and time.
 		Date(void) : mTime(::time(0)) {}
 		//! Construct from \c inSeconds seconds since January 1st, 1970.
@@ -93,7 +93,7 @@ namespace PACC {
 		// Set time to \c inHour hour, \c inMinutes minutes, and \c inSeconds seconds (date is unchanged).
 		void setTime(unsigned int inHour, unsigned int inMinutes, unsigned int inSeconds);
 
-		protected:
+	 protected:
 		time_t mTime; //!< Number of seconds since Jan 1st, 1970.
 		
 	};

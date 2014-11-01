@@ -29,8 +29,8 @@
  * \file PACC/Threading/Exception.cpp
  * \brief Class methods for the threading exception.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.12 $
- * $Date: 2005/04/19 18:19:29 $
+ * $Revision: 1.13 $
+ * $Date: 2005/10/10 04:41:48 $
  */
 
 #include "Threading/Exception.hpp"
@@ -52,32 +52,32 @@ using namespace PACC;
 //! Convert native OS error \c inError to Socket::Error.
 Threading::Error Threading::Exception::convertNativeError(int inError)
 {
-   Error lCode;
-   switch(inError)
-   {
+	Error lCode;
+	switch(inError)
+	{
 #ifdef WIN32
-      case ERROR_NOT_OWNER: lCode = eMutexNotOwned; break;
+		case ERROR_NOT_OWNER: lCode = eMutexNotOwned; break;
 #else
-      case EPERM: lCode = eMutexNotOwned; break;
-      case EDEADLK: lCode = eWouldDeadLock; break;
+		case EPERM: lCode = eMutexNotOwned; break;
+		case EDEADLK: lCode = eWouldDeadLock; break;
 #endif
-      default: lCode = eOtherError;
-   }
-   return lCode;
+		default: lCode = eOtherError;
+	}
+	return lCode;
 }
 
 //! Return error message.
 string Threading::Exception::getMessage() const throw()
 {
-   ostringstream lMessage;
-   switch(mCode)
-   {
-      case eMutexNotOwned: lMessage << "MutexNotOwned"; break;
-      case eWouldDeadLock: lMessage << "WouldDeadLock"; break;
-      case eRunning: lMessage << "Running"; break;
-      default: lMessage << "OtherError"; break;
-   }
-   if(mNativeCode) lMessage << " (" << mNativeCode << "): ";
-   else lMessage << ": ";
-   return lMessage.str()+what();
+	ostringstream lMessage;
+	switch(mCode)
+	{
+		case eMutexNotOwned: lMessage << "MutexNotOwned"; break;
+		case eWouldDeadLock: lMessage << "WouldDeadLock"; break;
+		case eRunning: lMessage << "Running"; break;
+		default: lMessage << "OtherError"; break;
+	}
+	if(mNativeCode) lMessage << " (" << mNativeCode << "): ";
+	else lMessage << ": ";
+	return lMessage.str()+what();
 }

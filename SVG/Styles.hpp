@@ -29,8 +29,8 @@
  * \file PACC/SVG/Styles.hpp
  * \brief Class definition for the SVG element styles.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/10/04 01:52:23 $
+ * $Revision: 1.6 $
+ * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Styles_hpp_
@@ -58,9 +58,7 @@ namespace PACC {
 			sub-classed for specific %SVG style attributes.
 		*/
 		class Attribute : public pair<string, string> {
-
-			public:
-						
+		 public:
 			//! Return a style list of attributes by combining attribute \c inAttribute with this attribute.
 			Style operator+(const Attribute& inAttribute) const;
 			
@@ -79,8 +77,7 @@ namespace PACC {
 			//! Return value of this attribute (const).
 			const string& getValue(void) const {return second;}
 			
-			protected:
-			
+		protected:
 			//! Construct an attribute style from name \c inName and value \c inValue.
 			Attribute(const string& inName, const string& inValue) : pair<string, string>(inName, inValue) {}
 		};
@@ -93,8 +90,7 @@ namespace PACC {
 			\see Attribute
 		*/
 		class Style : public XML::AttributeList {
-			
-			public:
+		 public:
 			
 			//! Make an empty style.
 			Style() {}
@@ -120,33 +116,29 @@ namespace PACC {
 		};
 		
 		/*!\brief %Style attribute for object opacity.
-			* \ingroup SVG
-			*
-			* This will set the opacity of the resulting image of a graphic. 
-			*
-			* This is different than setting FillOpacity and StrokeOpacity. For
-			* example, if you set both StrokeOpacity and FillOpacity to 0.5, you will 
-			* see the fill edge behind the stroke. With opacity the hole shape is
-			* rendered and then made transparent.
-			*/
+		 * \ingroup SVG
+		 *
+		 * This will set the opacity of the resulting image of a graphic. 
+		 *
+		 * This is different than setting FillOpacity and StrokeOpacity. For
+		 * example, if you set both StrokeOpacity and FillOpacity to 0.5, you will 
+		 * see the fill edge behind the stroke. With opacity the hole shape is
+		 * rendered and then made transparent.
+		 */
 		class Opacity : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set the graphic opacity to value \c inValue.
 			Opacity(float inValue) : Attribute("opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for fill color of shapes.
-			* \ingroup SVG
-			*
-			* Currently this class can only take plain color fills. 
-			* It may be extended in the future to support gradient or patterns.
-			*/
+		 * \ingroup SVG
+		 *
+		 * Currently this class can only take plain color fills. 
+		 * It may be extended in the future to support gradient or patterns.
+		 */
 		class Fill : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set the fill color to value \c inValue.
 			Fill(const Color &inValue) : Attribute("fill", inValue) {}
 			
@@ -155,27 +147,23 @@ namespace PACC {
 		};
 		
 		/*!\brief %Style attribute for the opacity of fills.
-			* \ingroup SVG
-			* \see  Fill
-			*/
+		 * \ingroup SVG
+		 * \see  Fill
+		 */
 		class FillOpacity : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set the fill opacity to value \c inValue (0=transparent).
 			FillOpacity(float inOpacity) : Attribute("fill-opacity", String::convert(inOpacity)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the fill rule.
-			* \ingroup SVG
-			*
-			* Overlapping regions can be filled according to differents rules
-			* defined as constants inside this class.
-			*/
+		 * \ingroup SVG
+		 *
+		 * Overlapping regions can be filled according to differents rules
+		 * defined as constants inside this class.
+		 */
 		class FillRule : public Attribute {
-			
-			public:
-
+		 public:
 			/*! \brief After counting the crossings, if the result is zero then the 
 			*         point is outside the path. Otherwise, it is inside.
 			*
@@ -207,22 +195,19 @@ namespace PACC {
 			*/
 			static const FillRule cEvenOdd;
 			
-			private:
-
+		 private:
 			//! Set fill rule to value \c inValue.
 			FillRule(const string &inFillRule) : Attribute("fill-rule", inFillRule) {}
 		};
 		
 		/*!\brief %Style attribute for specifying how to fill the stroke of a shape.
-			* \ingroup SVG
-			*
-			* Currently this class can only take plain color strokes. It may be 
-			* extended in the future to support gradient or patterns strokes.
-			*/
+		 * \ingroup SVG
+		 *
+		 * Currently this class can only take plain color strokes. It may be 
+		 * extended in the future to support gradient or patterns strokes.
+		 */
 		class Stroke : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set stroke color to \c inColor.
 			Stroke(const Color& inColor) : Attribute("stroke", inColor) {}
 			
@@ -233,52 +218,46 @@ namespace PACC {
 		//! \brief %Style attribute for the opacity of strokes.
 		//! \ingroup SVG
 		class StrokeOpacity : public Attribute {
-			
-			public:
-
+		 public:
 			//! set stroke opacity to value \c inValue (0=transparent).
 			StrokeOpacity(float inValue) : Attribute("stroke-opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute specifying width of the stroke.
-			* \ingroup SVG
-			*
-			* Defautl width of as stroke is 1.
-			*/
+		 * \ingroup SVG
+		 *
+		 * Defautl width of as stroke is 1.
+		 */
 		class StrokeWidth : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set stroke width to value \c inValue.
 			StrokeWidth(float inValue) : Attribute("stroke-width", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying how to dash the stroke.
-			* \ingroup SVG
-			*
-			* The dash array is a list of numbers repsesenting the lengths of each
-			* part of the dashed line. The first number represent the first dash 
-			* length, the next is the empty space length, the next is the second dash
-			* lenght, and so on.
-			*
-			* \see  DashArray
-			*/
+		 * \ingroup SVG
+		 *
+		 * The dash array is a list of numbers repsesenting the lengths of each
+		 * part of the dashed line. The first number represent the first dash 
+		 * length, the next is the empty space length, the next is the second dash
+		 * lenght, and so on.
+		 *
+		 * \see  DashArray
+		 */
 		class StrokeDashArray : public Attribute {
-			
-			public:
-
+		 public:
 			/*!\brief  Make a dash array from a string.
-			* \param  inDashArray  A string with the lenght of dash and spaces
-			*                      separated by spaces characters.
-			*
-			* Sample dash array value: "10 2.5 5"
-			*/
+			 * \param  inDashArray  A string with the lenght of dash and spaces
+			 *                      separated by spaces characters.
+			 *
+			 * Sample dash array value: "10 2.5 5"
+			 */
 			StrokeDashArray(const std::string &inDashArray) : Attribute("stroke-dasharray", inDashArray) {}
 
 			/*!\brief  Construct a dash array with a vector of floats.
-			* \param  inDashArray  A vector of floats as the list of dashes and 
-			*                      spaces.
-			*/
+			 * \param  inDashArray  A vector of floats as the list of dashes and 
+			 *                      spaces.
+			 */
 			StrokeDashArray(const std::vector<float> &inDashArray);
 			
 			//! Default dash array for a continous line.
@@ -292,13 +271,11 @@ namespace PACC {
 		};
 		
 		/*!\brief %Style attribute for specifying the type of cap for stroke ends.
-			* \ingroup SVG
-			* \see LineCap
-			*/
+		 * \ingroup SVG
+		 * \see LineCap
+		 */
 		class StrokeLineCap : public Attribute {
-			
-			public:
-
+		 public:
 			//! \image html linecap-butt.png
 			static const StrokeLineCap cButt;
 
@@ -308,21 +285,18 @@ namespace PACC {
 			//! \image html linecap-square.png
 			static const StrokeLineCap cSquare;
 			
-			private:
-
+		 private:
 			//! Set line cap style to value \c inValue.
 			StrokeLineCap(const std::string &inValue) : Attribute("stroke-linecap", inValue) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the type of join between stroke 
-			*         segments.
-			* \ingroup SVG
-			* \see LineJoin
-			*/
+		 *         segments.
+		 * \ingroup SVG
+		 * \see LineJoin
+		 */
 		class StrokeLineJoin : public Attribute {
-			
-			public:
-
+		 public:
 			//! \image html linejoin-miter.png
 			static const StrokeLineJoin cMiter;
 
@@ -332,8 +306,7 @@ namespace PACC {
 			//! \image html linejoin-bevel.png
 			static const StrokeLineJoin cBevel;
 			
-			private:
-
+		 private:
 			//! Set line join style to value \c inValue.
 			StrokeLineJoin(const std::string &inValue) : Attribute("stroke-linejoin", inValue) {}
 		};
@@ -347,27 +320,23 @@ namespace PACC {
 			\see  StrokeLineJoin, MiterLimit
 		*/
 		class StrokeMiterLimit : public Attribute {
-			
-			public:
-
+		 public:
 			//! Set the meter limit to ratio \c inRatio.
 			StrokeMiterLimit(float inRatio) : Attribute("stroke-miterlimit", String::convert(inRatio)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the font family.
-			* \ingroup SVG
-			*/
+		 * \ingroup SVG
+		 */
 		class FontFamily : public Attribute {
-			
-			public:
-
+		 public:
 			/*!\brief  Constructor with family name.
-			* \param  inName  The name of the family.
-			* 
-			* You can also optionally pass a list of families to choose from. In
-			* this case the first matching family will be used. The list must be
-			* of the form: "Times, Times New Roman, serif".
-			*/
+			 * \param  inName  The name of the family.
+			 * 
+			 * You can also optionally pass a list of families to choose from. In
+			 * this case the first matching family will be used. The list must be
+			 * of the form: "Times, Times New Roman, serif".
+			 */
 			FontFamily(const std::string &inName) : Attribute("font-family", inName) {}
 			
 			//! Default serif font from the viewer.
@@ -380,9 +349,7 @@ namespace PACC {
 		//! \brief %Style attribute for specifying text style.
 		//! \ingroup SVG
 		class FontStyle : public Attribute {
-			
-			public:
-
+		 public:
 			//! Use normal font style.
 			static const FontStyle cNormal;
 
@@ -392,8 +359,7 @@ namespace PACC {
 			//! Use oblique font style (similar to cItalic).
 			static const FontStyle cOblique;
 			
-			private:
-
+		 private:
 			//! Constructor with font style name.
 			//! \param inName A valid CSS style name string.
 			FontStyle(const std::string &inName) : Attribute("font-style", inName) {}
@@ -402,17 +368,14 @@ namespace PACC {
 		//! \brief %Style attribute for defining font weight.
 		//! \ingroup SVG
 		class FontWeight : public Attribute {
-			
-			public:
-
+		 public:
 			//! Normal font weight.
 			static const FontWeight cNormal;
 
 			//! Bold font weight.
 			static const FontWeight cBold;
 			
-			private:
-
+		 private:
 			//! Constructor with weight name.
 			FontWeight(const std::string &inName) : Attribute("font-weight", inName) {}
 		};
@@ -420,22 +383,19 @@ namespace PACC {
 		//! \brief %Style attribute for specifying font size.
 		//! \ingroup SVG
 		class FontSize : public Attribute {
-			public:
-
+		 public:
 			//! Set font size to value \c inValue.
 			FontSize(float inValue) : Attribute("font-size", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying text positioning.
-			*
-			* This attribute allow you to specify if the text anchor should be at the
-			* start, the middle or the end of the text. Static member constants are
-			* defined for each allowed value.
-			*/
+		 *
+		 * This attribute allow you to specify if the text anchor should be at the
+		 * start, the middle or the end of the text. Static member constants are
+		 * defined for each allowed value.
+		 */
 		class TextAnchor : public Attribute {
-			
-			public:
-
+		 public:
 			//! Start the text at the anchor point.
 			static const TextAnchor cStart;
 
@@ -445,8 +405,7 @@ namespace PACC {
 			//! Put the end of the text at the anchor point.
 			static const TextAnchor cEnd;
 			
-			private:
-
+		 private:
 			/*!\brief  Anchor the text using the value given in the string.
 			 * \param  inValue A valid SVG value for the <code>text-anchor</code>
 			 *                 attribute.
@@ -457,11 +416,9 @@ namespace PACC {
 		/*!\brief %Style attribute for specifying the text decoration.
 
 			Supported decorations are underline and line-through.
-		*/
+		 */
 		class TextDecoration : public Attribute {
-			
-			public:
-
+		 public:
 			//! Clears all text decorations.
 			static const TextDecoration cNone;
 			
@@ -471,8 +428,7 @@ namespace PACC {
 			//! Set a line-through decoration for the text.
 			static const TextDecoration cLineThrough;
 			
-			private:
-			
+		 private:
 			TextDecoration(const std::string &inDecoration) : Attribute("text-decoration", inDecoration) {}
 		};
 		

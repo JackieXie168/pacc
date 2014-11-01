@@ -29,8 +29,8 @@
  * \file PACC/Threading/Thread.cpp
  * \brief Class methods for the portable thread.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.39 $
- * $Date: 2005/04/19 18:19:30 $
+ * $Revision: 1.41 $
+ * $Date: 2005/10/27 03:13:46 $
  */
 
 #include "Threading/Thread.hpp"
@@ -38,14 +38,17 @@
 
 #ifdef WIN32
 #include <windows.h>
+#define ErrNo WSAGetLastError() // descriptor of last error
 struct ThreadStruct {
-   HANDLE mHandle;
-   DWORD mId;
+	HANDLE mHandle;
+	DWORD mId;
 };
+
 #else // Unix...
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/errno.h>
+#define ErrNo errno // descriptor of last error
 typedef pthread_t ThreadStruct;
 #endif
 
@@ -64,9 +67,9 @@ Assuming that the caller has canceled the thread and waited for its termination,
 A good strategy is to always define a destructor in the derived class, and to make this destructor wait for thread termination. For instance:
 \code
 class MyThread : public Threading::Thread {
-	...
-	~MyThread(void) {wait();}
-	...
+    ...
+    ~MyThread(void) {wait();}
+    ...
 };
 \endcode
 
@@ -76,23 +79,25 @@ The calling thread can also use method Thread::cancel to request early terminati
 */
 Threading::Thread::~Thread(void)
 {
-   lock();
-   if(mThread)
-   {
-      // make sure that thread is no longer running
+	lock();
+	if(mThread) {
+		// make sure that thread is no longer running
 		PACC_AssertM(!mRunning, "Destructor called without first cancelling the thread and waiting for its termination. Please correct the situation because it is potentially very hazardous!");
-      // detach thread
-      ThreadStruct* lThread = (ThreadStruct*) mThread;
+		// detach thread
+		ThreadStruct* lThread = (ThreadStruct*) mThread;
 #ifdef WIN32
-      ::WaitForSingleObject(lThread->mHandle, INFINITE);
+		if(::WaitForSingleObject(lThread->mHandle, INFINITE) == WAIT_FAILED)
 #else // Unix...
-      ::pthread_join(*lThread, 0);
+		if(::pthread_join(*lThread, 0) != 0)
 #endif
-      // delete native structure
-      delete lThread;
-      mThread = 0;
-   }
-   unlock();
+		{
+			throw Exception(ErrNo, "Thread::~Thread() unable to join thread");
+		}
+		// delete native structure
+		delete lThread;
+		mThread = 0;
+	}
+	unlock();
 }
 
 /*! \brief Cancel execution of thread.
@@ -103,7 +108,7 @@ The caller should always lock the thread (using the lock method) prior to asking
 */
 void Threading::Thread::cancel(void)
 {
-   mCancel = true;
+	mCancel = true;
 }
 
 /*! \brief Check wheter or not the thread is currently running.
@@ -112,17 +117,17 @@ The caller should always lock the thread (using the lock method) prior to checki
 */
 bool Threading::Thread::isRunning(void) const
 {
-   return mRunning;   
+	return mRunning;
 }
 
 //! Return whether the calling thread is the same as this thread.
 bool Threading::Thread::isSelf(void) const
 {
-   ThreadStruct* lThread = (ThreadStruct*) mThread;
+	ThreadStruct* lThread = (ThreadStruct*) mThread;
 #ifdef WIN32
-   return lThread->mId == ::GetCurrentThreadId();
+	return lThread->mId == ::GetCurrentThreadId();
 #else // Unix...
-   return ::pthread_equal(*lThread, ::pthread_self());
+	return ::pthread_equal(*lThread, ::pthread_self());
 #endif
 }
 
@@ -132,22 +137,21 @@ This function should be called by Thread::main as often as possible in order to 
 */
 void Threading::Thread::makeCancellationPoint(void)
 {
-   lock();
-   // exit thread if cancellation was requested
-   if(mCancel)
-   {
-      // signal all that thread has terminated
-      mRunning = false;
-      broadcast();
-      unlock();
-      // now exit thread
+	lock();
+	// exit thread if cancellation was requested
+	if(mCancel) {
+		// signal all that thread has terminated
+		mRunning = false;
+		broadcast();
+		unlock();
+		// now exit thread
 #ifdef WIN32
-      ::ExitThread(0);
+		::ExitThread(0);
 #else // Unix...
-      ::pthread_exit(0);
+		::pthread_exit(0);
 #endif
-   }
-   unlock();
+	}
+	unlock();
 }
 
 /*! \brief Create and startup thread.
@@ -158,29 +162,29 @@ Any error will raise a Threading:Exception. In particular, this method should no
 */
 void Threading::Thread::run(void)
 {
-   lock();
+	lock();
 	// check that thread is not already running
 	if(mRunning) {
 		unlock();
 		throw Exception(eRunning, "Thread::run() thread is already running!");
 	}
 	mCancel = false;
-   // allocate native structure
+	// allocate native structure
 	if(!mThread) mThread = new ThreadStruct;
-   ThreadStruct* lThread = (ThreadStruct*) mThread;
-   // create thread
+	ThreadStruct* lThread = (ThreadStruct*) mThread;
+	// create thread
 #ifdef WIN32
-   if((lThread->mHandle = ::CreateThread(0, 0, (LPTHREAD_START_ROUTINE)startup, this, 0, &lThread->mId)) == 0)
+	if((lThread->mHandle = ::CreateThread(0, 0, (LPTHREAD_START_ROUTINE)startup, this, 0, &lThread->mId)) == 0)
 #else // Unix
-   if(::pthread_create(lThread, 0, startup, this) != 0)  
+	if(::pthread_create(lThread, 0, startup, this) != 0)  
 #endif
 	{
 		unlock();
-      throw Exception(eOtherError, "Thread::run() can't create thread!");
+		throw Exception(eOtherError, "Thread::run() can't create thread!");
 	}
-   // wait for thread to start up
-   if(!mRunning) Condition::wait();
-   unlock();   
+	// wait for thread to start up
+	if(!mRunning) Condition::wait();
+	unlock();
 }
 
 /*! \brief Sleep calling thread for \c inSeconds seconds. 
@@ -189,14 +193,15 @@ A negative value will throw a Threading::Exception.
 */
 void Threading::Thread::sleep(double inSeconds)
 {
-   if(inSeconds < 0) throw Exception(eOtherError, "Thread::sleep() invalid time");
+	if(inSeconds < 0) throw Exception(eOtherError, "Thread::sleep() invalid time");
 #ifdef WIN32
-   // argument must be in milliseconds
-   ::Sleep((DWORD)(1000*inSeconds));
+	// argument must be in milliseconds
+	::Sleep((DWORD)(1000*inSeconds));
 #else // Unix...
-   // argument must be in microseconds
-   if(::usleep((unsigned int)(1000000*inSeconds)) != 0)
-      throw Exception(eOtherError, "Thread::sleep() can't sleep");
+	// argument must be in microseconds
+	if(::usleep((unsigned int)(1000000*inSeconds)) != 0) {
+		throw Exception(eOtherError, "Thread::sleep() can't sleep");
+	}
 #endif
 }
 
@@ -206,20 +211,20 @@ This function is first called when the thread starts up and immediately calls fu
 */
 void* Threading::Thread::startup(void* inThread)
 {
-   Thread* lThread = (Thread*) inThread;
-   // signal parent thread that this thread is starting to run
-   lThread->lock();
-   lThread->mRunning = true;
-   lThread->signal();
-   lThread->unlock();
-   // execute main
-   lThread->main();
-   // signal all that thread as terminated
-   lThread->lock();
-   lThread->mRunning = false;
-   lThread->broadcast();
-   lThread->unlock();
-   return 0;
+	Thread* lThread = (Thread*) inThread;
+	// signal parent thread that this thread is starting to run
+	lThread->lock();
+	lThread->mRunning = true;
+	lThread->signal();
+	lThread->unlock();
+	// execute main
+	lThread->main();
+	// signal all that thread as terminated
+	lThread->lock();
+	lThread->mRunning = false;
+	lThread->broadcast();
+	lThread->unlock();
+	return 0;
 }
 
 /*! \brief %Wait for thread termination.
@@ -230,7 +235,7 @@ If argument \c inLock is false, this method assumes that the caller has already 
 */
 void Threading::Thread::wait(bool inLock)
 {
-   if(inLock) lock();
-   if(mRunning) Condition::wait();
-   if(inLock) unlock();
+	if(inLock) lock();
+	if(mRunning) Condition::wait();
+	if(inLock) unlock();
 }

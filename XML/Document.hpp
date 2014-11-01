@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.hpp
  * \brief Class definition for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.37 $
- * $Date: 2005/09/18 03:28:08 $
+ * $Revision: 1.38 $
+ * $Date: 2005/11/02 05:09:24 $
  */
 
 #ifndef PACC_XML_Document_hpp_
@@ -40,11 +40,11 @@
 #include <queue>
 
 namespace PACC { 
-   
-   using namespace std;
-   
-   namespace XML {
-   
+
+	using namespace std;
+
+	namespace XML {
+
 		/*! \brief %Document container and parser.
 		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup XML

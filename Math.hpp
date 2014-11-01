@@ -29,8 +29,8 @@
 * \file PACC/Math.hpp
  * \brief Include all headers for the portable math module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/06/02 07:00:34 $
+ * $Revision: 1.6 $
+ * $Date: 2006/05/14 02:29:48 $
  */
 
 /*!
@@ -39,3 +39,4 @@
 
 #include "Math/Matrix.hpp"
 #include "Math/Vector.hpp"
+#include "Math/QRandSequencer.hpp"

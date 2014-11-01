@@ -29,8 +29,8 @@
  * \file PACC/Socket/TCPServer.hpp
  * \brief Class definition for the portable multithreaded %TCP server.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.33 $
- * $Date: 2005/09/17 03:49:31 $
+ * $Revision: 1.37 $
+ * $Date: 2006/01/16 04:55:46 $
  */
 
 #ifndef PACC_Socket_TCPServer_hpp_
@@ -55,7 +55,7 @@ namespace PACC {
 		The user should not be considered with this class.
 		*/
 		class ServerThread : public Threading::Thread {
-			public:
+		 public:
 			//! Construct thread and link to server \c inServer.
 			ServerThread(Socket::TCPServer* inServer, double inMaxHaltDelay) : mServer(inServer), mMaxHaltDelay(inMaxHaltDelay) {run();}
 			//! delete thread.
@@ -63,7 +63,7 @@ namespace PACC {
 			
 			bool shouldTerminate(void) const;
 			
-			protected:
+		 protected:
 			Socket::TCPServer* mServer; //!< Pointer to parent server
 			double mMaxHaltDelay; //!< Maximum delay for honoring halt requests
 			
@@ -78,63 +78,77 @@ namespace PACC {
 			
 			Any error during initialization raises a Socket::Exception. Exceptions during connections are first reported through std::cerr, and then ignored.
 			*/
-		class TCPServer : public TCP, protected Threading::Mutex
+		class TCPServer : protected TCP, private Threading::Mutex
 		{
-			public:
+		 public:
+			//! Construct an uninitialized default server.
 			TCPServer(void);
+			
+			//! Construct a server that binds to port \c inPortNumber with a queue of \c inMinPending connections.
 			TCPServer(unsigned int inPortNumber, unsigned int inMinPending=10);
+			
+			//! Delete the server thread pool.
 			virtual ~TCPServer(void);
 			
+			//! Set default server options.
 			void setDefaultOptions(void);
 			
 			//! Bind server to port number \c inPortNumber.
 			void bind(unsigned int inPortNumber) {Port::bind(inPortNumber);}
+			
 			//! Close the server socket.
 			void close(void) {Port::close();}
+			
 			//! Listen for at least \c inMinPending pending connections.
 			void listen(unsigned int inMinPending) {Port::listen(inMinPending);}
+			
+			//! Stop accepting incomming connections.
 			void halt(void);
+			
 			//! Open a new socket.
 			void open(void) {Port::open();}
+			
+			//! Start accepting incomming connections.
 			void run(unsigned int inThreads, double inMaxHaltDelay=1);
+			
+			//! Wait for server termination.
 			void wait(void);
 			
-			protected:
+		 protected:
 			vector<ServerThread*> mThreadPool; //!< Pool of threads pointers
-      
+
 			/*! \brief Main function of server.
 				
 				Method should start by constructing an adequate protocol for socket descriptor \c inDescriptor. For instance, to make an echo server for the TCP protocol:
-				\code
-				using namespace std;
-			using namespace PACC;
-			class EchoTCP : public Socket::TCPServer {
-public:
-				EchoTCP(unsigned int inPort, unsigned int inMinPending) 
-				: Socket::TCPServer(inPort, inMinPending) {}
-				~EchoTCP(void) {wait();}
+\code
+using namespace std;
+using namespace PACC;
+class EchoTCP : public Socket::TCPServer {
+ public:
+	EchoTCP(unsigned int inPort, unsigned int inMinPending) 
+	 : Socket::TCPServer(inPort, inMinPending) {}
+	~EchoTCP(void) {wait();}
 				
-				void main(int inDescriptor, const ServerThread* inThread) {
-					try {
-						Socket::TCP lSocket(inDescriptor);
-						lSocket.setSockOpt(eRecvTimeOut, 10);
-						lSocket.setSockOpt(eSendTimeOut, 1.5);
-						// loop until thread receives a cancellation request
-						while(!inThread->shouldTerminate())
-						{
-							string lMessage;
-							// receive message from client
-							lSocket.receiveMessage(lMessage);
-							// echo message to client
-							lSocket.sendMessage(lMessage);
-						}
-					} catch(const Socket::Exception& inError) {
-						// output error message and exit
-						cerr << inError.getMessage() << endl;
-					}
-				}
-			};
-			\endcode
+	void main(int inDescriptor, const ServerThread* inThread) {
+		try {
+			Socket::TCP lSocket(inDescriptor);
+			lSocket.setSockOpt(eRecvTimeOut, 10);
+			lSocket.setSockOpt(eSendTimeOut, 1.5);
+			// loop until thread receives a cancellation request
+			while(!inThread->shouldTerminate()) {
+				string lMessage;
+				// receive message from client
+				lSocket.receiveMessage(lMessage);
+				// echo message to client
+				lSocket.sendMessage(lMessage);
+			}
+		} catch(const Socket::Exception& inError) {
+			// output error message and exit
+			cerr << inError.getMessage() << endl;
+		}
+	}
+};
+\endcode
 				In this example, the server constructs a TCP socket, sets time outs of respectivelly 10 and 1.5 seconds for receives and sends, and enters a loop where every received message is echoed to the client. This loop will exit either when method ServerThread::shouldTerminate returns true (typically after the server receives a halt request), when the client closes the connection (exception Socket::eConnectionClosed will be raised), or when a time out expires (exception Socket::eTimeOut will be raised). Note that the socket for this connection will be closed automatically by its destructor when control exits the try-clause.
 				*/
 			virtual void main(int inDescriptor, const ServerThread* inThread) = 0;
@@ -148,4 +162,3 @@ public:
 } // end of PACC namespace
 
 #endif  // PACC_Socket_TCPServer_hpp_
-

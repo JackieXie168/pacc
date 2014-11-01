@@ -29,8 +29,8 @@
  * \file   PACC/Math/Vector.cpp
  * \brief  Method definitions for class Vector.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2005/09/19 06:10:42 $
+ * $Revision: 1.11 $
+ * $Date: 2005/11/22 15:56:07 $
  */
 
 #include "Math/Vector.hpp"

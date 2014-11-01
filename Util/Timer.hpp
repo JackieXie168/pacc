@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.hpp
  * \brief Class definition for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2005/10/05 12:33:01 $
+ * $Revision: 1.17 $
+ * $Date: 2006/01/23 23:17:37 $
  */
 
 #ifndef PACC_Timer_hpp
@@ -42,42 +42,45 @@ namespace PACC {
 	\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 	\ingroup Util
 	
-	This class implements a simple stopwatch timer that is always running. Method Timer::getValue can be used to return the current timer value in seconds. Method Timer::reset resets this value to 0. Under Windows, this class uses the QueryPerformanceCounter method to retrieve a high-resolution hardware time-stamp. When using the gcc compiler, this class also retrieves a hardware time-stamp counter on the following platforms:
+	This class implements a simple stopwatch timer that is always running. Method Timer::getValue can be used to return the current timer value in seconds. Method Timer::reset resets this value to 0. 
+	
+	By default, if possible, the class uses the CPU's high resolution hardware time-stamp to measure time. Under Windows, this always translates to a call to the QueryPerformanceCounter method. Under Unix, when using the gcc compiler, inlined assembly code is used to retrieve the hardware counter on the following platforms:
 	- Pentium family (i386)
 	- PowerPC family (ppc)
 	.
-	For all other cases, the class uses the standard gettimeofday method to retrieve a somewhat high resolution time stamp (max resolution is micro-seconds).
+	Otherwise, the class uses the Unix gettimeofday method to retrieve a somewhat lower resolution time stamp (max resolution is micro-seconds).
 	
 	The current high resolution time stamp can be retrieved using method Timer::getCount. The time period associated with a single count increment is platform dependent. Its value can be fetch with method Timer::getCountPeriod.
 	
-	\attention Hardware time-stamp counters are dependent of the CPU clock frequency. On platforms where this frequency is variable (e.g. laptops), the time values in seconds may become false if the clock frequency is changed by the OS. When using a hardware counter, the class constructor conducts a calibration procedure using method gettimeofday. This procedure (if applicable) lasts about 0.1 sec with default parameters (see Timer::calibrateCountPeriod).   
+	\attention Hardware time-stamp counters may be dependent on the CPU clock frequency. Under Unix, the hardware time-stamp frequency needs to be evaluated using a calibration procedure based on method gettimeofday. If applicable, this procedure lasts about 0.1 sec when using default parameters (see Timer::calibrateCountPeriod).   
 	*/
 	class Timer {
-
-		public:
-
-		//! Construct using current system date and time.
-		Timer(void) {calibrateCountPeriod(); reset();}
+	 public:
+		//! Construct a timer and reset its value. On supported Unix platforms, argument \c inHardware=true (default) enables the use of the CPU's high resolution hardware time-stamp. Argument \c inHardware=false forces the use of a somewhat lower resolution count based on the Unix gettimeofday method. Note that the use of the hardware counter under Unix requires a preliminary calibration procedure (see Timer::calibrateCountPeriod).
+		Timer(bool inHardware=true) : mHardware(inHardware) {
+			if(mPeriod == 0) calibrateCountPeriod(); 
+			reset();
+		}
 
 		//! Calibrate the count period.
 		void calibrateCountPeriod(unsigned int inDelay=10000, unsigned int inTimes=10);
 
-		//! Return current high resolution count.
+		//! Return the current high resolution count.
 		unsigned long long getCount(void) const;
 
-		//! Return time period of count (in seconds).
+		//! Return the time period of a single count increment (in seconds).
 		double getCountPeriod(void) const {return mPeriod;}
 
-		//! Return current value of timer (in seconds).
+		//! Return the current timer value in seconds.
 		double getValue(void) const {return (getCount()-mCount)*mPeriod;}
 
-		//! reset timer to zero.
+		//! reset the timer value (to 0 second).
 		void reset(void) {mCount = getCount();}
 
-		protected:
-			
-		unsigned long long mCount; //!< Count at last reset.
-		double mPeriod; //!< Time period of a single count.
+	 protected:
+		bool mHardware; //!< Specifies whether hardware time-stamps should be used.
+		unsigned long long mCount; //!< Count value at last reset.
+		static double mPeriod; //!< Time period of a single count in seconds.
 	};
 
 } // end of PACC namespace

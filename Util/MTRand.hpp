@@ -187,6 +187,8 @@ inline double MTRand::randNorm( const double& mean, const double& variance )
 {
 	// Return a real number from a normal (Gaussian) distribution with given
 	// mean and variance by Box-Muller method
+	// see http://www.dspguru.com/howto/tech/wgn2.htm
+	// Added by M. Parizeau: the variance argument is in fact a standard deviation
 	double r = sqrt( -2.0 * log( 1.0-randDblExc()) ) * variance;
 	double phi = 2.0 * 3.14159265358979323846264338328 * randExc();
 	return mean + r * cos(phi);
@@ -247,7 +249,7 @@ inline void MTRand::seed( const uint32 *const bigSeed, const uint32 seedLength )
 	initialize(19650218UL);
 	register int i = 1;
 	register uint32 j = 0;
-	register int k = ( N > seedLength ? N : seedLength );
+	register int k = ( (uint32)N > seedLength ? (uint32)N : seedLength );
 	for( ; k; --k )
 	{
 		state[i] =
@@ -296,7 +298,7 @@ inline void MTRand::seed(void)
 }
 
 
-inline void MTRand::initialize( const uint32 seed )
+inline void MTRand::initialize( const uint32 inSeed )
 {
 	// Initialize generator state with seed
 	// See Knuth TAOCP Vol 2, 3rd Ed, p.106 for multiplier.
@@ -305,7 +307,7 @@ inline void MTRand::initialize( const uint32 seed )
 	register uint32 *s = state;
 	register uint32 *r = state;
 	register int i = 1;
-	*s++ = seed & 0xffffffffUL;
+	*s++ = inSeed & 0xffffffffUL;
 	for( ; i < N; ++i )
 	{
 		*s++ = ( 1812433253UL * ( *r ^ (*r >> 30) ) + i ) & 0xffffffffUL;

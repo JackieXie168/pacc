@@ -29,8 +29,8 @@
  * \file PACC/Threading/Thread.hpp
  * \brief Class definition for the portable thread.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.27 $
- * $Date: 2005/09/17 03:50:14 $
+ * $Revision: 1.28 $
+ * $Date: 2005/11/14 03:44:40 $
  */
 
 #ifndef PACC_Threading_Thread_hpp_
@@ -51,7 +51,7 @@ namespace PACC {
 		This class should be compatible with any flavour of Unix that supports POSIX threads. It should also be compatible will any version of Windows that is supported by class Condition (refer to its documentation for more details). It has been tested under Linux, MacOS X, and Windows 2000/XP. 
 		*/
 		class Thread : public Condition {
-			public:
+		 public:
 			Thread(void);
 			virtual ~Thread(void);
 			
@@ -75,7 +75,7 @@ namespace PACC {
 			
 			void makeCancellationPoint(void);
 			
-			private:
+		 private:
 			static void* startup(void* inThread);
 			
 			//! restrict (disable) copy constructor.

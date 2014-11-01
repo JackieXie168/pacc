@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.cpp
  * \brief Class methods for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.34 $
- * $Date: 2005/09/18 03:29:19 $
+ * $Revision: 1.36 $
+ * $Date: 2006/01/16 04:05:31 $
  */
 
 #include "XML/Node.hpp"
@@ -46,27 +46,27 @@ using namespace PACC;
 /*!
 */
 XML::Node::Node(void) : mType(eRoot) {
-	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
+	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 }
 
 /*!
 */
 XML::Node::Node(const string& inValue, XML::NodeType inType) : mType(inType) {
 	(*this)[""] = inValue; 
-	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
+	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 }
 
 /*!
 */
 XML::Node::Node(const string& inValue, const XML::AttributeList& inAttrList) : AttributeList(inAttrList), mType(eData) {
 	(*this)[""] = inValue;
-	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
+	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 }
 
 /*!
 */
 XML::Node::Node(const XML::Node& inNode) {
-	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
+	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 	operator=(inNode);
 }
 
@@ -79,7 +79,7 @@ XML::Node::~Node(void) {
 	// detach from parent and siblings
 	detachFromSiblingsAndParent();
 	// cleanup node pointers
-	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
+	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 }
 
 /*! 
@@ -94,24 +94,24 @@ XML::Node& XML::Node::operator=(const Node& inRoot)
 	XML::Iterator lChild = getFirstChild();
 	while(lChild) delete &(*(lChild++));
 	// fix child pointers
-	mFirstChild = mLastChild = 0;
+	mFirstChild = mLastChild = NULL;
 	// assign type and attributes
 	mType = inRoot.mType;
 	map<string,string>::operator=(inRoot);
 	// copy all children of inRoot
 	for(XML::ConstIterator lNode = inRoot.getFirstChild(); lNode; ++lNode) {
 		// allocate and copy node
-		Node* lChild = new Node(*lNode);
+		Node* lChildNode = new Node(*lNode);
 		// is this the first child?
-		if(mFirstChild == 0) mFirstChild = mLastChild = lChild;
+		if(mFirstChild == NULL) mFirstChild = mLastChild = lChildNode;
 		else {
 			//adjust sibling pointers
-			mLastChild->mNextSibling = lChild;
+			mLastChild->mNextSibling = lChildNode;
 			lChild->mPrevSibling = mLastChild;
-			mLastChild = lChild;
+			mLastChild = lChildNode;
 		}
 		// adjust parent pointer
-		lChild->mParent = this;
+		lChildNode->mParent = this;
 	}
 	return *this;
 }
@@ -157,7 +157,7 @@ XML::Node* XML::Node::detachFromSiblingsAndParent(void) {
 		if(mParent->mFirstChild == this) mParent->mFirstChild = mNextSibling;
 		if(mParent->mLastChild == this) mParent->mLastChild = mPrevSibling;
 	}
-	mPrevSibling = mNextSibling = mParent = 0;
+	mPrevSibling = mNextSibling = mParent = NULL;
 	return this;
 }
 
@@ -184,7 +184,7 @@ XML::Node* XML::Node::insertAsLastChild(XML::Node* inChild) {
 	PACC_AssertM(inChild, "Cannot add null pointer node");
 	PACC_AssertM(!inChild->mParent && !inChild->mPrevSibling && !inChild->mNextSibling, "Node must be detached before it can be added!");
 	// is this new child the first?
-	if(mFirstChild == 0) mFirstChild = inChild;
+	if(mFirstChild == NULL) mFirstChild = inChild;
 	else {
 		// insert after last
 		inChild->mPrevSibling = mLastChild;
@@ -202,7 +202,7 @@ XML::Node* XML::Node::insertAsPreviousSibling(XML::Node* inSibling) {
 	PACC_AssertM(inSibling, "Cannot insert null pointer node");
 	PACC_AssertM(!inSibling->mParent && !inSibling->mPrevSibling && !inSibling->mNextSibling, "Node must be detached before it can be inserted!");
 	// is this new sibling the first?
-	if(mPrevSibling == 0) {
+	if(mPrevSibling == NULL) {
 		inSibling->mNextSibling = this;
 		mPrevSibling = inSibling;
 		// adjust first child of parent
@@ -224,7 +224,7 @@ Any tag name defined in \c inNoParseTags will be treated as if its content is a 
 */
 XML::Node* XML::Node::parse(PACC::Tokenizer& inTokenizer, const set<string>& inNoParseTags)
 {
-	Node* lNode = 0;
+	Node* lNode = NULL;
 	// look for start tag
 	string lToken;
 	inTokenizer.setDelimiters("", "<");
@@ -257,7 +257,7 @@ XML::Node* XML::Node::parse(PACC::Tokenizer& inTokenizer, const set<string>& inN
 			} else {
 				Node* lChild;
 				// parse all child
-				while(lChild = parse(inTokenizer, inNoParseTags)) lNode->insertAsLastChild(lChild);
+				while((lChild=parse(inTokenizer, inNoParseTags)) != NULL) lNode->insertAsLastChild(lChild);
 				// test for valid end tag
 				inTokenizer.setDelimiters("", " \t\n\r>");
 				if(!inTokenizer.getNextToken(lToken)) lNode->throwError(inTokenizer, "unexpected eof");
@@ -363,7 +363,7 @@ void XML::Node::parseStartTag(PACC::Tokenizer& inTokenizer, string& outToken)
 				inTokenizer.setDelimiters("", ">");
 				do {
 					int lSize = outToken.size();
-					if(lSize > 2 && outToken[lSize-2] == ']' && outToken[lSize-1] == ']') {
+					if(lSize >= 2 && outToken[lSize-2] == ']' && outToken[lSize-1] == ']') {
 						lValue += outToken.erase(lSize-2, 2);
 						break;
 					} else lValue += outToken;
@@ -481,7 +481,7 @@ void XML::Node::serialize(XML::Streamer& outStream, bool inIndent) const
 				if(i->first != "") outStream.insertAttribute(i->first, i->second);
 			}
 			// serialize child nodes
-			for(ConstIterator lChild = getFirstChild(); lChild; ++lChild) lChild->serialize(outStream, inIndent);
+			while(lChild) (lChild++)->serialize(outStream, inIndent);
 			outStream.closeTag();
 			break;
 		}

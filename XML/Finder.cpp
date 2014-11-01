@@ -29,8 +29,8 @@
  * \file PACC/XML/Finder.cpp
  * \brief Class methods for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2005/09/15 14:13:34 $
+ * $Revision: 1.19 $
+ * $Date: 2005/12/08 17:17:34 $
  */
 
 #include "XML/Finder.hpp"
@@ -103,7 +103,7 @@ Document lDocument;
 ...
 Finder lFinder(lDocument.getFirstDataTag());
 // find all instances of tag
-for(Iterator lTag = lDocument.find("//Mytag"); lTag; lTag = lDocument.findNext())
+for(Iterator lTag = lFinder.find("//Mytag"); lTag; lTag = lFinder.findNext())
 {
 	// process each instance
 	...

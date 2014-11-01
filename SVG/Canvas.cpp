@@ -28,8 +28,8 @@
 /*!\file PACC/SVG/Canvas.cpp
  * \brief Class methods for the SVG containers (Group, Frame, and Canvas).
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/09/17 03:15:01 $
+ * $Revision: 1.8 $
+ * $Date: 2005/11/29 22:31:36 $
  */
 
 #include "SVG/Canvas.hpp"
@@ -48,6 +48,8 @@ void SVG::Canvas::clear(void)
 	XML::Finder lFinder(this);
 	XML::Iterator lPos = lFinder.find("/svg/g");
 	((Group&)*lPos).clear();
+	// send empty canvas to viewer
+	updateViewer();
 }
 
 /*!
@@ -68,7 +70,11 @@ SVG::Canvas& SVG::Canvas::operator<<(const SVG::Primitive& inElement)
  */
 SVG::Canvas& SVG::Canvas::operator=(const SVG::Frame &inFrame) 
 {
-    Group::operator=(inFrame);
+	// find embedded group tag
+	XML::Finder lFinder(this);
+	XML::Iterator lPos = lFinder.find("/svg/g");
+	((Group&)*lPos).clear();
+	((Group&)*lPos) << inFrame;
     updateViewer();
     return *this;
 }
@@ -112,10 +118,18 @@ void SVG::Canvas::initCanvas(const string& inTitle)
 //!
 void SVG::Canvas::updateViewer(void) const
 {
+	// make the message
 	ostringstream lStream;
 	lStream << "REFR" << mWinID;
 	write(lStream);
-	mSocket->sendMessage(lStream.str());
+	// try send the message
+	try {
+		mSocket->sendMessage(lStream.str());
+	} catch(const Socket::Exception& inErr) {
+		// try reconnecting once
+		mSocket->connect(Socket::Address(mPort, mAddress));
+		mSocket->sendMessage(lStream.str());
+	}
 }
 	
 //!

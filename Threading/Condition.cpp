@@ -29,8 +29,8 @@
  * \file PACC/Threading/Condition.cpp
  * \brief Class methods for the portable condition.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.25 $
- * $Date: 2005/04/19 18:19:29 $
+ * $Revision: 1.26 $
+ * $Date: 2005/10/10 04:41:48 $
  */
 
 #include "Threading/Condition.hpp"
@@ -39,15 +39,16 @@
 #define _WIN32_WINNT 0x0400 // for SignalObjectAndWait
 #include <windows.h>
 typedef struct {
-   // This windows implementation uses the SignalObjectAndWait solution from D.C. Schmidt and Irfan Pyarali. See http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
-   int mWaiters;
-   bool mBroadcast;
-   // Critical section to protect variables
-   CRITICAL_SECTION mLock;
-   // Semaphore is used to queue up waiting threads
-   HANDLE mSemaphore;
-   // Auto-reset event to signal last waiting thread
-   HANDLE mDone;
+	// This windows implementation uses the SignalObjectAndWait solution from D.C. 
+	// Schmidt and Irfan Pyarali. See http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
+	int mWaiters;
+	bool mBroadcast;
+	// Critical section to protect variables
+	CRITICAL_SECTION mLock;
+	// Semaphore is used to queue up waiting threads
+	HANDLE mSemaphore;
+	// Auto-reset event to signal last waiting thread
+	HANDLE mDone;
 } pthread_cond_t;
 #else
 #include <pthread.h>
@@ -64,34 +65,34 @@ Any error raises a Threading::Exception.
 */
 Threading::Condition::Condition(void)
 {
-   pthread_cond_t* lCondition = new pthread_cond_t;
+	pthread_cond_t* lCondition = new pthread_cond_t;
 #ifdef WIN32
-   lCondition->mWaiters = 0;
-   lCondition->mBroadcast = false;
-   ::InitializeCriticalSection(&lCondition->mLock);
-   lCondition->mSemaphore = ::CreateSemaphore(0, 0, 0x7fffffff, 0);
-   lCondition->mDone = ::CreateEvent(0, false, false, 0);
-   if(lCondition->mSemaphore == 0 || lCondition->mDone == 0)
+	lCondition->mWaiters = 0;
+	lCondition->mBroadcast = false;
+	::InitializeCriticalSection(&lCondition->mLock);
+	lCondition->mSemaphore = ::CreateSemaphore(0, 0, 0x7fffffff, 0);
+	lCondition->mDone = ::CreateEvent(0, false, false, 0);
+	if(lCondition->mSemaphore == 0 || lCondition->mDone == 0)
 #else
-   if(::pthread_cond_init(lCondition, 0) != 0)
+		if(::pthread_cond_init(lCondition, 0) != 0)
 #endif
-      throw Exception(eOtherError, "Threading::Condition() can't create!");
-   mCondition = lCondition;
+			throw Exception(eOtherError, "Threading::Condition() can't create!");
+	mCondition = lCondition;
 }
 
 //! Destroy condition and free allocated native structure.
 Threading::Condition::~Condition(void)
 {
-   pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
+	pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
 #ifdef WIN32
-   ::DeleteCriticalSection(&lCondition->mLock);
-   while(::CloseHandle(lCondition->mSemaphore) == 0) broadcast();
-   while(::CloseHandle(lCondition->mDone) == 0) broadcast();
+	::DeleteCriticalSection(&lCondition->mLock);
+	while(::CloseHandle(lCondition->mSemaphore) == 0) broadcast();
+	while(::CloseHandle(lCondition->mDone) == 0) broadcast();
 #else
-   while(::pthread_cond_destroy(lCondition) == EBUSY) broadcast();
+	while(::pthread_cond_destroy(lCondition) == EBUSY) broadcast();
 #endif
-   delete lCondition;
-   mCondition = 0;
+	delete lCondition;
+	mCondition = 0;
 }
 
 /*! \brief Broadcast a wake up signal to all waiting threads.
@@ -110,34 +111,30 @@ Any error raises a Threading::Exception.
 */
 void Threading::Condition::broadcast(void) const
 {
-   pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
+	pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
 #ifdef WIN32
-   EnterCriticalSection(&lCondition->mLock);
-   if(lCondition->mWaiters > 0)
-   {
-      lCondition->mBroadcast = true;
-      // wake up the waiting threads atomically
-      if(!::ReleaseSemaphore(lCondition->mSemaphore, lCondition->mWaiters, 0))
-      {
-         unlock();
-         throw Exception(eOtherError, "Condition::broadcast() unable to release semaphore!");
-      }
-      // wait for threads to acquire the counting semaphore
-      LeaveCriticalSection(&lCondition->mLock);
-      if(::WaitForSingleObject(lCondition->mDone, INFINITE) != WAIT_OBJECT_0)
-      {
-         unlock();
-         throw Exception(eOtherError, "Condition::broadcast() invalid event!");
-      }
-      lCondition->mBroadcast = false;
-   }
-   else LeaveCriticalSection(&lCondition->mLock);
+	EnterCriticalSection(&lCondition->mLock);
+	if(lCondition->mWaiters > 0) {
+		lCondition->mBroadcast = true;
+		// wake up the waiting threads atomically
+		if(!::ReleaseSemaphore(lCondition->mSemaphore, lCondition->mWaiters, 0)) {
+			unlock();
+			throw Exception(eOtherError, "Condition::broadcast() unable to release semaphore!");
+		}
+		// wait for threads to acquire the counting semaphore
+		LeaveCriticalSection(&lCondition->mLock);
+		if(::WaitForSingleObject(lCondition->mDone, INFINITE) != WAIT_OBJECT_0) {
+			unlock();
+			throw Exception(eOtherError, "Condition::broadcast() invalid event!");
+		}
+		lCondition->mBroadcast = false;
+	}
+	else LeaveCriticalSection(&lCondition->mLock);
 #else
-   if(::pthread_cond_broadcast(lCondition) != 0)
-   {
-      unlock();
-      throw Exception(eOtherError, "Condition::broadcast() invalid condition!");
-   }
+	if(::pthread_cond_broadcast(lCondition) != 0) {
+		unlock();
+		throw Exception(eOtherError, "Condition::broadcast() invalid condition!");
+	}
 #endif
 }
 
@@ -157,20 +154,20 @@ Any error raises a Threading::Exception.
 */
 void Threading::Condition::signal(void) const
 {
-   pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
+	pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
 #ifdef WIN32
-   EnterCriticalSection(&lCondition->mLock);
-   int lWaiters = lCondition->mWaiters;
-   LeaveCriticalSection(&lCondition->mLock);
-   // wake up a single waiting thread if any waiters
-   if(lWaiters > 0 && ::ReleaseSemaphore(lCondition->mSemaphore, 1, 0) == 0)
+	EnterCriticalSection(&lCondition->mLock);
+	int lWaiters = lCondition->mWaiters;
+	LeaveCriticalSection(&lCondition->mLock);
+	// wake up a single waiting thread if any waiters
+	if(lWaiters > 0 && ::ReleaseSemaphore(lCondition->mSemaphore, 1, 0) == 0)
 #else
-   if(::pthread_cond_signal(lCondition) != 0)
+		if(::pthread_cond_signal(lCondition) != 0)
 #endif
-   {
-      unlock();
-      throw Exception(eOtherError, "Condition::signal() invalid condition!");
-   }
+		{
+			unlock();
+			throw Exception(eOtherError, "Condition::signal() invalid condition!");
+		}
 }
 
 /*! \brief Wait up to \c inMaxTime seconds for the condition to be signaled (or broadcasted). 
@@ -182,12 +179,11 @@ Here is an example of typical usage:
 \code
 ...
 lCondition.lock();
-if(external_condition == false) 
-{
-   // wait indefinitely...
-   lCondition.wait();
-   // reset external condition
-   ...
+if(external_condition == false) {
+    // wait indefinitely...
+    lCondition.wait();
+    // reset external condition
+    ...
 }
 lCondition.unlock();
 ...
@@ -198,67 +194,63 @@ Any error raises a Threading::Exception.
 */
 bool Threading::Condition::wait(double inMaxTime) const
 {
-   bool lReturn;
-   pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
+	bool lReturn;
+	pthread_cond_t* lCondition = (pthread_cond_t*) mCondition;
 #ifdef WIN32
-   EnterCriticalSection(&lCondition->mLock);
-   // increment number of waiters
-   lCondition->mWaiters += 1;
-   LeaveCriticalSection(&lCondition->mLock);
-   // wait for the semaphore after atomically unlocking the mutex
-   HANDLE* lMutex = (HANDLE*) mMutex;
-   DWORD lRes = ::SignalObjectAndWait(*lMutex, lCondition->mSemaphore, (inMaxTime <= 0 ? INFINITE : (DWORD)(inMaxTime*1000)), false);
-   if((lReturn = (lRes != WAIT_TIMEOUT)) && lRes != WAIT_OBJECT_0)
-   {
-      unlock();
-      throw Exception(eOtherError, "Condition::wait() invalid semaphore!");
-   }   
-   EnterCriticalSection(&lCondition->mLock);
-   // we're no longer waiting, decrement number of waiters
-   lCondition->mWaiters -= 1;
-   bool lLastWaiter = lCondition->mBroadcast && lCondition->mWaiters == 0;
-   LeaveCriticalSection(&lCondition->mLock);
-   if(lLastWaiter)
-   {
-      // wait for the mutex after atomically signaling the broadcaster that all threads have awakened
-      if(::SignalObjectAndWait(lCondition->mDone, *lMutex, INFINITE, false) != WAIT_OBJECT_0)
-      {
-         unlock();
-         throw Exception(eOtherError, "Condition::wait() invalid mutex!");
-      }
-   }
-   else if(::WaitForSingleObject(*lMutex, INFINITE) != WAIT_OBJECT_0)
-   {
-      unlock();
-      throw Exception(eOtherError, "Condition::wait() invalid mutex!");
-   }
+	EnterCriticalSection(&lCondition->mLock);
+	// increment number of waiters
+	lCondition->mWaiters += 1;
+	LeaveCriticalSection(&lCondition->mLock);
+	// wait for the semaphore after atomically unlocking the mutex
+	HANDLE* lMutex = (HANDLE*) mMutex;
+	DWORD lRes = ::SignalObjectAndWait(*lMutex, lCondition->mSemaphore, (inMaxTime <= 0 ? INFINITE : (DWORD)(inMaxTime*1000)), false);
+	if((lReturn = (lRes != WAIT_TIMEOUT)) && lRes != WAIT_OBJECT_0) {
+		unlock();
+		throw Exception(eOtherError, "Condition::wait() invalid semaphore!");
+	}   
+	EnterCriticalSection(&lCondition->mLock);
+	// we're no longer waiting, decrement number of waiters
+	lCondition->mWaiters -= 1;
+	bool lLastWaiter = lCondition->mBroadcast && lCondition->mWaiters == 0;
+	LeaveCriticalSection(&lCondition->mLock);
+	if(lLastWaiter) {
+		// wait for the mutex after atomically signaling the broadcaster that all threads have awakened
+		if(::SignalObjectAndWait(lCondition->mDone, *lMutex, INFINITE, false) != WAIT_OBJECT_0)
+		{
+			unlock();
+			throw Exception(eOtherError, "Condition::wait() invalid mutex!");
+		}
+	}
+	else if(::WaitForSingleObject(*lMutex, INFINITE) != WAIT_OBJECT_0) {
+		unlock();
+		throw Exception(eOtherError, "Condition::wait() invalid mutex!");
+	}
 #else
-   int lRes;
-   // pthread_cond_wait atomically unlocks the mutex, waits on the condition, and locks the mutex again
-   if(inMaxTime <= 0) lRes = ::pthread_cond_wait(lCondition, (pthread_mutex_t*)mMutex);
-   else
-   {
-      // get time of day and add specified time out
-      struct timeval lVal;
-      ::gettimeofday(&lVal, 0);
-      struct timespec lSpec;
-      lSpec.tv_sec = lVal.tv_sec + (long) inMaxTime;
-      lSpec.tv_nsec = lVal.tv_usec*1000 + (long) ((inMaxTime - floor(inMaxTime)) * 1000000000);
-      // check that the number of nanoseconds is less than 1 sec
-      if(lSpec.tv_nsec >= 1000000000)
-      {
-         // otherwise adjust...
-         lSpec.tv_nsec -= 1000000000;
-         lSpec.tv_sec += 1;
-      }
-      // pthread_cond_timedwait atomically unlocks the mutex, waits on the condition, and locks the mutex again
-      lRes = ::pthread_cond_timedwait(lCondition, (pthread_mutex_t*)mMutex, &lSpec);
-   }
-   if((lReturn = (lRes != ETIMEDOUT)) && lRes != 0)
-   {
-      unlock();
-      throw Exception(eOtherError, "Condition::wait() invalid condition!");
-   }
+	int lRes;
+	// pthread_cond_wait atomically unlocks the mutex, waits on the condition, and locks the mutex again
+	if(inMaxTime <= 0) lRes = ::pthread_cond_wait(lCondition, (pthread_mutex_t*)mMutex);
+	else {
+		// get time of day and add specified time out
+		struct timeval lVal;
+		::gettimeofday(&lVal, 0);
+		struct timespec lSpec;
+		lSpec.tv_sec = lVal.tv_sec + (long) inMaxTime;
+		lSpec.tv_nsec = lVal.tv_usec*1000 + (long) ((inMaxTime - floor(inMaxTime)) * 1000000000);
+		// check that the number of nanoseconds is less than 1 sec
+		if(lSpec.tv_nsec >= 1000000000)
+		{
+			// otherwise adjust...
+			lSpec.tv_nsec -= 1000000000;
+			lSpec.tv_sec += 1;
+		}
+		// pthread_cond_timedwait atomically unlocks the mutex, waits on the condition, and locks the mutex again
+		lRes = ::pthread_cond_timedwait(lCondition, (pthread_mutex_t*)mMutex, &lSpec);
+	}
+	if((lReturn = (lRes != ETIMEDOUT)) && lRes != 0)
+	{
+		unlock();
+		throw Exception(eOtherError, "Condition::wait() invalid condition!");
+	}
 #endif
-   return lReturn;
+	return lReturn;
 }

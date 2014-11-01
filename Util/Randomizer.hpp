@@ -29,8 +29,8 @@
  * \file PACC/Util/Randomizer.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2005/09/17 03:50:19 $
+ * $Revision: 1.9 $
+ * $Date: 2006/01/16 00:31:07 $
  */
 
 #ifndef PACC_Randomizer_hpp_
@@ -57,7 +57,7 @@ namespace PACC {
 	 It can generate uniformly distributed booleans, integers and floats, or gaussian distributed floats.
 	 */
 	class Randomizer : protected MTRand {
-		public:
+	 public:
 		/*! \brief auto-initialize with /dev/urandom or time() and clock()
 		
 		Do NOT use for CRYPTOGRAPHY without securely hashing several returned
@@ -87,8 +87,8 @@ namespace PACC {
 		double getFloat(const double& inValue) {return rand(inValue);}
 		//! Return a uniformly distributed random floating point number in range [\c inFirst,\c inLast].
 		double getFloat(const double& inFirst, const double& inLast) {return inFirst+rand()*(inLast-inFirst);}
-		//! Return a 53 bits uniformly distributed random floating point number in range [0,1[.
-		double getFloat53(const double& inFirst=0, const double& inLast=1) {return rand53();}
+		//! Return a 53 bits uniformly distributed random floating point number in range [\c inFirst,\c inLast[. Default is [0,1[.
+		double getFloat53(const double& inFirst=0, const double& inLast=1) {return inFirst+rand53()*(inLast-inFirst);}
 		//! Return a gaussian distributed random float with mean \c inMean and standard deviation \c inStdDev. Default is N(0,1).
 		double getGaussian(const double& inMean=0, const double& inStdDev=1) {return randNorm(inMean, inStdDev);}
 		

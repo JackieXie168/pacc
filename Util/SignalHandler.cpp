@@ -28,178 +28,212 @@
 /*!
  * \file PACC/Util/SignalHandler.cpp
  * \brief Class methods for the signal handler.
- * \author Marc Dubreuil and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/09/15 14:13:24 $
+ * \author Marc Dubreuil, Christian Gagn&eacute; and Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.8 $
+ * $Date: 2006/02/02 14:18:26 $
  */
 
 #include "Util/SignalHandler.hpp"
+#include "Util/Assert.hpp"
 #include <signal.h>
 #include <stdexcept>
-
-// define __sighandler_t on MacOSX
-#ifndef __sighandler_t
-#define __sighandler_t sig_t
-#endif
 
 using namespace std;
 using namespace PACC;
 
-SignalHandler* SignalHandler::smHandlers[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-void* SignalHandler::smSigAction[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-void* SignalHandler::smOldSigIgn[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+stack<SignalHandler::Action> SignalHandler::smActions[NSIGNALS];
 
 /*!
-*  \brief Call the virtual function of the derived class.
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \throw runtime_error Invalid signal number or no Handler specified.
+\throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
  */
-void SignalHandler::sighandle(int inSignalNumber)
+SignalHandler::SignalType SignalHandler::convertFromNativeSignal(int inSignal)
 {
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::sighandle: invalid signal number");
-	if(inSignalNumber < 1) return;
-	if(smHandlers[inSignalNumber] != NULL) {
-		smHandlers[inSignalNumber]->handleSignal(inSignalNumber);
-	}
-	else throw runtime_error("SignalHandler::sighandle: no Handler specified.");
-}
-
-
-/*!
-*  \brief Get the Handler of the signal
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \return Signal handler for a signal
- *  \throw runtime_error Invalid signal number.
- */
-SignalHandler* SignalHandler::getHandler(int inSignalNumber)
-{
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::getHandler: invalid signal number");
-	if(inSignalNumber < 1) return NULL;
-	return smHandlers[inSignalNumber];
-}
-
-/*!
-*  \brief Ignore the receiving signal.
- *  \param inSignalNumber signal number (usually SIGPIPE on POSIX *nix)
- *  \throw runtime_error Invalid signal number.
- */
-void SignalHandler::ignoreSignal(int inSignalNumber)
-{
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::ignoreSignal: invalid signal number");
-	//the signal is not defined under Windows, do nothing
-	if(inSignalNumber < 1) return;
-	if(smOldSigIgn[inSignalNumber] != NULL) return;
-	smOldSigIgn[inSignalNumber] = (void*)signal(inSignalNumber, SIG_IGN);
-}
-
-/*!
-*  \brief If the signal is ignored (SIG_IGN)
- *  \param inSignalNumber signal number
- *  \return true if the signal is ignored, or false otherwise.
- *  \throw runtime_error Invalid signal number.
- */
-bool SignalHandler::isSignalIgnored(int inSignalNumber)
-{
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::isSignalIgnored: invalid signal number");
-	if(inSignalNumber < 1) return false;
-	if(smOldSigIgn[inSignalNumber] != NULL) return true;
-	else return false;
-}
-
-
-/*!
-*  \brief Reactivate the old signal value before ignoreSignal was called.
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \throw runtime_error Invalid signal number.
- */
-void SignalHandler::reactivateSignal(int inSignalNumber)
-{
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::reactivateSignal: invalid signal number");
-	//the signal is not defined under Windows, do nothing
-	if(inSignalNumber < 1) return;
-	
-	if(smOldSigIgn[inSignalNumber] != NULL)
-	{
+	SignalType lType;
+	switch(inSignal) {
 #ifdef WIN32
-		signal(inSignalNumber, (void(__cdecl*)(int))smOldSigIgn[inSignalNumber]);
+		case SIGABRT: lType = eSigAbrt; break;
+		case SIGFPE:  lType = eSigFPE; break;
+		case SIGILL:  lType = eSigIll; break;
+		case SIGINT:  lType = eSigInt; break;
+		case SIGSEGV: lType = eSigSegV; break;
+		case SIGTERM: lType = eSigTerm; break;
+		default:
+			throw runtime_error("SignalHandler::convertFromNativeSignal() signal not supported by Windows!");
 #else
-		signal(inSignalNumber, (__sighandler_t)smOldSigIgn[inSignalNumber]);
+		case SIGHUP:  lType = eSigHUp; break;
+		case SIGINT:  lType = eSigInt; break;
+		case SIGQUIT: lType = eSigQuit; break;
+		case SIGILL:  lType = eSigIll; break;
+		case SIGTRAP: lType = eSigTrap; break;
+		case SIGABRT: lType = eSigAbrt; break;
+		case SIGFPE:  lType = eSigFPE; break;
+		case SIGKILL: lType = eSigKill; break;
+		case SIGSEGV: lType = eSigSegV; break;
+		case SIGPIPE: lType = eSigPipe; break;
+		case SIGALRM: lType = eSigAlrm; break;
+		case SIGTERM: lType = eSigTerm; break;
+		case SIGSTOP: lType = eSigStop; break;
+		case SIGTSTP: lType = eSigTStp; break;
+		case SIGCONT: lType = eSigCont; break;
+		case SIGCHLD: lType = eSigChld; break;
+		case SIGTTIN: lType = eSigTTin; break;
+		case SIGTTOU: lType = eSigTTou; break;
+		case SIGUSR1: lType = eSigUsr1; break;
+		case SIGUSR2: lType = eSigUsr2; break;
+		default:
+			throw runtime_error("SignalHandler::convertFromNativeSignal() unknown POSIX signal!");
 #endif
 	}
-	else signal(inSignalNumber, SIG_DFL);
-	smOldSigIgn[inSignalNumber] = NULL;
+	return lType;
 }
 
-
 /*!
-*  \brief Restore the signal old value before handleSignal or ignoreSignal was called.
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \return the signal handler that was used to catch the signal
- *  \throw runtime_error Invalid signal number.
+\throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
  */
-SignalHandler* SignalHandler::restoreHandler(int inSignalNumber)
+int SignalHandler::convertToNativeSignal(SignalHandler::SignalType inType)
 {
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::restoreHandler: invalid signal number");
-	SignalHandler* outHandler = NULL;
-	//the signal is not defined under Windows, do nothing
-	if(inSignalNumber < 1) return outHandler;
-	
-	if(smSigAction[inSignalNumber] != NULL)
-	{
+	int lSignal;
+	switch(inType) {
 #ifdef WIN32
-		signal(inSignalNumber, (void(__cdecl*)(int))smSigAction[inSignalNumber]);
+		case eSigAbrt: lSignal = SIGABRT; break;
+		case eSigFPE:  lSignal = SIGFPE; break;
+		case eSigIll:  lSignal = SIGILL; break;
+		case eSigInt:  lSignal = SIGINT; break;
+		case eSigSegV: lSignal = SIGSEGV; break;
+		case eSigTerm: lSignal = SIGTERM; break;
+		default:
+			throw runtime_error("SignalHandler::convertToNativeSignal() signal not supported by Windows!");
 #else
-		signal(inSignalNumber, (__sighandler_t)smSigAction[inSignalNumber]);
-		
+		case eSigHUp:  lSignal = SIGHUP; break;
+		case eSigInt:  lSignal = SIGINT; break;
+		case eSigQuit: lSignal = SIGQUIT; break;
+		case eSigIll:  lSignal = SIGILL; break;
+		case eSigTrap: lSignal = SIGTRAP; break;
+		case eSigAbrt: lSignal = SIGABRT; break;
+		case eSigFPE:  lSignal = SIGFPE; break;
+		case eSigKill: lSignal = SIGKILL; break;
+		case eSigSegV: lSignal = SIGSEGV; break;
+		case eSigPipe: lSignal = SIGPIPE; break;
+		case eSigAlrm: lSignal = SIGALRM; break;
+		case eSigTerm: lSignal = SIGTERM; break;
+		case eSigStop: lSignal = SIGSTOP; break;
+		case eSigTStp: lSignal = SIGTSTP; break;
+		case eSigCont: lSignal = SIGCONT; break;
+		case eSigChld: lSignal = SIGCHLD; break;
+		case eSigTTin: lSignal = SIGTTIN; break;
+		case eSigTTou: lSignal = SIGTTOU; break;
+		case eSigUsr1: lSignal = SIGUSR1; break;
+		case eSigUsr2: lSignal = SIGUSR2; break;
+		default:
+			throw runtime_error("SignalHandler::convertToNativeSignal() unknown POSIX signal!");
 #endif
-		outHandler = smHandlers[inSignalNumber];
-		smSigAction[inSignalNumber] = NULL;
 	}
-	return outHandler;
-}
-
-
-/*!
-*  \brief set the Handle of a signal
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \return The old signal handler
- *  \throw runtime_error Invalid signal number.
- */
-SignalHandler* SignalHandler::setAsHandler(int inSignalNumber)
-{
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::setAsHandler: invalid signal number");
-	if(inSignalNumber < 1) return NULL;
-	return SignalHandler::setHandler(inSignalNumber, this);
+	return lSignal;
 }
 
 /*!
-*  \brief Handle a signal with the specified method
- *  \param inSignalNumber signal number (usually SIGINT, SIGTERM)
- *  \param inSigHandler pointer function to the handling function.
- *  \return The old signal handler
- *  \throw runtime_error Invalid signal number.
+This method pops the top element of the action stack and resets to the previous action. It is an error to call this method when the stack is empty. Note that, for any given signal, the first call to one of the set methods (SignalHandler::setCustomAction, SignalHandler::setDefaultAction, or SignalHandler::setIgnoreAction) executes an implicit push of the previous action. A call to this method in that particular situation will thus restore this previous action (usually the default system action).
+
+ \throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
  */
-SignalHandler* SignalHandler::setHandler(int inSignalNumber, SignalHandler* inSigHandler)
+void SignalHandler::popAction(SignalHandler::SignalType inType)
 {
-	if(inSignalNumber > 31) throw runtime_error("SignalHandler::setHandler: invalid signal number");
-	//return the old signal handler if present
-	SignalHandler* outOldSignalHandler = NULL;
-	
-	//the signal is not defined under Windows, do nothing
-	if(inSignalNumber < 1)
-		return outOldSignalHandler;
-	if(inSigHandler == NULL)
-		return restoreHandler(inSignalNumber);
-	
-	bool lBackupOldSignal = true;
-	if(smHandlers[inSignalNumber] != NULL)
-	{
-		lBackupOldSignal = false;
-		outOldSignalHandler = smHandlers[inSignalNumber];
+	int lSignal = convertToNativeSignal(inType);
+	PACC_AssertM(!smActions[inType].empty(), "popAction() stack is empty!");
+	smActions[inType].pop();
+	PACC_AssertM(!smActions[inType].empty(), "popAction() stack is empty!");
+	HandlerPointer lFunc;
+	if(smActions[inType].top().mHandler == 0) {
+		// action must be external function
+		lFunc = ::signal(lSignal, smActions[inType].top().mFunc);
+	} else {
+		// action is custom
+		lFunc = ::signal(lSignal, runAction);
 	}
-	smHandlers[inSignalNumber] = inSigHandler;
-	smSigAction[inSignalNumber] = (void*)signal(inSignalNumber, SignalHandler::sighandle);
-	return outOldSignalHandler;
+	PACC_AssertM(lFunc != SIG_ERR, "popAction() internal error: invalid signal") 
 }
 
+/*!
+This method pushes a copy of the current action onto the action stack. It is an error to call this method prior to setting a first action using either SignalHandler::setCustomAction, SignalHandler::SetDefaultAction, or SignalHandler::setIgnoreAction.
+ */
+void SignalHandler::pushAction(SignalHandler::SignalType inType)
+{
+	PACC_AssertM(!smActions[inType].empty(), "pushAction() stack is empty, set an action first!");
+	smActions[inType].push(smActions[inType].top());
+}
 
+/*!
+This method is the low level custom signal handler. It should not be called directly!
+ */
+void SignalHandler::runAction(int inSignal)
+{
+	SignalType lType = convertFromNativeSignal(inSignal);
+	PACC_AssertM(!smActions[lType].empty(), "runAction() internal error, stack is empty!");
+	PACC_AssertM(smActions[lType].top().mHandler != 0, "runAction() internal error: no handler specified!");
+	smActions[lType].top().mHandler->main(lType);
+}
+
+/*!
+When called with an empty action stack, the later is initialized by making an implicit push of the previous action. Otherwise, it does not affect the action stack.
+ 
+\throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
+*/
+void SignalHandler::setCustomAction(SignalHandler::SignalType inType)
+{
+	// set new action
+	int lSignal = convertToNativeSignal(inType);
+	HandlerPointer lFunc = ::signal(lSignal, runAction);
+	PACC_AssertM(lFunc != SIG_ERR, "setCustomAction() internal error: invalid signal");
+	// update action stack
+	Action lCustom(this, 0);
+	if(smActions[inType].empty()) {
+		// initialize the action stack
+		smActions[inType].push(Action(0, lFunc));
+		smActions[inType].push(lCustom);
+	} else {
+		// overwrite the top action
+		smActions[inType].top() = lCustom;
+	}
+}
+
+/*!
+When called with an empty action stack, the later is initialized by making an implicit push of the previous action. Otherwise, it does not affect the action stack.
+ 
+\throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
+ */
+void SignalHandler::setDefaultAction(SignalHandler::SignalType inType)
+{
+	int lSignal = convertToNativeSignal(inType);
+	HandlerPointer lFunc = ::signal(lSignal, SIG_DFL);
+	PACC_AssertM(lFunc != SIG_ERR, "setDefaultAction() internal error: invalid signal");
+	Action lCustom(0, SIG_DFL);
+	if(smActions[inType].empty()) {
+		// initialize the action stack
+		smActions[inType].push(Action(0, lFunc));
+		smActions[inType].push(lCustom);
+	} else {
+		// overwrite the top action
+		smActions[inType].top() = lCustom;
+	}
+}
+
+/*!
+When called with an empty action stack, the later is initialized by making an implicit push of the previous action. Otherwise, it does not affect the action stack.
+ 
+\throw runtime_error This method throws an exception if called for an unsuported signal. Note that Windows only supports ANSI signals (see SignalHandler::SignalType).
+ */
+void SignalHandler::setIgnoreAction(SignalHandler::SignalType inType)
+{
+	int lSignal = convertToNativeSignal(inType);
+	HandlerPointer lFunc = ::signal(lSignal, SIG_IGN);
+	PACC_AssertM(lFunc != SIG_ERR, "setIgnoreAction() internal error: invalid signal");
+	Action lCustom(0, SIG_IGN);
+	if(smActions[inType].empty()) {
+		// initialize the action stack
+		smActions[inType].push(Action(0, lFunc));
+		smActions[inType].push(lCustom);
+	} else {
+		// overwrite the top action
+		smActions[inType].top() = lCustom;
+	}
+}

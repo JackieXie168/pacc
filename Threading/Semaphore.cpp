@@ -29,8 +29,8 @@
  * \file PACC/Threading/Semaphore.cpp
  * \brief Class methods for the portable counting semaphore.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.19 $
- * $Date: 2005/09/15 14:13:08 $
+ * $Revision: 1.20 $
+ * $Date: 2005/10/10 04:41:48 $
  */
 
 #include "Threading/Semaphore.hpp"
@@ -43,14 +43,14 @@ This method increments the semaphore count and signals a single waiting thread i
 */
 void Threading::Semaphore::post(bool inLock)
 {
-   // acquire exclusive access to count
-   if(inLock) lock();
-   // increment count
-   mCount += 1;
-   // if waiting threads exist, signal one of them to wake up
-   if(mWaiters > 0) Condition::signal();
-   // release access to count
-   if(inLock) unlock();
+	// acquire exclusive access to count
+	if(inLock) lock();
+	// increment count
+	mCount += 1;
+	// if waiting threads exist, signal one of them to wake up
+	if(mWaiters > 0) Condition::signal();
+	// release access to count
+	if(inLock) unlock();
 }
 
 /*! \brief Try to acquire one ressource, but don't block if ressources are exhausted. 
@@ -60,16 +60,16 @@ This method decrements a positive semaphore count and returns true. If count is 
 */
 bool Threading::Semaphore::tryWait(bool inLock)
 {
-   bool lReturn = true;
-   // acquire exclusive access to count
-   if(inLock) lock();
-   // if ressource is exhausted, return false
-   if(mCount <= 0) lReturn = false;
-   // decrement count only if ressource is available
-   if(lReturn) mCount -= 1;
-   // release access to count
-   if(inLock) unlock();
-   return lReturn;
+	bool lReturn = true;
+	// acquire exclusive access to count
+	if(inLock) lock();
+	// if ressource is exhausted, return false
+	if(mCount <= 0) lReturn = false;
+	// decrement count only if ressource is available
+	if(lReturn) mCount -= 1;
+	// release access to count
+	if(inLock) unlock();
+	return lReturn;
 }
 
 /*! \brief Wait up to \c inMaxTime seconds to acquire one resource. 
@@ -83,18 +83,18 @@ A negative or null time out (default) means that the method should wait indefini
 */
 bool Threading::Semaphore::wait(double inMaxTime, bool inLock)
 {
-   bool lReturn = true;
-   // acquire exclusive access to count
-   if(inLock) lock();
-   // increment number of waiters
-   mWaiters += 1;
-   // if ressource is exhausted wait for ressource
-   while(mCount <= 0 && lReturn) lReturn = Condition::wait(inMaxTime);
-   // decrement count only if condition was signaled (not timed out)
-   if(lReturn) mCount -= 1;
-   // decrement number of waiters
-   mWaiters -= 1;
-   // release access to count
-   if(inLock) unlock();
-   return lReturn;
+	bool lReturn = true;
+	// acquire exclusive access to count
+	if(inLock) lock();
+	// increment number of waiters
+	mWaiters += 1;
+	// if ressource is exhausted wait for ressource
+	while(mCount <= 0 && lReturn) lReturn = Condition::wait(inMaxTime);
+	// decrement count only if condition was signaled (not timed out)
+	if(lReturn) mCount -= 1;
+	// decrement number of waiters
+	mWaiters -= 1;
+	// release access to count
+	if(inLock) unlock();
+	return lReturn;
 }

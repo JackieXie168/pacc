@@ -29,8 +29,8 @@
 * \file PACC/XML/Finder.hpp
  * \brief Class definition for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.17 $
- * $Date: 2005/09/17 03:50:24 $
+ * $Revision: 1.18 $
+ * $Date: 2005/11/02 05:09:24 $
  */
 
 #ifndef PACC_XML_Finder_hpp_
@@ -67,7 +67,7 @@ namespace PACC {
 		//! .
 		//! There can be no spaces in a search path.
 		class Finder : private Iterator {
-			public:   
+		 public:
 			//! Construct a finder for the sub-tree rooted on \c inRoot.
 			Finder(const Iterator& inRoot) : Iterator(inRoot) {}
 			
@@ -90,7 +90,7 @@ namespace PACC {
 		//!	
 		//! This class is for finding markup tags in a document sub-tree using const iterators (see class Finder for more details).
 		class ConstFinder : private ConstIterator {
-			public:   
+		 public:
 			//! Construct a const finder for the sub-tree rooted on \c inRoot.
 			ConstFinder(const ConstIterator& inRoot) : ConstIterator(inRoot) {}
 			
