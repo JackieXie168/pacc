@@ -29,13 +29,11 @@
  * \file PACC/Math.hpp
  * \brief Include all headers for the portable math module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.7 $
- * $Date: 2007/01/23 21:33:11 $
  */
 
 /*!
- *  \defgroup Math Portable math classes (Math)
- *  These classes enable vector and matrix operations.
+ * \defgroup Math Math: miscellenaous math classes 
+ * \brief Framework for vector and matrix operations.
  */
 
 #include "PACC/Math/Matrix.hpp"

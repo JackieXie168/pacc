@@ -71,9 +71,10 @@ void XML::Streamer::closeTag(void)
 }
 
 /*!  
-\return A reference to the converted string.
-Supported characters are '&', '<', '>', "'", and '"'.
-*/
+ * \return A reference to the converted string.
+ *
+ * Supported characters are &amp;, &lt; &gt;, &apos;, &quot;.
+ */
 string& XML::Streamer::convertToQuotes(string& ioString, const char* inQuotes)
 {
 	string::size_type lPos = 0;

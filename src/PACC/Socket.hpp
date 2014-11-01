@@ -29,16 +29,16 @@
  * \file PACC/Socket.hpp
  * \brief Include all headers for the portable socket network module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2007/01/23 21:27:46 $
  */
 
-/*! \namespace PACC::Socket
+/*! 
+ * \namespace PACC::Socket
  * \brief Portable socket networking classes.
  */
 
 /*!
- *  \defgroup Socket Portable socket networking classes (Socket)
+ * \defgroup Socket Socket: portable socket networking
+ * \brief Framework for network communication.
  */
 
 #include "PACC/Socket/Address.hpp"

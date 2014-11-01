@@ -89,6 +89,7 @@ namespace PACC {
 			//! Return error code.
 			int getErrorCode(void) const {return mCode;}
 
+			//! Return exception message.
 			string getMessage(void) const throw();
 
 		 protected:

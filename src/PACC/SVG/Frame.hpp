@@ -29,8 +29,6 @@
  * \file PACC/SVG/Frame.hpp
  * \brief Class definition for the %SVG clipping frame.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2007/02/08 01:48:35 $
  */
 
 #ifndef PACC_SVG_Frame_hpp_
@@ -46,7 +44,7 @@ namespace PACC {
 		using namespace std;
 		
 		/*!\brief Graphic primitive container with a clipping rectangle.
-		* \ingroup SVG
+		* \ingroup SVGdoc
 		*
 		* The frame is a group that implements a clipping rectangle for its elements. 
 		* Coordinates for elements inside the frame are relative to the frame
@@ -54,57 +52,20 @@ namespace PACC {
 		*/
 		class Frame : public Group {
 		 public:
-			//! Make frame at origin \c inOrigin with size \c inSize, and using style \c inStyle.
-			Frame(const Point &inOrigin, const Size &inSize, const Style &inStyle = Style()) : Group("svg") {
-				setAttribute("x", inOrigin.x);
-				setAttribute("y", inOrigin.y);
-				setAttribute("width", inSize.width);
-				setAttribute("height", inSize.height);
-				*this += inStyle; 
-			}
+			Frame(const Point& inOrigin, const Size& inSize, const Style& inStyle=Style());
 			
-			//! Return frame origin.
-			Point getOrigin(void) const {
-				return Point(String::convertToFloat(getAttribute("x")), String::convertToFloat(getAttribute("y")));
-			}	
+			Point getOrigin(void) const;
+			Size  getSize() const;
 			
-			//! Set frame origin to point \c inPoint.
-			void setOrigin(const Point& inOrigin) {
-				setAttribute("x", inOrigin.x);
-				setAttribute("y", inOrigin.y);
-			}
+			void setOrigin(const Point& inOrigin);			
+			void setOrigin(double inX, double inY);
+			void setSize(const Size& inSize);
+			void setSize(double inWidth, double inHeight);
 			
-			//! Set frame origin to coordinates \c inX and \c inY.
-			void setOrigin(float inX, float inY) {
-				setAttribute("x", inX);
-				setAttribute("y", inY);
-			}
+			void setViewBox(const Point& inOrigin, const Size& inSize);
 			
-			//! Return frame size.
-			Size getSize() const {
-				return Size(String::convertToFloat(getAttribute("width")), String::convertToFloat(getAttribute("height")));
-			}
-			
-			//! Set frame size to size \c inSize.
-			void setSize(const Size& inSize) {
-				setAttribute("width", inSize.width);
-				setAttribute("height", inSize.height);
-			}
-			
-			//! Set frame size to width \c inwidth and height \c inHeight.
-			void setSize(float inWidth, float inHeight) {
-				setAttribute("width", inWidth);
-				setAttribute("height", inHeight);
-			}	
-			
-			//! Set viewbox of this frame to origin \c inOrigin and size \c inSize.
-			void setViewBox(const Point& inOrigin, const Size& inSize) {
-				setAttribute("viewBox", String::convert(inOrigin.x) + " "
-										 + String::convert(inOrigin.y) + " "
-										 + String::convert(inSize.width) + " "
-										 + String::convert(inSize.height) + " ");
-				setAttribute("preserveAspectRatio", "none");
-			}
+		protected:
+			Frame(const string& inName, const XML::AttributeList& inAttributes=XML::AttributeList());
 			
 		 private:
 			// transforms are not allowed in frames

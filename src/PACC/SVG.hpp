@@ -33,12 +33,61 @@
  */
 
 /*!\namespace PACC::SVG
- *  \brief Scalable vector graphics classes.
- */
-
-/*!\defgroup SVG Portable scalable vector graphics classes (SVG)
+ * \brief Scalable vector graphics classes.
+ * \ingroup SVG
  */
 
 #include "PACC/SVG/Canvas.hpp"
+#include "PACC/SVG/Frame.hpp"
 #include "PACC/SVG/Path.hpp"
 #include "PACC/SVG/Types.hpp"
+
+/*!\defgroup SVG SVG: Scalable Vector Graphics
+ * \brief Framework for basic SVG drawing.
+ *
+ * For example, the following code will produce a drawing with a 
+ * rotated rectangle and output the SVG code at the console:
+ * \code
+ * #include "PACC/SVG.hpp"
+ * #include <iostream>
+ *
+ * using namespace std;
+ * using namespace PACC::SVG;
+ * 
+ * int main() {
+ *    // create empty document in memory; no screen output
+ *    Document lDocument("My title", Size(800,600));
+ *    // create group; al elements will inherit the attributes
+ *    Group lGroup(strokeColor(eBlue)+strokeWidth(11)+fillColor(eRed));
+ *    // set transform that will apply to all group elements
+ *    lGroup.setTransform(Rotate(45, Point(400,300)));
+ *    // insert rectangle
+ *    lGroup << Rectangle(Point(200, 200), Point(600, 400));
+ *    // insert group into document
+ *    lDocument << lGroup;
+ *    // ouput valid svg document into stream
+ *    cout << lDocument << endl;
+ * }
+ * \endcode
+ *
+ * This next example will produce a similar drawing, but with an ellipse,
+ * and the output will be displayed on-screen, using user agent
+ * SVGview:
+ * \code
+ * #include "PACC/SVG.hpp"
+ * #include <iostream>
+ *
+ * using namespace std;
+ * using namespace PACC::SVG;
+ * 
+ * int main() {
+ *    // create canvas document that will pop a window on the user agent
+ *    Canvas lDocument("My title", Size(800,600));
+ *    Group lGroup(strokeColor(eBlue)+strokeWidth(11)+fillColor(eRed));
+ *    lGroup.setTransform(Rotate(45, Point(400,300)));
+ *    lGroup << Ellipse(Point(400, 300), 150, 100);
+ *    // insert group and update screen display
+ *    lDocument << lGroup;
+ * }
+ * \endcode
+ */

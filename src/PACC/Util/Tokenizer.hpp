@@ -106,7 +106,8 @@ namespace PACC {
 		void setStreamName(const string& inName) {mName = inName;}
 		
 	 protected:
-		enum delimiters {eWhiteSpace=1, eSingleChar};
+		//! Enumeration of delimiter types.
+		enum DelimiterType {eWhiteSpace=1, eSingleChar};
 		
 		unsigned int mLine; //!< Current line number.
 		string mName; //!< Name of default input stream.

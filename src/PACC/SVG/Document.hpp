@@ -29,8 +29,6 @@
  * \file PACC/SVG/Document.hpp
  * \brief Class definition for the SVG drawing document.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2007/02/24 19:31:38 $
  */
 
 #ifndef PACC_SVG_Document_hpp_
@@ -45,43 +43,35 @@ namespace PACC {
 		using namespace std;
 		
 		/*!\brief Specialized frame to encapsulate a valid svg document.
-		* \ingroup SVG
+		* \ingroup SVGdoc
 		*/
 		class Document : public Frame {
 		 public:
-			//! Construct a valid document with title \c inTitle, size \c inSize, and style \c inStyle.
-			Document(const string& inTitle, const Size& inSize, const Style& inStyle=Style()) : Frame(Point(0, 0), inSize, inStyle), mTitle(inTitle) {}
+			Document(const string& inTitle, const Size& inSize, const Style& inStyle=Style());
 			
-			//! Construct a valid document with title \c inTitle and using frame \c inFrame.
-			Document(const string& inTitle, const Frame& inFrame) : Frame(inFrame), mTitle(inTitle) {}
+			Size getSize() const;
+			string getTitle() const;
 			
-			//! Return title of this canvas.
-			string getTitle() const {return mTitle;}
+			void setSize(const Size& inSize);
+			void setSize(double inWidth, double inHeight);
+			void setTitle(const string& inTitle);
 			
-			//! Set title of this canvas.
-			void setTitle(const string& inTitle) {mTitle = inTitle;}
-			
-			//! Read this document from parser tree node \c inNode.
-			void read(const XML::ConstIterator& inNode);
-			
-			//! Serialize this document into stream \c outStream.
+			void read(const XML::ConstIterator& inNode);			
 			void write(ostream& outStream) const;
 			
 		 private:
-			string mTitle; //<! Title of this canvas.
+			string mTitle; //<! Title of this document.
+			Size mSize; //<! Size in pixels of this document.
 			
 			//! Disabled methods.
-			void setOrigin(const Point& inOrigin);
-			void setOrigin(float inX, float inY);
+			void clearTransform(void);
+			void setTransform(const Transform& inTransform);
 		};
 		
 	} // end of namespace SVG
 	
-	//! Insert canvas \c inCanvas into output stream \c outStream.
-	ostream& operator<<(ostream &outStream, const SVG::Document& inDocument);
-	
-	//! Extract network \c outCanvas from input stream \c inStream.
-	istream& operator>>(istream &inStream, SVG::Document& outDocument);
+	ostream& operator<<(ostream& outStream, const SVG::Document& inDocument);
+	istream& operator>>(istream& inStream, SVG::Document& outDocument);
 	
 } // end of namespace PACC
 

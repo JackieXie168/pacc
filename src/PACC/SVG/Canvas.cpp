@@ -28,8 +28,6 @@
 /*!\file PACC/SVG/Canvas.cpp
  * \brief Class methods for the SVG containers (Group, Frame, and Canvas).
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2008/04/17 21:05:44 $
  */
 
 #include "PACC/SVG/Canvas.hpp"
@@ -41,8 +39,64 @@
 using namespace std;
 using namespace PACC;
 
-/*!
- */
+//! Pop canvas on viewer at address \c inHostPort with title \c inTitle and size \c inSize.
+SVG::Canvas::Canvas(const string& inTitle, const Size& inSize, const string& inHostPort) 
+: Document(inTitle, inSize), Socket::Cafe(inHostPort) 
+{
+	initCanvas();
+}
+
+//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle, size \c inSize, and style \c inStyle.
+SVG::Canvas::Canvas(const string& inTitle, const Size& inSize, const Style& inStyle, const string& inHostPort) 
+: Document(inTitle, inSize, inStyle), Socket::Cafe(inHostPort) 
+{
+	initCanvas();
+}
+
+//! Pop canvas on viewer at address \c inAddress:inPort using document \c inDocument.
+SVG::Canvas::Canvas(const Document& inDocument, const string& inHostPort) 
+: Document(inDocument), Socket::Cafe(inHostPort) 
+{
+	initCanvas();
+}
+
+//! Assign frame \c inFrame to this canvas.
+SVG::Canvas& SVG::Canvas::operator=(const Document& inDocument) 
+{
+	Document::operator=(inDocument);
+	updateViewer();
+	return *this;
+}
+
+//! Insert graphic primitive \c inGraphic into this canvas.
+SVG::Canvas& SVG::Canvas::operator<<(const Primitive& inGraphic) 
+{
+	Group::operator<<(inGraphic); 
+	updateViewer(); 
+	return *this;
+}
+
+//! Erase all drwing elements.
+void SVG::Canvas::clear(void) 
+{
+	Group::clear(); 
+	updateViewer();
+}
+
+//! Set size of canvas to size \c inSize.
+void SVG::Canvas::setSize(const Size& inSize) 
+{
+	Document::setSize(inSize);
+	updateViewer();
+}
+
+//! Set frame size to width \c inwidth and height \c inHeight.
+void SVG::Canvas::setSize(double inWidth, double inHeight) 
+{
+	setSize(Size(inWidth,inHeight));
+}
+
+//! Pop canvas window on viewer.
 void SVG::Canvas::initCanvas(void) 
 {
 	try {
@@ -61,8 +115,7 @@ void SVG::Canvas::initCanvas(void)
 	}
 }
 
-/*!
- */
+//! Send canvas to viewer.
 void SVG::Canvas::updateViewer(void)
 {
 	try {
@@ -81,9 +134,8 @@ void SVG::Canvas::updateViewer(void)
 	}
 }
 
-/*!
- */
-SVG::Point SVG::Canvas::waitForClick(int &outButtonClicked, double inMaxDelay)
+//! Wait up to \c inMaxDelay seconds for the user to click a mouse button.
+SVG::Point SVG::Canvas::waitForClick(int& outButtonClicked, double inMaxDelay)
 {
 	ostringstream lOutStream;
 	lOutStream << "GCLK" << mWinID;

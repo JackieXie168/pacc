@@ -34,7 +34,8 @@
  */
 
 /*!
- *  \defgroup Util Miscellaneous utility classes (Util)
+ * \defgroup Util Util: miscellenaous utility classes
+ * \brief Miscellenaous utility classes.
  */
 
 #include "PACC/Util/Assert.hpp"

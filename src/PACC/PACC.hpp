@@ -29,8 +29,6 @@
 * \file PACC/PACC.hpp
  * \brief Include all headers for PACC.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision:$
- * $Date:$
  */
 
 #include "PACC/Math.hpp"

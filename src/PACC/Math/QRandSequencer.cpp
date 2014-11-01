@@ -42,6 +42,7 @@
 #include <sstream>
 
 #ifndef M_PI
+//! Value of PI
 #define M_PI 3.14159265358979323846
 #endif
 

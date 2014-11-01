@@ -39,7 +39,7 @@
  */
 
 /*!
- *  \defgroup XML Extensible markup language classes (XML)
+ *  \defgroup XML XML: eXtensible Markup Language
  */
 
 #include "PACC/XML/Document.hpp"

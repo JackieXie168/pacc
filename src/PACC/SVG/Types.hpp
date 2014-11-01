@@ -29,8 +29,6 @@
 * \file PACC/SVG/Types.hpp
  * \brief Class definition for the basic SVG types.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/11/29 22:31:51 $
  */
 
 #ifndef PACC_SVG_Types_hpp_
@@ -46,253 +44,115 @@ namespace PACC {
 		
 		using namespace std;
 		
+		/*!
+		 * \brief Color name keywords
+		 * \ingroup SVGtype
+		 * \see <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">%SVG color
+		 * keywords specification</a>
+		 */
+		enum ColorName 
+		{ 
+			eAliceBlue, eAntiqueWhite, eAqua, eAquaMarine, eAzure, eBeige,
+			eBisque, eBlack, eBlacheDalmond, eBlue, eBlueViolet, eBrown,
+			eBurlyWood, eCadetBlue, eChartreuse, eChocolate, eCoral,
+			eCornFlowerBlue, eCornSilk, eCrimson, eCyan, eDarkBlue,
+			eDarkCyan, eDarkGoldenRod, eDarkGray, eDarkGreen, eDarkGrey,
+			eDarkKhaki,	eDarkMagenta, eDarkOliveGreen, eDarkOrange, 
+			eDarkOrchid, eDarkRed, eDarkSalmon, eDarkSeaGreen, 
+			eDarkSlateBlue, eDarkSlateGray, eDarkSlateGrey, eDarkTurquoise,
+			eDarkViolet, eDeepPink, eDeepSkyBlue, eDimGray, eDimGrey,
+			eDodgerBlue, eFireBrick, eFloralWhite, eForestGreen, eFuchsia,
+			eGainsboro, eGostWhite, eGold, eGoldenRod, eGray, eGrey, 
+			eGreen, eGreenYellow, eHoneyDew, eHotPink, eIndianRed, eIndigo,
+			eIvory, eKhaki, eLavender, eLavenderBlush, eLawnGreen,
+			eLemonChiffon, eLightBlue, eLightCoral, eLightCyan, 
+			eLightGolderRodYellow, eLightGray, eLightGreen, eLightGrey,
+			eLigntPink, eLightSalmon, eLightSeaGreen, eLightSkyBlue, 
+			eLightSlateGray, eLightSlateGrey, eLightSteelBlue, eLightYellow,
+			eLime, eLimeGreen, eLinen, eMagenta, eMaroon, eMediumAquaMarine,
+			eMediumBlue, eMediumOrchid, eMediumPurple, eMeidumSeaGreen,
+			eMediumSlateBlue, eMediumSpringGreen, eMediumTurquoise,
+			eMediumVioletRed, eModNightBlue, eMintCream, eMistyRose,
+			eMoccasin, eNavajoWhite, eNavy, eNone, eOldLace, eOlive, 
+			eOliveDrab, eOrange, eOrangered, eOrchid, ePaleGoldenRod, 
+			ePaleGreen, ePaleTurquoise, ePaleVioletRed, ePapayaWhip, 
+			ePeachPuff, ePeru, ePink, ePlum, ePowderBlue, ePurple, eRed, 
+			eRosyBrown, eRoyalBlue, eSaddleBrown, eSalmon, eSandyBrown, 
+			eSeaGreen, eSeaShell, eSienna, eSilver, eSkyBlue, eSlateBlue, 
+			eSlateGray, eSlateGrey, eSnow, eSpringGreen, eSteelBlue, eTan, 
+			eTeal, eThistle, eTomato, eTurquoise, eViolet, eWheat, eWhite, 
+			eWhiteSmoke, eYellow, eYellowGreen
+		};
+		
+		//! Enumeration of stroke line-cap types.
+		//! ingroup SVGtype
+		enum CapType {eButt, eRoundCap, eSquare};
+		
+		//! Enumeration of stroke line-join types.
+		//! ingroup SVGtype
+		enum JoinType {eMiter, eRoundJoin, eBevel};
+		
+		//! Enumeration of basic dash types.
+		enum DashType {eContinuous, eDashed, eDotted};
+		
+		//! Enumeration of fill-rule types.
+		//! ingroup SVGtype
+		enum RuleType {eNonZero, eEvenOdd};
+		
+		//! Enumeration of text font style types.
+		//! ingroup SVGtype
+		enum FontType {eBold, eItalic, eOblique, eUnderline, eStrike};
+		
+		//! Enumeration of text anchor types.
+		//! ingroup SVGtype
+		enum AnchorType {eStart, eMiddle, eEnd};
+		
 		//! \brief Basic %SVG color string.
-		//! \ingroup SVG
-		class Color : public string {
-		 public:
-			/*!
-			 * \brief  Constructor with color string.
-			 * \param  inColorString  A string representing an" SVG color.
-			 * 
-			 * Here are the valid" SVG colors formats:
-			 *
-			 * <table>
-			 * <tr><th> Format          </th><th> Description             </th></tr>
-			 * <tr><td> #rgb            </td><td> Three-digit RGB notation</td></tr>
-			 * <tr><td> #rrggbb         </td><td> Six-digit RGB notation  </td></tr>
-			 * <tr><td> rgb(R, G, B)    </td>
-			 *           <td> Functional notation (integer from 0 to 255) </td></tr>
-			 * <tr><td> rgb(R%, G%, B%) </td>
-			 *                         <td> Functional notation (percent) </td></tr>
-			 * <tr><td> &lt;colorname>  </td><td> Keyword                 </td></tr>
-			 * </table>
-			 *
-			 * If you want to use a color name keyword, you should use constants 
-			 * defined in this class instead. If you need to use direct numerical 
-			 * values, you should use the RGBColor or Gray subclass to construct
-			 * the appropriate string.
-			 *
-			 * \note   No string format validation is performed to ensure that it
-			 *         conform to SVG specifications. Make sure of what you write.
-			 */
-			explicit Color(const string &inColorString) : string(inColorString) {}
-			
-			/*!
-			 * \name  Color Constants Keywords
-			 * 
-			 * Borowed from 
-			 * <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">SVG color
-			 * keywords specifications</a>. Theses predefined colors should make 
-			 * your life easier.
-			 */
-			//@{
-			static const Color cAliceBlue;      //!< "aliceblue" SVG color
-			static const Color cAntiqueWhite;   //!< "antiquewhite" SVG color
-			static const Color cAqua;           //!< "aqua" SVG color
-			static const Color cAquaMarine;     //!< "aquamarine" SVG color
-			static const Color cAzure;          //!< "azure" SVG color
-			static const Color cBeige;          //!< "beige" SVG color
-			static const Color cBisque;         //!< "bisque" SVG color
-			static const Color cBlack;          //!< "black" SVG color
-			static const Color cBlacheDalmond;  //!< "blanchedalmond" SVG color
-			static const Color cBlue;           //!< "blue" SVG color
-			static const Color cBlueViolet;     //!< "blueviolet" SVG color
-			static const Color cBrown;          //!< "brown" SVG color
-			static const Color cBurlyWood;      //!< "burlywood" SVG color
-			static const Color cCadetBlue;      //!< "cadetblue" SVG color
-			static const Color cChartreuse;     //!< "chartreuse" SVG color
-			static const Color cChocolate;      //!< "chocolate" SVG color
-			static const Color cCoral;          //!< "coral" SVG color
-			static const Color cCornFlowerBlue; //!< "cornflowerblue" SVG color
-			static const Color cCornSilk;       //!< "cornsilk" SVG color
-			static const Color cCrimson;        //!< "crimson" SVG color
-			static const Color cCyan;           //!< "cyan" SVG color
-			static const Color cDarkBlue;       //!< "darkblue" SVG color
-			static const Color cDarkCyan;       //!< "darkcyan" SVG color
-			static const Color cDarkGoldenRod;  //!< "darkgoldenrod" SVG color
-			static const Color cDarkGray;       //!< "darkgray" SVG color
-			static const Color cDarkGreen;      //!< "darkgreen" SVG color
-			static const Color cDarkGrey;       //!< "darkgrey" SVG color
-			static const Color cDarkKhaki;      //!< "darkkhaki" SVG color
-			static const Color cDarkMagenta;    //!< "darkmagenta" SVG color
-			static const Color cDarkOliveGreen; //!< "darkolivegreen" SVG color
-			static const Color cDarkOrange;     //!< "darkorange" SVG color
-			static const Color cDarkOrchid;     //!< "darkorchid" SVG color
-			static const Color cDarkRed;        //!< "darkred" SVG color
-			static const Color cDarkSalmon;     //!< "darksalmon" SVG color
-			static const Color cDarkSeaGreen;   //!< "darkseagreen" SVG color
-			static const Color cDarkSlateBlue;  //!< "darkslateblue" SVG color
-			static const Color cDarkSlateGray;  //!< "darkslategray" SVG color
-			static const Color cDarkSlateGrey;  //!< "darkslategrey" SVG color
-			static const Color cDarkTurquoise;  //!< "darkturquoise" SVG color
-			static const Color cDarkViolet;     //!< "darkviolet" SVG color
-			static const Color cDeepPink;       //!< "deeppink" SVG color
-			static const Color cDeepSkyBlue;    //!< "deepskyblue" SVG color
-			static const Color cDimGray;        //!< "dimgray" SVG color
-			static const Color cDimGrey;        //!< "dimgrey" SVG color
-			static const Color cDodgerBlue;     //!< "dodgerblue" SVG color
-			static const Color cFireBrick;      //!< "firebrick" SVG color
-			static const Color cFloralWhite;    //!< "floralwhite" SVG color
-			static const Color cForestGreen;    //!< "forestgreen" SVG color
-			static const Color cFuchsia;        //!< "fuchsia" SVG color
-			static const Color cGainsboro;      //!< "gainsboro" SVG color
-			static const Color cGostWhite;      //!< "ghostwhite" SVG color
-			static const Color cGold;           //!< "gold" SVG color
-			static const Color cGoldenRod;      //!< "goldenrod" SVG color
-			static const Color cGray;           //!< "gray" SVG color
-			static const Color cGrey;           //!< "grey" SVG color
-			static const Color cGreen;          //!< "green" SVG color
-			static const Color cGreenYellow;    //!< "greenyellow" SVG color
-			static const Color cHoneyDew;       //!< "honeydew" SVG color
-			static const Color cHotPink;        //!< "hotpink" SVG color
-			static const Color cIndianRed;      //!< "indianred" SVG color
-			static const Color cIndigo;         //!< "indigo" SVG color
-			static const Color cIvory;          //!< "ivory" SVG color
-			static const Color cKhaki;          //!< "khaki" SVG color
-			static const Color cLavender;       //!< "lavender" SVG color
-			static const Color cLavenderBlush;  //!< "lavenderblush" SVG color
-			static const Color cLawnGreen;      //!< "lawngreen" SVG color
-			static const Color cLemonChiffon;   //!< "lemonchiffon" SVG color
-			static const Color cLightBlue;      //!< "lightblue" SVG color
-			static const Color cLightCoral;     //!< "lightcoral" SVG color
-			static const Color cLightCyan;      //!< "lightcyan" SVG color
-			static const Color cLightGolderRodYellow; //!< "lightgoldenrodyellow" SVG color
-			static const Color cLightGray;      //!< "lightgray" SVG color
-			static const Color cLightGreen;     //!< "lightgreen" SVG color
-			static const Color cLightGrey;      //!< "lightgrey" SVG color
-			static const Color cLigntPink;      //!< "lightpink" SVG color
-			static const Color cLightSalmon;    //!< "lightsalmon" SVG color
-			static const Color cLightSeaGreen;  //!< "lightseagreen" SVG color
-			static const Color cLightSkyBlue;   //!< "lightskyblue" SVG color
-			static const Color cLightSlateGray; //!< "lightslategray" SVG color
-			static const Color cLightSlateGrey; //!< "lightslategrey" SVG color
-			static const Color cLightSteelBlue; //!< "lightsteelblue" SVG color
-			static const Color cLightYellow;    //!< "lightyellow" SVG color
-			static const Color cLime;           //!< "lime" SVG color
-			static const Color cLimeGreen;      //!< "limegreen" SVG color
-			static const Color cLinen;          //!< "linen" SVG color
-			static const Color cMagenta;        //!< "magenta" SVG color
-			static const Color cMaroon;         //!< "maroon" SVG color
-			static const Color cMediumAquaMarine; //!< "mediumaquamarine" SVG color
-			static const Color cMediumBlue;       //!< "mediumblue" SVG color
-			static const Color cMediumOrchid;     //!< "mediumorchid" SVG color
-			static const Color cMediumPurple;     //!< "mediumpurple" SVG color
-			static const Color cMeidumSeaGreen;   //!< "mediumseagreen" SVG color
-			static const Color cMediumSlateBlue;  //!< "mediumslateblue" SVG color
-			static const Color cMediumSpringGreen;//!< "mediumspringgreen" SVG color
-			static const Color cMediumTurquoise;  //!< "mediumturquoise" SVG color
-			static const Color cMediumVioletRed;  //!< "mediumvioletred" SVG color
-			static const Color cModNightBlue;   //!< "midnightblue" SVG color
-			static const Color cMintCream;      //!< "mintcream" SVG color
-			static const Color cMistyRose;      //!< "mistyrose" SVG color
-			static const Color cMoccasin;       //!< "moccasin" SVG color
-			static const Color cNavajoWhite;    //!< "navajowhite" SVG color
-			static const Color cNavy;           //!< "navy" SVG color
-			static const Color cOldLace;        //!< "oldlace" SVG color
-			static const Color cOlive;          //!< "olive" SVG color
-			static const Color cOliveDrab;      //!< "olivedrab" SVG color
-			static const Color cOrange;         //!< "orange" SVG color
-			static const Color cOrangered;      //!< "orangered" SVG color
-			static const Color cOrchid;         //!< "orchid" SVG color
-			static const Color cPaleGoldenRod;  //!< "palegoldenrod" SVG color
-			static const Color cPaleGreen;      //!< "palegreen" SVG color
-			static const Color cPaleTurquoise;  //!< "paleturquoise" SVG color
-			static const Color cPaleVioletRed;  //!< "palevioletred" SVG color
-			static const Color cPapayaWhip;     //!< "papayawhip" SVG color
-			static const Color cPeachPuff;      //!< "peachpuff" SVG color
-			static const Color cPeru;           //!< "peru" SVG color
-			static const Color cPink;           //!< "pink" SVG color
-			static const Color cPlum;           //!< "plum" SVG color
-			static const Color cPowderBlue;     //!< "powderblue" SVG color
-			static const Color cPurple;         //!< "purple" SVG color
-			static const Color cRed;            //!< "red" SVG color
-			static const Color cRosyBrown;      //!< "rosybrown" SVG color
-			static const Color cRoyalBlue;      //!< "royalblue" SVG color
-			static const Color cSaddleBrown;    //!< "saddlebrown" SVG color
-			static const Color cSalmon;         //!< "salmon" SVG color
-			static const Color cSandyBrown;     //!< "sandybrown" SVG color
-			static const Color cSeaGreen;       //!< "seagreen" SVG color
-			static const Color cSeaShell;       //!< "seashell" SVG color
-			static const Color cSienna;         //!< "sienna" SVG color
-			static const Color cSilver;         //!< "silver" SVG color
-			static const Color cSkyBlue;        //!< "skyblue" SVG color
-			static const Color cSlateBlue;      //!< "slateblue" SVG color
-			static const Color cSlateGray;      //!< "slategray" SVG color
-			static const Color cSlateGrey;      //!< "slategrey" SVG color
-			static const Color cSnow;           //!< "snow" SVG color
-			static const Color cSpringGreen;    //!< "springgreen" SVG color
-			static const Color cSteelBlue;      //!< "steelblue" SVG color
-			static const Color cTan;            //!< "tan" SVG color
-			static const Color cTeal;           //!< "teal" SVG color
-			static const Color cThistle;        //!< "thistle" SVG color
-			static const Color cTomato;         //!< "tomato" SVG color
-			static const Color cTurquoise;      //!< "turquoise" SVG color
-			static const Color cViolet;         //!< "violet" SVG color
-			static const Color cWheat;          //!< "wheat" SVG color
-			static const Color cWhite;          //!< "white" SVG color
-			static const Color cWhiteSmoke;     //!< "whitesmoke" SVG color
-			static const Color cYellow;         //!< "yellow" SVG color
-			static const Color cYellowGreen;    //!< "yellowgreen" SVG color
-																					//@}
+		//! \ingroup SVGtype
+		class Color : public std::string {
+		 public:			
+			Color(ColorName inName);
+		
+		protected:
+			Color(const string& inColor);
 		};
 		
 		//! \brief Red, green, and blue color.
-		//! \ingroup SVG
+		//! \ingroup SVGtype
 		class RGBColor : public Color {
 		 public:
-			//! Construct with components \c inRed, \c inGreen, and \c inBlue.
 			RGBColor(float inRed, float inGreen, float inBlue);
 		};
 		
 		//! \brief %Color as a shade of gray.
-		//! \ingroup SVG
+		//! \ingroup SVGtype
 		class Gray : public RGBColor {
 		 public:
-			//! Construct gray color of intensity \c inLevel.
-			Gray(float inLevel) : RGBColor(inLevel, inLevel, inLevel) {}
+			Gray(float inLevel);
 		};
 		
 		class PointList;
 		
-		//! \brief Position of graphic component.
-		//! \ingroup SVG
-		class Point {
-		 public:
+		//! \brief Position (x,y) of a graphic component.
+		//! \ingroup SVGtype
+		struct Point {
 			//! Default constructor.
 			Point(void) : x(0), y(0) {}
 			
-			//! Construct with (\c inX,\c inY)..
+			//! Build with (\c inX,\c inY)..
 			Point(double inX, double inY) : x(inX), y(inY) {}
-			
-			//! return the angle with the origin.
-			double getAngle(void) const {return atan2(y,x);}
-			
-			//! Return the distance from the origin.
-			double getDistance(void) const {return sqrt(x*x+y*y);}
-			
-			//! Rotate by \c inAngle degrees.
-			void rotate(double inAngle) {*this = Point(x*cos(inAngle)-y*sin(inAngle), x*sin(inAngle)+y*cos(inAngle));}
-			
-			//! Translate by offset (\c inDX,\c inDY).
-			void translateBy(double inDX, double inDY) {x += inDX; y += inDY;}
-			
-			//! Scale by factor \c inFactor
-			void scaleBy(double inFactor) {x *= inFactor; y *= inFactor;}
 			
 			std::string getStringValue() const;
 			
-			//! Concatenate with point \c inPoint, and return new point list.
-			PointList operator+(const Point &inPoint) const;
-			
-			//! Concatenate with point list \c inList and return new point list.
-			PointList operator+(const PointList &inList) const;
+			PointList operator+(const Point& inPoint) const;
+			PointList operator+(const PointList& inList) const;
 			
 			double x; //!< Horizontal coordinate.
 			double y; //!< Vertical coordinate.
 		};
 		
 		/*!\brief List of points.
-		 * \ingroup SVG
+		 * \ingroup SVGtype
 		 * 
 		 * This class is a standard vector of point (std::vector<Point>) with some
 		 * utility functions and + and += operators to facilitate the concatenation
@@ -307,29 +167,38 @@ namespace PACC {
 			PointList(const Point inPoint) : std::vector<Point>(1, inPoint) {}
 			
 			//! Return the result of cancatenating this list with point list \c inList.
-			PointList operator+(const PointList &inList) const {return PointList(*this) += inList;}
+			PointList operator+(const PointList& inList) const {return PointList(*this) += inList;}
 			
 			//! Append point list \c inList to this list.
-			PointList &operator+=(const PointList &inList) {
+			PointList& operator+=(const PointList& inList) {
 				for ( unsigned i = 0; i < inList.size(); i++ ) push_back(inList[i]);
 				return *this;
 			}
 			
 			//! Return the result of cancatenating this list with single point \c inPoint.
-			PointList operator+(const Point &inPoint) const {return PointList(*this) += inPoint;}
+			PointList operator+(const Point& inPoint) const {return PointList(*this) += inPoint;}
 			
 			//! Append single point  \c inPoint to this list.
-			PointList &operator+=(const Point &inPoint) {
+			PointList& operator+=(const Point& inPoint) {
 				push_back(inPoint);
 				return *this;
 			}
 			
-			//! Return a string representation of this list.
 			string getStringValue(void) const;
 		};
 		
+		//! \brief Relative position of a point.
+		//! \ingroup SVGtype
+		struct RelPos : public Point {
+			//! Default constructor.
+			RelPos(void) : Point(0,0) {}
+			
+			//! Build with (\c inX,\c inY)..
+			RelPos(double inDx, double inDy) : Point(inDx, inDy) {}
+		};
+		
 		//! \brief %Size of graphic component.
-		//! \ingroup SVG
+		//! \ingroup SVGtype
 		class Size {
 		 public:
 			//! Default constructor.
@@ -337,12 +206,6 @@ namespace PACC {
 			
 			//! Construct with width \c inWidth and height \c inHeight.
 			Size(double inWidth, double inHeight) : width(inWidth), height(inHeight) {}
-			
-			//! Return length of diagonal.
-			double getDiagonal(void) const {return sqrt(width*width + height*height);}
-			
-			//! Scale by factor \c inFactor.
-			void scaleBy(float inFactor) {width *= inFactor; height *= inFactor;}
 			
 			string getStringValue(void) const;
 			

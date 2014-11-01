@@ -51,6 +51,7 @@
 #include <windows.h>
 #include <sstream>
 #ifndef UNICODE
+//! Windows assert macro with Unicode
 #define PACC_AssertM(COND,MESSAGE) \
 if(!(COND)) { \
 	std::ostringstream lStream; \
@@ -59,6 +60,7 @@ if(!(COND)) { \
 	exit(-1); \
 }
 #else
+//! Windows assert macro without Unicode
 #define PACC_AssertM(COND,MESSAGE) \
 if(!(COND)) { \
 	std::wostringstream lStream; \
@@ -72,6 +74,7 @@ if(!(COND)) { \
 /////// otherwise, output message to console ///////
 #include <iostream>
 #include <stdlib.h>
+//! Unix assert macro
 #define PACC_AssertM(COND,MESSAGE) \
 if(!(COND)) { \
 	std::cerr << "\n*************** PACC assert failed **************\nin "; \

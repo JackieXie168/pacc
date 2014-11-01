@@ -59,7 +59,7 @@ namespace PACC {
 		//! Construct from \c inSeconds seconds since January 1st, 1970.
 		explicit Date(unsigned int inSeconds) : mTime(inSeconds) {}
 		
-		// Construct with specified date.
+		//! Construct with specified date.
 		Date(unsigned int inYear, unsigned int inMonth, unsigned int inDay);
 		
 		//! Return number of seconds between this date and date \c inDate.
@@ -77,7 +77,7 @@ namespace PACC {
 		//! Add \c inSeconds seconds to this date.
 		Date& operator+=(unsigned int inSeconds) {mTime += inSeconds; return *this;}
 		
-		// Return formatted date and time using the std::strftime string format \c inFormat.
+		//! Return formatted date and time using the std::strftime string format \c inFormat.
 		string get(const string& inFormat = "%a %b %d %T %Z %Y") const;
 		
 		//! Return day of month for this date (1-31).
@@ -107,10 +107,10 @@ namespace PACC {
 		//! Return year of this date.
 		unsigned int getYear(void) const;
 		
-		// Set date to year \c inyear, month \c inMonth, and day \c inDay (time is unchanged).
+		//! Set date to year \c inyear, month \c inMonth, and day \c inDay (time is unchanged).
 		void setDate(unsigned int inYear, unsigned int inMonth, unsigned int inDay);
 		
-		// Set time to \c inHour hour, \c inMinutes minutes, and \c inSeconds seconds (date is unchanged).
+		//! Set time to \c inHour hour, \c inMinutes minutes, and \c inSeconds seconds (date is unchanged).
 		void setTime(unsigned int inHour, unsigned int inMinutes, unsigned int inSeconds);
 
 	 protected:

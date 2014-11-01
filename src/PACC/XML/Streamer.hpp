@@ -156,7 +156,7 @@ namespace PACC {
 			
 			/*! \brief Insert a primitive tag with tag name \c inTagName, attribute name \c inAttName, and value \c inValue.
 				
-				The format for this primitive tag is <inTagName inAttName="inValue"/>. This method assumes that typename \c Type knows how to insert itself into a stream using \c operator<<.
+				The format for this primitive tag is &lt;inTagName inAttName="inValue"/&gt;. This method assumes that typename \c Type knows how to insert itself into a stream using \c operator<<.
 				*/
 			template <typename Type>
 				void insertPrimitiveTag(Type inValue, const string& inTagName, const string& inAttName="v") {

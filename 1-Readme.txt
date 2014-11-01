@@ -102,3 +102,29 @@ CMake will then ask you questions so that you can configure every
 aspect of the build process, by allowing you to update any of its 
 internal build variables. Refer to the CMake manual for further 
 details.
+If you have install the CMake GUI, you may also want to use it
+instead of command-line interface.
+
+
+Some variables are specific to PACC and should be considered :
+
+  - PACC_LIBRARY_TYPE = [STATIC | SHARED] defines whether CMake 
+  should build static or shared (dynamic) library. On Unix 
+  platforms and on Windows without the MinGW (GNU) compiler, 
+  default behavior is to SHARED. When using the Microsoft VC++
+  compiler, default is to STATIC, because PACC can not be build
+  as shared library with this compiler at this time.
+
+  - PACC_ZLIB = [bool] allows to disable the use of ZLib
+  compression library even if CMake found it in the system
+
+  - PACC_USE_PARALLEL_STL = [bool] is only available on recent
+  versions of the GCC compiler. It allows the compiler to use OpenMP
+  in order to parallelize STL algorithms. You should be warned that
+  the parallel STL containers can not be casted in normal STL
+  containers. In doubt, leave it to False / Off.
+
+  - PACC_CREATE_*** is a set of variables used to tell to CPack what 
+  kind of binary package it should make when called by "cpack" or
+  "make package".
+  

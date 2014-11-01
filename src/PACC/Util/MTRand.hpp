@@ -133,7 +133,9 @@ class MTRand {
 																				 //! Saving and loading generator state
 	void load( uint32 *const loadArray );  // from such array
 	
+	//! Insert randomizer into output stream.
 	friend std::ostream& operator<<( std::ostream& os, const MTRand& mtrand );
+	//! Extract randomizer from input stream.
 	friend std::istream& operator>>( std::istream& is, MTRand& mtrand );
 	
 	protected:

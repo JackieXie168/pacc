@@ -33,12 +33,14 @@
  * $Date: 2007/02/24 19:29:55 $
  */
 
-/*! \namespace PACC::Threading
+/*!
+ * \namespace PACC::Threading
  * \brief Portable thread management classes.
  */
 
 /*!
- *  \defgroup Threading Portable thread management classes (Threading)
+ * \defgroup Threading Threading: portable thread management
+ * \brief Framework for multithreaded programming. 
  */
 
 #include "PACC/Threading/Condition.hpp"

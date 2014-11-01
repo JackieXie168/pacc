@@ -29,8 +29,6 @@
  * \file PACC/SVG/Group.hpp
  * \brief Class definition for the SVG primitive group.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.7 $
- * $Date: 2007/02/08 01:46:29 $
  */
 
 #ifndef PACC_SVG_Group_hpp_
@@ -38,8 +36,6 @@
 
 #include "PACC/SVG/Primitives.hpp"
 #include "PACC/XML/Iterator.hpp"
-#include "PACC/Socket/Address.hpp"
-#include "PACC/Socket/Cafe.hpp"
 
 namespace PACC {
 	
@@ -48,7 +44,7 @@ namespace PACC {
 		using namespace std;
 		
 		/*!\brief Basic graphic primitive container.
-		* \ingroup SVG
+		* \ingroup SVGdoc
 		*
 		* A group holds an ordered list of graphic primitives with default
 		* style and transform. The group style and transform applies to all embedded
@@ -56,34 +52,15 @@ namespace PACC {
 		*/
 		class Group : public Primitive {
 		 public:
-			//! Make group with style \c inStyle.
-			explicit Group(const Style &inStyle = Style()) : Primitive("g", inStyle) {}
+			explicit Group(const Style& inStyle = Style());
 			
-			/*!\brief Add primitive \c inPrimitive to this group.
+			Group& operator<<(const Primitive& inPrimitive);
 			
-			If primitive \c inPrimitive defines an \c id attribute, then it will replace the first primitive in this group with matching id. Otherwise, a new primitive is added at the end of the group. 
-			*/
-			Group& operator<<(const Primitive& inPrimitive) {
-				if(inPrimitive.isDefined("id")) {
-					// search for first instance of same id
-					XML::Iterator lPos = getFirstChild();
-					while(lPos && lPos->getAttribute("id") != inPrimitive.getAttribute("id")) ++lPos;
-					if(lPos) *lPos = inPrimitive;
-					else insertAsLastChild(new Node(inPrimitive));
-				} else insertAsLastChild(new Node(inPrimitive));
-				return *this;
-			}
-			
-			//! Return the number of primitives in this group.
-			unsigned count() const {return getChildCount();}
-			
-			//! Remove all primitives in this group.
-			void clear() {eraseChildren();}
+			void clear();
+			unsigned count() const;
 			
 		 protected:
-			//! Make group from name \c inName and attribute list \c inAttributes.
-			Group(const string& inName, const XML::AttributeList& inAttributes = XML::AttributeList()): Primitive(inName, inAttributes) {}
-			
+			Group(const string& inName, const XML::AttributeList& inAttributes=XML::AttributeList());
 		};
 		
 	} // end of namespace SVG

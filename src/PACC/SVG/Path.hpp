@@ -29,8 +29,6 @@
  * \file PACC/SVG/Path.hpp
  * \brief Class definition for the SVG path primitive.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.7 $
- * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Path_hpp_
@@ -49,123 +47,97 @@ namespace PACC {
 		// forward declaration
 		class PathData;
 		
-		/*!\brief Graphic primitive for paths.
-			* \ingroup SVG
-			*
-			* \see  pathcommands
-			*/
+		/*! \brief Graphic primitive for paths.
+		 *  \ingroup SVGprimit
+		 *  \see PathData
+		 */
 		class Path : public Primitive {
 		 public:
-			//! Make an empty path with style \c inStyle.
-			explicit Path(const Style& inStyle = Style()) : Primitive("path", inStyle) {}
-			/*!\brief Make a path command with data \c inPath and style \c inStyle.
-			*
-			* This constructor gives a already defined path. You can
-			* always add more commands witht the += operator.
-			*/
-			Path(const PathData& inPath, const Style& inStyle = Style()) : Primitive("path", inStyle) {
-				setAttribute("d", (string&)inPath);
-			}			
+			explicit Path(const Style& inStyle = Style());
+			Path(const PathData& inPath, const Style& inStyle = Style());
 			
-			//! Return the result of concatenating this path with path data \c inCommands.
-			Path operator+(const PathData& inCommands) const {
-				return Path(*this) += inCommands;
-			}
-			//! Append commands \c inCommands to this path.
-			Path &operator+=(const PathData &inCommands) {
-				string lDefinition = getAttribute("d");
-				lDefinition += string(" ") + (string&)inCommands;
-				setAttribute("d", lDefinition);
-				return *this;
-			}			
+			Path operator+(const PathData& inCommands) const;
+			Path& operator+=(const PathData& inCommands);
 		};
 		
-		/*!\brief %Data defining a path.
-			* \ingroup SVG
-			*
-			* This is the base class for path commands. It is not possible to create
-			* an instance of this class directly. Instead you should use one of the
-			* subclasses that provide real functionalities.
-			*/
+		/*! \brief %Data defining a path.
+		 *  \ingroup SVGpath
+		 *
+		 * This is the base class for path commands. It is not possible to create
+		 * an instance of this class directly. Instead you should use one of the
+		 * subclasses that provide real functionalities.
+		 */
 		class PathData : protected string {
 		 public:
-			//! Return the result of concatenating this path data with \c inData.
-			PathData operator+(const PathData &inData) {
-				return PathData((string &)(*this) + " " + inData);
-			}
+			PathData operator+(const PathData& inPath);
 			
 			protected:
-			//! Make data path from string \c inValue.
-			PathData(const string &inValue) : string(inValue) {}
+			PathData(const string& inValue);
 		};
 		
-		//! \brief %Path command for starting a new subpath at given coordinate.
-		//! \ingroup SVG
+		/*! \brief %Path command for starting a new subpath at given coordinate.
+		 *  \ingroup SVGpath
+		 */
 		class MoveTo : public PathData {
 		 public:
-			//! make moveto from point \c inPoint.
-			MoveTo(const Point &inPoint) : PathData(string("M") + inPoint.getStringValue()) {}
-			//! Make moveto from coordinates \c inX and \c inY.
-			MoveTo(double inX, double inY) : PathData(string("M") + Point(inX, inY).getStringValue()) {}
+			MoveTo(double inX, double inY);
+			MoveTo(const Point& inPoint);
+			MoveTo(const RelPos& inPos);
 		};
 		
-		//! \brief %Path command for drawing a line.
-		//! \ingroup SVG
+		/*! \brief %Path command for drawing a line.
+		 *  \ingroup SVGpath
+		 */
 		class LineTo : public PathData {
 		 public:
-			//! Make lineto with point \c inPoint. 
-			LineTo(const Point &inPoint)  : PathData(string("L") + inPoint.getStringValue()) {}
-			//! Make lineto with coordinates \c inX and \c inY,
-			LineTo(double inX, double inY) : PathData(string("L") + Point(inX, inY).getStringValue()) {}
+			LineTo(double inX, double inY);
+			LineTo(const Point& inPoint);
+			LineTo(const RelPos& inPos);
 		};
 		
-		/*!\brief %Path command to close the current subpath.
-			* \ingroup SVG
-			*
-			* This command close the subpath by drawing a straight line from the 
-			* current point to current subpath's initial point.
-			*/
+		/*! \brief %Path command to close the current subpath.
+		 *  \ingroup SVGpath
+		 *
+		 * This command close the subpath by drawing a straight line from the 
+		 * current point to current subpath's initial point.
+		 */
 		class ClosePath : public PathData {
 		 public:
-			//! Default constructor.
-			ClosePath() : PathData("z") {}
+			ClosePath();
 		};
 		
-		//! \brief %Path command to draw a cubic Bezier curve.
-		//! \ingroup SVG
+		/*! \brief %Path command to draw a cubic Bezier curve.
+		 *  \ingroup SVGpath
+		 *  \see <a href="http://www.w3.org/TR/SVG/paths.html#PathDataCubicBezierCommands">
+		 *       %SVG elliptical arc specification</a>
+		 */
 		class CubicCurveTo : public PathData {
 		 public:
-			//! Make cubic curve to point \c inPoint, using control points \c inCtlPoint/ and \c inCtlPoint2;
-			CubicCurveTo(const Point &inPoint, const Point &inCtlPoint1, const Point &inCtlPoint2) : PathData("C" + inCtlPoint1.getStringValue() + " " + inCtlPoint2.getStringValue() + " " + inPoint.getStringValue()) {}
-			
-			/*!\brief Make cubic curve to point \c inPoint, using a single control point \c inCtlPoint.
-			*
-			* The beginning control point is assumed to be the reflection of the 
-			* end control point on the previous command relative to the current 
-			* point. If previous command is not a CubicCurveTo, assume the end 
-			* control point is coincident with the current point.
-			*/
-			CubicCurveTo(const Point &inPoint, const Point &inCtlPoint) : PathData("S" + inCtlPoint.getStringValue() + " " +  inPoint.getStringValue()) {}
+			CubicCurveTo(const Point& inPoint, const Point& inCtlPoint);
+			CubicCurveTo(const RelPos& inPos, const RelPos& inCtlPos);
+			CubicCurveTo(const Point& inPoint, const Point& inCtlPoint1, 
+						 const Point& inCtlPoint2);
+			CubicCurveTo(const RelPos& inPos, const RelPos& inCtlPos1, 
+						 const RelPos& inCtlPos2);
 		};
 		
-		//! \brief %Path command to draw a quadratic Bezier curve.
-		//! \ingroup SVG
+		/*! \brief %Path command to draw a quadratic Bezier curve.
+		 *  \ingroup SVGpath
+		 *  \see <a href="http://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands">
+		 *       %SVG quadratic curve specification</a>
+		 */
 		class QuadraticCurveTo : public PathData {
 		 public:
-			//! Make quadratic curve to point \c inPoint, using control point \c inCtlPoint.
-			QuadraticCurveTo(const Point &inPoint, const Point &inCtlPoint) : PathData("Q" + inCtlPoint.getStringValue() + " " + " " +  inPoint.getStringValue()) {}
-			/*!\brief Make quadratic curve to point \c inPoint, without using any control point.
-			*
-			* The control point is assumed to be the reflection of the control 
-			* point on the previous command relative to the current point. If
-			* previous command is not a QuadraticCurveTo, assume the control point 
-			* is coincident with the current point.
-			*/
-			QuadraticCurveTo(const Point &inPoint) : PathData("S" +  inPoint.getStringValue()) {}
+			QuadraticCurveTo(const Point& inPoint);
+			QuadraticCurveTo(const RelPos& inPos);
+			QuadraticCurveTo(const Point& inPoint, const Point& inCtlPoint);
+			QuadraticCurveTo(const RelPos& inPos, const RelPos& inCtlPos);
 		};
 		
-		/*!\brief %Path command to draw an elliptical arc.
-		 * \ingroup SVG
+		/*! \brief %Path command to draw an elliptical arc.
+		 *  \ingroup SVGpath
+		 *  \see <a href="http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands">
+		 *       %SVG elliptical arc specification</a>
 		 *
 		 * Draws an elliptical arc from the current point to given coordinates. The 
 		 * size and orientation of the ellipse are defined by x-radius and y-radius
@@ -200,20 +172,15 @@ namespace PACC {
 		 */
 		class EllipticalArcTo : public PathData {
 		 public:
-			/*!\brief  Constructor.
-			* \param  inPoint          A destination point for the curve.
-			* \param  inXRadius        An x radius of the ellipse.
-			* \param  inYRadius        An y radius of the ellipse.
-			* \param  inXAxisRotation  A angle of rotation for the ellipse.
-			* \param  inLargeArc       True for the path to follow the large arc, 
-			*                          false to follow the smaller one.
-			* \param  inSweep          True to turn by a positive angle, false
-			*                          for a negative one.
-			*/
-			EllipticalArcTo(const Point &inPoint, double inXRadius, double inYRadius, double inXAxisRotation, bool inLargeArc, bool inSweep) : PathData(string("A") + String::convert(inXRadius) + "," +  String::convert(inYRadius) + " " + String::convert(inXAxisRotation) + " " + ( inLargeArc ? "1" : "0" ) + " " + ( inSweep ? "1" : "0" ) + " " + inPoint.getStringValue()) {}
+			EllipticalArcTo(const Point& inPoint, const Size& inRadii, 
+							double inRotation, bool inLargeArc, bool inSweep);
+			EllipticalArcTo(const RelPos& inPos, const Size& inRadii, 
+							double inRotation, bool inLargeArc, bool inSweep);
 		};
 		
-		//! Short name for a cubic Bezier curve path command.
+		/*! \brief Short name for a cubic Bezier curve path command.
+		 *  \ingroup SVGpath
+		 */
 		typedef CubicCurveTo CurveTo;
 		
 	} // end of SVG namespace

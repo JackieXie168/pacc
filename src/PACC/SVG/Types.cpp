@@ -29,8 +29,6 @@
  * \file PACC/SVG/Types.cpp
  * \brief Class methods for miscellaneous %SVG data types.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2007/01/23 21:27:47 $
  */
 
 #include "PACC/SVG/Types.hpp"
@@ -39,154 +37,171 @@
 using namespace std;
 using namespace PACC;
 
-/* Color constants */
-const SVG::Color SVG::Color::cAliceBlue("aliceblue");
-const SVG::Color SVG::Color::cAntiqueWhite("antiquewhite");
-const SVG::Color SVG::Color::cAqua("aqua");
-const SVG::Color SVG::Color::cAquaMarine("aquamarine");
-const SVG::Color SVG::Color::cAzure("azure");
-const SVG::Color SVG::Color::cBeige("beige");
-const SVG::Color SVG::Color::cBisque("bisque");
-const SVG::Color SVG::Color::cBlack("black");
-const SVG::Color SVG::Color::cBlacheDalmond("blanchedalmond");
-const SVG::Color SVG::Color::cBlue("blue");
-const SVG::Color SVG::Color::cBlueViolet("blueviolet");
-const SVG::Color SVG::Color::cBrown("brown");
-const SVG::Color SVG::Color::cBurlyWood("burlywood");
-const SVG::Color SVG::Color::cCadetBlue("cadetblue");
-const SVG::Color SVG::Color::cChartreuse("chartreuse");
-const SVG::Color SVG::Color::cChocolate("chocolate");
-const SVG::Color SVG::Color::cCoral("coral");
-const SVG::Color SVG::Color::cCornFlowerBlue("cornflowerblue");
-const SVG::Color SVG::Color::cCornSilk("cornsilk");
-const SVG::Color SVG::Color::cCrimson("crimson");
-const SVG::Color SVG::Color::cCyan("cyan");
-const SVG::Color SVG::Color::cDarkBlue("darkblue");
-const SVG::Color SVG::Color::cDarkCyan("darkcyan");
-const SVG::Color SVG::Color::cDarkGoldenRod("darkgoldenrod");
-const SVG::Color SVG::Color::cDarkGray("darkgray");
-const SVG::Color SVG::Color::cDarkGreen("darkgreen");
-const SVG::Color SVG::Color::cDarkGrey("darkgrey");
-const SVG::Color SVG::Color::cDarkKhaki("darkkhaki");
-const SVG::Color SVG::Color::cDarkMagenta("darkmagenta");
-const SVG::Color SVG::Color::cDarkOliveGreen("darkolivegreen");
-const SVG::Color SVG::Color::cDarkOrange("darkorange");
-const SVG::Color SVG::Color::cDarkOrchid("darkorchid");
-const SVG::Color SVG::Color::cDarkRed("darkred");
-const SVG::Color SVG::Color::cDarkSalmon("darksalmon");
-const SVG::Color SVG::Color::cDarkSeaGreen("darkseagreen");
-const SVG::Color SVG::Color::cDarkSlateBlue("darkslateblue");
-const SVG::Color SVG::Color::cDarkSlateGray("darkslategray");
-const SVG::Color SVG::Color::cDarkSlateGrey("darkslategrey");
-const SVG::Color SVG::Color::cDarkTurquoise("darkturquoise");
-const SVG::Color SVG::Color::cDarkViolet("darkviolet");
-const SVG::Color SVG::Color::cDeepPink("deeppink");
-const SVG::Color SVG::Color::cDeepSkyBlue("deepskyblue");
-const SVG::Color SVG::Color::cDimGray("dimgray");
-const SVG::Color SVG::Color::cDimGrey("dimgrey");
-const SVG::Color SVG::Color::cDodgerBlue("dodgerblue");
-const SVG::Color SVG::Color::cFireBrick("firebrick");
-const SVG::Color SVG::Color::cFloralWhite("floralwhite");
-const SVG::Color SVG::Color::cForestGreen("forestgreen");
-const SVG::Color SVG::Color::cFuchsia("fuchsia");
-const SVG::Color SVG::Color::cGainsboro("gainsboro");
-const SVG::Color SVG::Color::cGostWhite("ghostwhite");
-const SVG::Color SVG::Color::cGold("gold");
-const SVG::Color SVG::Color::cGoldenRod("goldenrod");
-const SVG::Color SVG::Color::cGray("gray");
-const SVG::Color SVG::Color::cGrey("grey");
-const SVG::Color SVG::Color::cGreen("green");
-const SVG::Color SVG::Color::cGreenYellow("greenyellow");
-const SVG::Color SVG::Color::cHoneyDew("honeydew");
-const SVG::Color SVG::Color::cHotPink("hotpink");
-const SVG::Color SVG::Color::cIndianRed("indianred");
-const SVG::Color SVG::Color::cIndigo("indigo");
-const SVG::Color SVG::Color::cIvory("ivory");
-const SVG::Color SVG::Color::cKhaki("khaki");
-const SVG::Color SVG::Color::cLavender("lavender");
-const SVG::Color SVG::Color::cLavenderBlush("lavenderblush");
-const SVG::Color SVG::Color::cLawnGreen("lawngreen");
-const SVG::Color SVG::Color::cLemonChiffon("lemonchiffon");
-const SVG::Color SVG::Color::cLightBlue("lightblue");
-const SVG::Color SVG::Color::cLightCoral("lightcoral");
-const SVG::Color SVG::Color::cLightCyan("lightcyan");
-const SVG::Color SVG::Color::cLightGolderRodYellow("lightgoldenrodyellow");
-const SVG::Color SVG::Color::cLightGray("lightgray");
-const SVG::Color SVG::Color::cLightGreen("lightgreen");
-const SVG::Color SVG::Color::cLightGrey("lightgrey");
-const SVG::Color SVG::Color::cLigntPink("lightpink");
-const SVG::Color SVG::Color::cLightSalmon("lightsalmon");
-const SVG::Color SVG::Color::cLightSeaGreen("lightseagreen");
-const SVG::Color SVG::Color::cLightSkyBlue("lightskyblue");
-const SVG::Color SVG::Color::cLightSlateGray("lightslategray");
-const SVG::Color SVG::Color::cLightSlateGrey("lightslategrey");
-const SVG::Color SVG::Color::cLightSteelBlue("lightsteelblue");
-const SVG::Color SVG::Color::cLightYellow("lightyellow");
-const SVG::Color SVG::Color::cLime("lime");
-const SVG::Color SVG::Color::cLimeGreen("limegreen");
-const SVG::Color SVG::Color::cLinen("linen");
-const SVG::Color SVG::Color::cMagenta("magenta");
-const SVG::Color SVG::Color::cMaroon("maroon");
-const SVG::Color SVG::Color::cMediumAquaMarine("mediumaquamarine");
-const SVG::Color SVG::Color::cMediumBlue("mediumblue");
-const SVG::Color SVG::Color::cMediumOrchid("mediumorchid");
-const SVG::Color SVG::Color::cMediumPurple("mediumpurple");
-const SVG::Color SVG::Color::cMeidumSeaGreen("mediumseagreen");
-const SVG::Color SVG::Color::cMediumSlateBlue("mediumslateblue");
-const SVG::Color SVG::Color::cMediumSpringGreen("mediumspringgreen");
-const SVG::Color SVG::Color::cMediumTurquoise("mediumturquoise");
-const SVG::Color SVG::Color::cMediumVioletRed("mediumvioletred");
-const SVG::Color SVG::Color::cModNightBlue("midnightblue");
-const SVG::Color SVG::Color::cMintCream("mintcream");
-const SVG::Color SVG::Color::cMistyRose("mistyrose");
-const SVG::Color SVG::Color::cMoccasin("moccasin");
-const SVG::Color SVG::Color::cNavajoWhite("navajowhite");
-const SVG::Color SVG::Color::cNavy("navy");
-const SVG::Color SVG::Color::cOldLace("oldlace");
-const SVG::Color SVG::Color::cOlive("olive");
-const SVG::Color SVG::Color::cOliveDrab("olivedrab");
-const SVG::Color SVG::Color::cOrange("orange");
-const SVG::Color SVG::Color::cOrangered("orangered");
-const SVG::Color SVG::Color::cOrchid("orchid");
-const SVG::Color SVG::Color::cPaleGoldenRod("palegoldenrod");
-const SVG::Color SVG::Color::cPaleGreen("palegreen");
-const SVG::Color SVG::Color::cPaleTurquoise("paleturquoise");
-const SVG::Color SVG::Color::cPaleVioletRed("palevioletred");
-const SVG::Color SVG::Color::cPapayaWhip("papayawhip");
-const SVG::Color SVG::Color::cPeachPuff("peachpuff");
-const SVG::Color SVG::Color::cPeru("peru");
-const SVG::Color SVG::Color::cPink("pink");
-const SVG::Color SVG::Color::cPlum("plum");
-const SVG::Color SVG::Color::cPowderBlue("powderblue");
-const SVG::Color SVG::Color::cPurple("purple");
-const SVG::Color SVG::Color::cRed("red");
-const SVG::Color SVG::Color::cRosyBrown("rosybrown");
-const SVG::Color SVG::Color::cRoyalBlue("royalblue");
-const SVG::Color SVG::Color::cSaddleBrown("saddlebrown");
-const SVG::Color SVG::Color::cSalmon("salmon");
-const SVG::Color SVG::Color::cSandyBrown("sandybrown");
-const SVG::Color SVG::Color::cSeaGreen("seagreen");
-const SVG::Color SVG::Color::cSeaShell("seashell");
-const SVG::Color SVG::Color::cSienna("sienna");
-const SVG::Color SVG::Color::cSilver("silver");
-const SVG::Color SVG::Color::cSkyBlue("skyblue");
-const SVG::Color SVG::Color::cSlateBlue("slateblue");
-const SVG::Color SVG::Color::cSlateGray("slategray");
-const SVG::Color SVG::Color::cSlateGrey("slategrey");
-const SVG::Color SVG::Color::cSnow("snow");
-const SVG::Color SVG::Color::cSpringGreen("springgreen");
-const SVG::Color SVG::Color::cSteelBlue("steelblue");
-const SVG::Color SVG::Color::cTan("tan");
-const SVG::Color SVG::Color::cTeal("teal");
-const SVG::Color SVG::Color::cThistle("thistle");
-const SVG::Color SVG::Color::cTomato("tomato");
-const SVG::Color SVG::Color::cTurquoise("turquoise");
-const SVG::Color SVG::Color::cViolet("violet");
-const SVG::Color SVG::Color::cWheat("wheat");
-const SVG::Color SVG::Color::cWhite("white");
-const SVG::Color SVG::Color::cWhiteSmoke("whitesmoke");
-const SVG::Color SVG::Color::cYellow("yellow");
-const SVG::Color SVG::Color::cYellowGreen("yellowgreen");
+/*!
+ * \defgroup SVGtype Types
+ * \ingroup SVG
+ * \brief Data types for graphics primitives and attributes.
+ */
+
+//! Construct color using name \c inName.
+SVG::Color::Color(ColorName inName) 
+{
+	switch(inName) {
+		case eAliceBlue: string::operator=("aliceblue"); break;
+		case eAntiqueWhite: string::operator=("antiquewhite"); break;
+		case eAqua: string::operator=("aqua"); break;
+		case eAquaMarine: string::operator=("aquamarine"); break;
+		case eAzure: string::operator=("azure"); break;
+		case eBeige: string::operator=("beige"); break;
+		case eBisque: string::operator=("bisque"); break;
+		case eBlack: string::operator=("black"); break;
+		case eBlacheDalmond: string::operator=("blanchedalmond"); break;
+		case eBlue: string::operator=("blue"); break;
+		case eBlueViolet: string::operator=("blueviolet"); break;
+		case eBrown: string::operator=("brown"); break;
+		case eBurlyWood: string::operator=("burlywood"); break;
+		case eCadetBlue: string::operator=("cadetblue"); break;
+		case eChartreuse: string::operator=("chartreuse"); break;
+		case eChocolate: string::operator=("chocolate"); break;
+		case eCoral: string::operator=("coral"); break;
+		case eCornFlowerBlue: string::operator=("cornflowerblue"); break;
+		case eCornSilk: string::operator=("cornsilk"); break;
+		case eCrimson: string::operator=("crimson"); break;
+		case eCyan: string::operator=("cyan"); break;
+		case eDarkBlue: string::operator=("darkblue"); break;
+		case eDarkCyan: string::operator=("darkcyan"); break;
+		case eDarkGoldenRod: string::operator=("darkgoldenrod"); break;
+		case eDarkGray: string::operator=("darkgray"); break;
+		case eDarkGreen: string::operator=("darkgreen"); break;
+		case eDarkGrey: string::operator=("darkgrey"); break;
+		case eDarkKhaki: string::operator=("darkkhaki"); break;
+		case eDarkMagenta: string::operator=("darkmagenta"); break;
+		case eDarkOliveGreen: string::operator=("darkolivegreen"); break;
+		case eDarkOrange: string::operator=("darkorange"); break;
+		case eDarkOrchid: string::operator=("darkorchid"); break;
+		case eDarkRed: string::operator=("darkred"); break;
+		case eDarkSalmon: string::operator=("darksalmon"); break;
+		case eDarkSeaGreen: string::operator=("darkseagreen"); break;
+		case eDarkSlateBlue: string::operator=("darkslateblue"); break;
+		case eDarkSlateGray: string::operator=("darkslategray"); break;
+		case eDarkSlateGrey: string::operator=("darkslategrey"); break;
+		case eDarkTurquoise: string::operator=("darkturquoise"); break;
+		case eDarkViolet: string::operator=("darkviolet"); break;
+		case eDeepPink: string::operator=("deeppink"); break;
+		case eDeepSkyBlue: string::operator=("deepskyblue"); break;
+		case eDimGray: string::operator=("dimgray"); break;
+		case eDimGrey: string::operator=("dimgrey"); break;
+		case eDodgerBlue: string::operator=("dodgerblue"); break;
+		case eFireBrick: string::operator=("firebrick"); break;
+		case eFloralWhite: string::operator=("floralwhite"); break;
+		case eForestGreen: string::operator=("forestgreen"); break;
+		case eFuchsia: string::operator=("fuchsia"); break;
+		case eGainsboro: string::operator=("gainsboro"); break;
+		case eGostWhite: string::operator=("ghostwhite"); break;
+		case eGold: string::operator=("gold"); break;
+		case eGoldenRod: string::operator=("goldenrod"); break;
+		case eGray: string::operator=("gray"); break;
+		case eGrey: string::operator=("grey"); break;
+		case eGreen: string::operator=("green"); break;
+		case eGreenYellow: string::operator=("greenyellow"); break;
+		case eHoneyDew: string::operator=("honeydew"); break;
+		case eHotPink: string::operator=("hotpink"); break;
+		case eIndianRed: string::operator=("indianred"); break;
+		case eIndigo: string::operator=("indigo"); break;
+		case eIvory: string::operator=("ivory"); break;
+		case eKhaki: string::operator=("khaki"); break;
+		case eLavender: string::operator=("lavender"); break;
+		case eLavenderBlush: string::operator=("lavenderblush"); break;
+		case eLawnGreen: string::operator=("lawngreen"); break;
+		case eLemonChiffon: string::operator=("lemonchiffon"); break;
+		case eLightBlue: string::operator=("lightblue"); break;
+		case eLightCoral: string::operator=("lightcoral"); break;
+		case eLightCyan: string::operator=("lightcyan"); break;
+		case eLightGolderRodYellow: string::operator=("lightgoldenrodyellow"); break;
+		case eLightGray: string::operator=("lightgray"); break;
+		case eLightGreen: string::operator=("lightgreen"); break;
+		case eLightGrey: string::operator=("lightgrey"); break;
+		case eLigntPink: string::operator=("lightpink"); break;
+		case eLightSalmon: string::operator=("lightsalmon"); break;
+		case eLightSeaGreen: string::operator=("lightseagreen"); break;
+		case eLightSkyBlue: string::operator=("lightskyblue"); break;
+		case eLightSlateGray: string::operator=("lightslategray"); break;
+		case eLightSlateGrey: string::operator=("lightslategrey"); break;
+		case eLightSteelBlue: string::operator=("lightsteelblue"); break;
+		case eLightYellow: string::operator=("lightyellow"); break;
+		case eLime: string::operator=("lime"); break;
+		case eLimeGreen: string::operator=("limegreen"); break;
+		case eLinen: string::operator=("linen"); break;
+		case eMagenta: string::operator=("magenta"); break;
+		case eMaroon: string::operator=("maroon"); break;
+		case eMediumAquaMarine: string::operator=("mediumaquamarine"); break;
+		case eMediumBlue: string::operator=("mediumblue"); break;
+		case eMediumOrchid: string::operator=("mediumorchid"); break;
+		case eMediumPurple: string::operator=("mediumpurple"); break;
+		case eMeidumSeaGreen: string::operator=("mediumseagreen"); break;
+		case eMediumSlateBlue: string::operator=("mediumslateblue"); break;
+		case eMediumSpringGreen: string::operator=("mediumspringgreen"); break;
+		case eMediumTurquoise: string::operator=("mediumturquoise"); break;
+		case eMediumVioletRed: string::operator=("mediumvioletred"); break;
+		case eModNightBlue: string::operator=("midnightblue"); break;
+		case eMintCream: string::operator=("mintcream"); break;
+		case eMistyRose: string::operator=("mistyrose"); break;
+		case eMoccasin: string::operator=("moccasin"); break;
+		case eNavajoWhite: string::operator=("navajowhite"); break;
+		case eNavy: string::operator=("navy"); break;
+		case eNone: string::operator=("none"); break;
+		case eOldLace: string::operator=("oldlace"); break;
+		case eOlive: string::operator=("olive"); break;
+		case eOliveDrab: string::operator=("olivedrab"); break;
+		case eOrange: string::operator=("orange"); break;
+		case eOrangered: string::operator=("orangered"); break;
+		case eOrchid: string::operator=("orchid"); break;
+		case ePaleGoldenRod: string::operator=("palegoldenrod"); break;
+		case ePaleGreen: string::operator=("palegreen"); break;
+		case ePaleTurquoise: string::operator=("paleturquoise"); break;
+		case ePaleVioletRed: string::operator=("palevioletread");
+		case ePapayaWhip: string::operator=("papayawhip"); break;
+		case ePeachPuff: string::operator=("peachpuff"); break;
+		case ePeru: string::operator=("peru"); break;
+		case ePink: string::operator=("pink"); break;
+		case ePlum: string::operator=("plum"); break;
+		case ePowderBlue: string::operator=("powderblue"); break;
+		case ePurple: string::operator=("purple"); break;
+		case eRed: string::operator=("red"); break;
+		case eRosyBrown: string::operator=("rosybrown"); break;
+		case eRoyalBlue: string::operator=("royalblue"); break;
+		case eSaddleBrown: string::operator=("saddlebrown"); break;
+		case eSalmon: string::operator=("salmon"); break;
+		case eSandyBrown: string::operator=("sandybrown"); break;
+		case eSeaGreen: string::operator=("seagreen"); break;
+		case eSeaShell: string::operator=("seashell"); break;
+		case eSienna: string::operator=("sienna"); break;
+		case eSilver: string::operator=("silver"); break;
+		case eSkyBlue: string::operator=("skyblue"); break;
+		case eSlateBlue: string::operator=("slateblue"); break;
+		case eSlateGray: string::operator=("slategray"); break;
+		case eSlateGrey: string::operator=("slategrey"); break;
+		case eSnow: string::operator=("snow"); break;
+		case eSpringGreen: string::operator=("springgreen"); break;
+		case eSteelBlue: string::operator=("steelblue"); break;
+		case eTan: string::operator=("tan"); break;
+		case eTeal: string::operator=("teal"); break;
+		case eThistle: string::operator=("thistle"); break;
+		case eTomato: string::operator=("tomato"); break;
+		case eTurquoise: string::operator=("turquoise"); break;
+		case eViolet: string::operator=("violet"); break;
+		case eWheat: string::operator=("wheat"); break;
+		case eWhite: string::operator=("white"); break;
+		case eWhiteSmoke: string::operator=("whitesmoke"); break;
+		case eYellow: string::operator=("yellow"); break;
+		case eYellowGreen: string::operator=("yellowgreen"); break;
+	}
+}
+
+//! Construct color using string \c inColor
+SVG::Color::Color(const string& inColor) : string(inColor) 
+{
+}
 
 /*!
 * Function that output a string in the form "rgb(10%, 12%, 100%)" representing
@@ -199,8 +214,15 @@ std::string makeRGBColorString(float inRed, float inGreen, float inBlue)
 	return lStream.str();
 }
 
-SVG::RGBColor::RGBColor(float inRed, float inGreen, float inBlue) : Color(makeRGBColorString(inRed, inGreen, inBlue)) {}
+//! Construct with components \c inRed, \c inGreen, and \c inBlue.
+SVG::RGBColor::RGBColor(float inRed, float inGreen, float inBlue) : Color(makeRGBColorString(inRed,inGreen,inBlue)) {}
 
+//! Construct gray color of intensity \c inLevel.
+SVG::Gray::Gray(float inLevel) : RGBColor(inLevel, inLevel, inLevel) 
+{
+}
+
+//! Return point as string value.
 std::string SVG::Point::getStringValue() const 
 {
 	ostringstream lStream;
@@ -209,19 +231,19 @@ std::string SVG::Point::getStringValue() const
 }
 
 //! Concatenate with point \c inPoint, and return new point list.
-SVG::PointList SVG::Point::operator+(const Point &inPoint) const 
+SVG::PointList SVG::Point::operator+(const Point& inPoint) const 
 {
 	return PointList(*this) += inPoint;
 }
 
 //! Concatenate with point list \c inList and return new point list.
-SVG::PointList SVG::Point::operator+(const SVG::PointList &inList) const 
+SVG::PointList SVG::Point::operator+(const SVG::PointList& inList) const 
 {
 	return PointList(*this) += inList;
 }
 
 
-// Size
+//! Return size as string value.
 std::string SVG::Size::getStringValue(void) const 
 {
 	ostringstream lStream;
@@ -229,6 +251,7 @@ std::string SVG::Size::getStringValue(void) const
 	return lStream.str();
 }
 
+//! Return a string representation of this list.
 std::string SVG::PointList::getStringValue(void) const {
 	if(size() == 0 ) return string("");
 	string lString((*this)[0].getStringValue());

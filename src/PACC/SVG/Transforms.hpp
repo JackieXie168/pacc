@@ -29,8 +29,6 @@
  * \file PACC/SVG/Transforms.hpp
  * \brief Class definition for the SVG transform.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Transforms_hpp_
@@ -46,103 +44,67 @@ namespace PACC {
 		using namespace std;
 		
 		/*!\brief Coordinate tranform for graphic elements.
-		 * \ingroup SVG
+		 * \ingroup SVGtransform
 		 */
 		class Transform : public string {
 		 public:
-			//! Return the transform which results from the concatenation of this transform with \c inTranform.
-			Transform operator+(const Transform& inTransform) {
-				return Transform(*this) += inTransform;
-			}
-			
-			//! Append transform \c inTranform to this transform.
-			Transform& operator+=(const Transform& inTransform) {
-				string::operator+=(string(" ")+inTransform);
-				return *this;
-			}
+			Transform operator+(const Transform& inTransform);
+			Transform& operator+=(const Transform& inTransform);
 			
 		 protected:
-			//! Make transform with name \c inName and value \c inValue.
-			Transform(const string &inName, const string &inValue) : string(inName+"("+inValue+")") {}
+			// restricted usage
+			Transform(const string& inName, const string& inValue);
 		};
 		
 		//! \brief Rotation tranform.
-		//! \ingroup SVG
+		//! \ingroup SVGtransform
 		class Rotate : public Transform {
 		 public:
-			//! Make a rotation transform of angle \c inAngle.
-			Rotate(double inAngle) : Transform("rotate", String::convert(inAngle)) {}
-			
-			//! make a rotation transform of angle \c inAngle from point \c inPoint.
-			Rotate(double inAngle, const Point &inPoint) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
-			
-			//! make a rotation transform of angle \c inAngle from coordinates \c inX and \c inY.
-			Rotate(double inAngle, double inX, double inY) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inX) + " " + String::convert(inY)) {}
+			Rotate(double inAngle);
+			Rotate(double inAngle, const Point& inPoint);
+			Rotate(double inAngle, double inX, double inY);
 		};
 		
 		/*!\brief Translation tranform.
-		 * \ingroup SVG
+		 * \ingroup SVGtransform
 		 *
 		 * If you want to set a new origin, you can use the translation. As an 
 		 * example, to put the origin at (1,1), translate by (-1,-1).
 		 */
 		class Translate : public Transform {
 		 public:
-			//! Make a translation transform to point \c inPoint.
-			Translate(const Point &inPoint) : Transform("translate", String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
-			
-			//! make a translation transform to relative coordinates \c inX and \c inY.
-			Translate(double inX, double inY) : Transform("translate", String::convert(inX) + " " + String::convert(inY)) {}
+			Translate(const Point& inPoint);
+			Translate(double inX, double inY);
 		};
 		
 		//! \brief Scaling tranform.
-		//! \ingroup SVG
+		//! \ingroup SVGtransform
 		class Scale : public Transform {
 		 public:
-			//! Make a scaling transform of scale \c inScale.
-			Scale(double inScale) : Transform("scale", String::convert(inScale)) {}
-			
-			//! make a scaling transformm of scale \c inX and \c inY.
-			Scale(double inX, double inY) : Transform("scale", String::convert(inX) + " " + String::convert(inY)) {}
+			Scale(double inScale);
+			Scale(double inX, double inY);
 		};
 		
 		//! \brief Horizontal skewing tranform.
-		//! \ingroup SVG
+		//! \ingroup SVGtransform
 		class SkewX : public Transform {
 		 public:
-			//! Make a horizontal skewing transform of angle \c inAngle. 
-			SkewX(double inAngle) : Transform("skewX", String::convert(inAngle)) {}
+			SkewX(double inAngle);
 		};
 		
 		//! \brief Vertical skewing tranform.
-		//! \ingroup SVG
+		//! \ingroup SVGtransform
 		class SkewY : public Transform {
 		 public:
-			//! Make a vertical skewing transform of angle \c inAngle.
-			SkewY(double inAngle) : Transform("skewY", String::convert(inAngle)) {}
+			SkewY(double inAngle);
 		};
 		
 		//! \brief General matrix transformation.
-		//! \ingroup SVG
+		//! \ingroup SVGtransform
 		class MatrixTransform : public Transform {
 		 public:
-			/*!\brief  Construct a matrix transform from the six upper values of 
-			*         the matrix.
-			* \param  inA  .
-			* \param  inB  .
-			* \param  inC  .
-			* \param  inD  .
-			* \param  inE  .
-			* \param  inF  .
-			*
-			* Transformation matrix is of the form:
-			*
-			* <code>[a b c]<br>
-			*       [d e f]<br>
-			*       [0 0 1]</code>
-			*/
-			MatrixTransform(double inA, double inB, double inC, double inD, double inE, double inF) 
-			: Transform("matrix", String::convert(inA) + " " + String::convert(inB) + " " + String::convert(inC) + " " + String::convert(inD) + " " + String::convert(inE) + " " + String::convert(inF)) {}
+			MatrixTransform(double inA, double inB, double inC, double inD, 
+							double inE, double inF);
 		};
 		
 	} // end of SVG namespace
