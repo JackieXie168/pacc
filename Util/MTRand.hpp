@@ -63,7 +63,9 @@
 #include <time.h>
 #include <math.h>
 
-//! Mersenne Twister random number generator -- a C++ class MTRand
+//! \brief Mersenne Twister random number generator
+//! \ingroup Util
+//!
 //! Based on code by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus
 //! Richard J. Wagner  v1.0  15 May 2003  rjwagner@writeme.com
 //! Not thread safe (unless auto-initialization is avoided and each thread has

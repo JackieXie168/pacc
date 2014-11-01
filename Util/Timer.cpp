@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.cpp
  * \brief Class methods for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.12 $
- * $Date: 2005/04/26 01:10:58 $
+ * $Revision: 1.13 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #include "Util/Timer.hpp"
@@ -39,24 +39,30 @@
 #if defined(WIN32)
 #include <windows.h>
 #include <stdexcept>
-struct TimerStruct {
-   LARGE_INTEGER mCounter;
-   LARGE_INTEGER mFrequency;
-};
+namespace PACC {
+	struct TimerStruct {
+		LARGE_INTEGER mCounter;
+		LARGE_INTEGER mFrequency;
+	};
+}
 #else
 #if defined(__GNUG__) && (defined(__i386__) || defined(__ppc__))
 #include <sys/time.h>
 #include <unistd.h>
-struct TimerStruct {
-	unsigned long long mCount;
-	double mPeriod;
-};
+namespace PACC {
+	struct TimerStruct {
+		unsigned long long mCount;
+		double mPeriod;
+	};
+}
 #else
 #include <sys/time.h>
-struct TimerStruct {
-	timeval mTime;
-	double mPeriod;
-};
+namespace PACC {
+	struct TimerStruct {
+		timeval mTime;
+		double mPeriod;
+	};
+}
 #endif
 #endif
 

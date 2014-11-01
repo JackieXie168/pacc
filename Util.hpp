@@ -29,12 +29,12 @@
  * \file PACC/Util.hpp
  * \brief Include all headers for the utility classes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2005/04/19 13:41:38 $
+ * $Revision: 1.10 $
+ * $Date: 2005/06/02 06:56:49 $
  */
 
 /*!
- *  \defgroup Util Miscellaneous utility classes (Util).
+ *  \defgroup Util Miscellaneous utility classes (Util)
  */
 
 #include "Util/Assert.hpp"

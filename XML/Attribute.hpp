@@ -29,8 +29,8 @@
 * \file PACC/XML/Attribute.hpp
  * \brief Class definition for the %XML tag attributes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2005/06/01 20:44:10 $
+ * $Revision: 1.10 $
+ * $Date: 2005/06/02 06:56:43 $
  */
 
 #ifndef PACC_XML_Attribute_hpp_
@@ -47,6 +47,10 @@ namespace PACC {
 		
 		class Attribute;
 		
+		/*!\brief %Attribute list for tree nodes.
+		   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		   \ingroup XML
+		 */
 		class AttributeList : public map<string, string> {
        public:
 			//! Construct an empty attribute list.
@@ -100,6 +104,10 @@ namespace PACC {
 			const string mEmpty;
 		};
 		
+		/*!\brief Markup attribute.
+			\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+			\ingroup XML
+		 */
 		class Attribute : protected pair<string, string> {
        public:
 			//! Construct an attribute pair with name \c inName and value \c inValue.

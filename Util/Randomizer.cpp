@@ -28,9 +28,9 @@
 /*!
  * \file PACC/Util/Randomizer.cpp
  * \brief Class methods for the random number generator.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2005/04/23 01:38:53 $
+ * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.3 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #include "Util/Randomizer.hpp"

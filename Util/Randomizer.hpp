@@ -29,8 +29,8 @@
  * \file PACC/Util/Randomizer.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.3 $
- * $Date: 2005/04/23 01:39:40 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #ifndef PACC_Randomizer_hpp_
@@ -46,7 +46,7 @@ namespace PACC {
 
    /*!
    \brief Random number generator
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+   \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
    \ingroup Util
    
    This class encapsulates the "Mersenne Twister" random number generator defined in reference:

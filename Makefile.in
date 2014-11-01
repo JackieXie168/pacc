@@ -131,9 +131,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = README $(library_include_HEADERS) AUTHORS COPYING \
-	ChangeLog INSTALL Makefile.am Makefile.in NEWS aclocal.m4 \
-	config.guess config.h.in config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs \
+	COPYING.LIB ChangeLog INSTALL Makefile.am Makefile.in NEWS \
+	aclocal.m4 config.guess config.h.in config.sub configure \
+	configure.ac depcomp install-sh ltmain.sh missing mkinstalldirs \
 	paccmath.pc.in paccsocket.pc.in paccthreading.pc.in \
 	paccutil.pc.in paccxml.pc.in
 all: config.h

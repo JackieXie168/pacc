@@ -29,8 +29,8 @@
  * \file PACC/XML.hpp
  * \brief Include all headers for the XML Extensible markup language module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2005/04/19 13:41:38 $
+ * $Revision: 1.17 $
+ * $Date: 2005/06/02 06:56:18 $
  */
 
 /*! 
@@ -39,7 +39,7 @@
  */
 
 /*!
- *  \defgroup XML Extensible markup language classes (XML).
+ *  \defgroup XML Extensible markup language classes (XML)
  */
 
 #include "XML/Document.hpp"

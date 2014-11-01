@@ -29,8 +29,8 @@
  * \file PACC/Socket/TCPServer.hpp
  * \brief Class definition for the portable multithreaded %TCP server.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.30 $
- * $Date: 2004/11/19 04:28:02 $
+ * $Revision: 1.31 $
+ * $Date: 2005/06/02 06:59:55 $
  */
 
 #ifndef PACC_Socket_TCPServer_hpp_
@@ -71,7 +71,7 @@ protected:
          void main(void);
       };
       
-      /*! \brief Portable multithreaded TCP server.
+      /*! \brief Portable multithreaded %TCP server.
          \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
          \ingroup Socket
    

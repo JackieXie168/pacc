@@ -8,4 +8,4 @@ Description: Portable Agile C++ Classes (XML)
 Version: 1.0.0
 Requires : paccutil
 Libs: -L${libdir} -lpaccxml
-Cflags: -I${includedir} -I${includedir}/PACC -I${includedir}/XML
+Cflags: -I${includedir}/PACC

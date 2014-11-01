@@ -29,8 +29,8 @@
  * \file PACC/Threading.hpp
  * \brief Include all headers for the multithreading module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2005/04/19 13:41:35 $
+ * $Revision: 1.14 $
+ * $Date: 2005/06/02 06:59:24 $
  */
 
 /*! \namespace PACC::Threading
@@ -38,7 +38,7 @@
  */
 
 /*!
- *  \defgroup Threading Portable thread management classes (Threading).
+ *  \defgroup Threading Portable thread management classes (Threading)
  */
 
 #include "Threading/Condition.hpp"

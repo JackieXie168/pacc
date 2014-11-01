@@ -30,8 +30,8 @@
  *  \brief  Definition of class Matrix.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.4 $
- *  $Date: 2005/04/19 13:57:09 $
+ *  $Revision: 1.5 $
+ *  $Date: 2005/06/02 07:00:42 $
  */
  
 #ifndef PACC_Matrix_hpp
@@ -50,7 +50,7 @@ namespace PACC {
 	class Vector;
 
 	/*! \brief %Matrix of floating point numbers.
-	    \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+	    \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 	    \ingroup Math
 		 \ingroup MLP
 	 
@@ -117,7 +117,7 @@ namespace PACC {
 		
 		//! Return number of columns.
 		inline unsigned int getCols(void) const {return mCols;}
-		//! Return number of row.
+		//! Return number of rows.
 		inline unsigned int getRows(void) const {return mRows;}
 				
 		Matrix& add(Matrix& outMatrix, double inScalar) const;

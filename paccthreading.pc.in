@@ -8,4 +8,4 @@ Description: Portable Agile C++ Classes (Threading)
 Version: @VERSION@
 Requires : paccutil
 Libs: -L${libdir} -lpaccthreading
-Cflags: -I${includedir} -I${includedir}/PACC -I${includedir}/Threading
+Cflags: -I${includedir}/PACC

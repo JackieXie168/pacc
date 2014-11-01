@@ -7,4 +7,4 @@ Name: PACC Util
 Description: Portable Agile C++ Classes (Util)
 Version: 1.0.0
 Libs: -L${libdir} -lpaccutil
-Cflags: -I${includedir} -I${includedir}/PACC -I${includedir}/Util
+Cflags: -I${includedir}/PACC

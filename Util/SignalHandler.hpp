@@ -29,8 +29,8 @@
  * \file PACC/Util/SignalHandler.hpp
  * \brief Class definition for the portable signal handler.
  * \author Marc Dubreuil and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2004/06/03 14:58:31 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #ifndef PACC_SIGNALHANDLER_HPP
@@ -45,7 +45,7 @@ namespace PACC {
 
    /*!
     *  \class SignalHandler PACC/Util/SignalHandler.hpp "PACC/Util/SignalHandler.hpp"
-    *  \brief Basic class that handle signals (POSIX *nix or win32 console application)
+    *  \brief Portable signal handling.
     *  \author Marc Dubreuil and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
     *  \ingroup Util
     *

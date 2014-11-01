@@ -28,9 +28,9 @@
 /*!
 * \file PACC/Util/SignalHandler.cpp
  * \brief Class methods for the signal handler.
- * \author Marc Dubreuil and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/04/19 18:19:16 $
+ * \author Marc Dubreuil and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.5 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #include "Util/SignalHandler.hpp"

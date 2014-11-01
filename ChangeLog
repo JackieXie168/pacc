@@ -1,1 +1,1 @@
-PACC change log:1.0.0  (June 1st, 2005)- Initial release of the automake/autoconf files
+PACC change log:1.0.0  (June 1st, 2005)- Initial release of the automake/autoconf files- XML::Finder now provides partial xpath support- XML::Streamer can now indent markup attributes- New Randomizer class based on Mersenne Twister- New Matrix/Vector classes (in Math directory)- Timer now uses performance counter on Linux/Pentium- New string functions for converting to floats or integers- Some minor bug fixes

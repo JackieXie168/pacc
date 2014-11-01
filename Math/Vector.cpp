@@ -25,13 +25,11 @@
  *
  */
 
-/*!
- *  \file   PACC/Math/Vector.cpp
- *  \brief  Method definitions for class Vector.
- *  \author Christian Gagne
- *  \author Marc Parizeau
- *  $Revision: 1.5 $
- *  $Date: 2005/04/20 15:39:36 $
+/*!\file   PACC/Math/Vector.cpp
+ * \brief  Method definitions for class Vector.
+ * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.6 $
+ * $Date: 2005/06/02 07:00:42 $
  */
 
 #include "Math/Vector.hpp"

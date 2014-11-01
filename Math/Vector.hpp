@@ -30,8 +30,8 @@
  *  \brief  Definition of class Vector.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.3 $
- *  $Date: 2005/04/19 18:10:03 $
+ *  $Revision: 1.4 $
+ *  $Date: 2005/06/02 07:00:42 $
  */
  
 #ifndef PACC_Vector_hpp
@@ -48,7 +48,7 @@ namespace PACC {
 	using namespace std;
 	
    /*! \brief Single column matrix.
-		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup Math
 		\ingroup MLP
 		

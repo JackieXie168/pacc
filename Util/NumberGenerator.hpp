@@ -29,8 +29,8 @@
  * \file PACC/Util/NumberGenerator.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2004/06/02 04:57:21 $
+ * $Revision: 1.10 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #ifndef PACC_NumberGenerator_hpp_
@@ -48,14 +48,15 @@
 
 namespace PACC {
 
-   /*!
-   \brief Random number generator
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Util
+   /*!\brief Random number generator
+      \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+      \ingroup Util
    
    This class encapsulates the "rand1" number generator defined in the
    "Numerical Recipes in C" book. It can generate uniformly distributed 
    booleans, integers and floats, or gaussian distributed floats.
+	 
+	\deprecated This class is deprecated, use PACC:Randomizer instead. 
    */
    class NumberGenerator
    {

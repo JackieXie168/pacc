@@ -29,12 +29,12 @@
 * \file PACC/Math.hpp
  * \brief Include all headers for the portable math module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/04/19 13:51:01 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/02 07:00:34 $
  */
 
 /*!
-*  \defgroup Math Portable math classes (Math).
+*  \defgroup Math Portable math classes (Math)
  */
 
 #include "Math/Matrix.hpp"

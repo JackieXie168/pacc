@@ -29,14 +29,14 @@
  * \file PACC/Util/RandomPermutation.hpp
  * \brief Class definition for the random permutation.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2004/06/02 04:57:21 $
+ * $Revision: 1.11 $
+ * $Date: 2005/06/02 06:59:17 $
  */
 
 #ifndef PACC_RandomPermutation_hpp_
 #define PACC_RandomPermutation_hpp_
 
-#include "Util/NumberGenerator.hpp"
+#include "Util/Randomizer.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -44,13 +44,12 @@ namespace PACC {
    
    using namespace std;
 
-   /*!
-   \brief Random permutation generator.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Util
+   /*!\brief Random permutation generator.
+      \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+      \ingroup Util
    
    A random permutation of size X is a vector that contains integer 0 to X-1 randomly permutated.
-   */
+	*/
    class RandomPermutation : public vector<int> {
    public:
       //! Initialize permutation of size \c inSize, without any shuffling.
@@ -59,7 +58,7 @@ namespace PACC {
       }
       
       //! Shuffle permutation randomly using number generator \c inRand.
-      RandomPermutation &permutate(NumberGenerator &inRand=rand1) {
+      RandomPermutation &permutate(Randomizer &inRand=PACC::rand) {
          random_shuffle(begin(), end(), inRand);
          return *this;
       }
