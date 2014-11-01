@@ -30,8 +30,8 @@
  * \brief Class methods for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
  
- * $Revision: 1.35 $
- * $Date: 2005/09/15 14:13:34 $
+ * $Revision: 1.37 $
+ * $Date: 2005/10/05 09:15:08 $
  */
 
 #include "XML/Streamer.hpp"

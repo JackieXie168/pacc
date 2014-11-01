@@ -29,8 +29,8 @@
  * \file PACC/XML/Streamer.hpp
  * \brief Class definition for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.40 $
- * $Date: 2005/09/17 03:50:24 $
+ * $Revision: 1.43 $
+ * $Date: 2005/10/05 12:21:11 $
  */
 
 #ifndef PACC_XML_Streamer_hpp_
@@ -51,7 +51,11 @@ namespace PACC {
 		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup XML
 		
-		This class is for streaming %XML markup with automatic indentation. To add a new markup tag, use method Streamer::openTag, followed by calls to Streamer::insertAttribute to add attributes. Then call again Streamer::openTag to insert any embedded markup. Don't forget to close each tag by calling Streamer::closeTag. Here is a simple usage example:
+		This class is for streaming %XML markup with automatic indentation. To 
+		add a new markup tag, use method Streamer::openTag, followed by calls to 
+		Streamer::insertAttribute to add attributes. Then call again Streamer::openTag 
+		to insert any embedded markup. Don't forget to close each tag by calling 
+		Streamer::closeTag. Here is a simple usage example:
 		\code
 		Streamer lStream(cout);
 		lStream.insertHeader();
@@ -86,21 +90,22 @@ namespace PACC {
 			//!Return output stream of streamer.
 			ostream& getStream(void) {return mStream;}
 			
-			/*! Insert an attribute with name \c inName and value \c inValue into the current start tag.
+			/*!
+			Insert an attribute with name \c inName and value \c inValue into the current start tag.
 				
-				This method assumes that typename \c Type knows how to insert itself into a stream using \c operator<<.
-				*/
+			This method assumes that typename \c Type knows how to insert itself into a stream using \c operator<<.
+			 */
 			template <typename Type>
 				void insertAttribute(const string& inName, Type inValue, bool inConvert=false) {
 					if(mIndentAttributes && mTags.top().second) {
-						mStream << endl << string(mTags.size()*mIndentWidth, ' ');
+						mStream << endl << std::string(mTags.size()*mIndentWidth, ' ');
 					} else {
 						mStream << " ";
 					}
 					if(inConvert) {
 						ostringstream lStream;
 						lStream << inValue;
-						string lValue(lStream.str());
+						std::string lValue(lStream.str());
 						mStream << inName << "=\"" << convertToQuotes(lValue) << "\"";
 					} else {
 						mStream << inName << "=\"" << inValue << "\"";
@@ -131,7 +136,7 @@ namespace PACC {
 						if(inConvert) {
 							ostringstream lStream;
 							lStream << (*i);
-							string lValue(lStream.str());
+							std::string lValue(lStream.str());
 							(*this) << convertToQuotes(lValue);
 						} else {
 							(*this) << (*i);

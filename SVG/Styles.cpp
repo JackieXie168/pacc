@@ -29,14 +29,28 @@
  * \file PACC/SVG/Styles.cpp
  * \brief Class methods for %SVG styles.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/09/15 14:12:58 $
+ * $Revision: 1.6 $
+ * $Date: 2005/10/04 02:43:22 $
  */
 
 #include "SVG/Styles.hpp"
 
-using namespace std;;
+using namespace std;
 using namespace PACC;
+
+/*!
+*/
+SVG::Style SVG::Attribute::operator+(const SVG::Attribute& inAttribute) const
+{
+	return Style(*this) += inAttribute;
+}
+
+/*!
+*/
+SVG::Style SVG::Attribute::operator+(const SVG::Style& inAttrList) const
+{
+	return Style(*this) += inAttrList;
+}
 
 // predefined styles
 const SVG::FillRule SVG::FillRule::cNonZero("nonzero");
@@ -65,7 +79,7 @@ const SVG::TextDecoration SVG::TextDecoration::cNone("none");
 const SVG::TextDecoration SVG::TextDecoration::cUnderline("underline");
 const SVG::TextDecoration SVG::TextDecoration::cLineThrough("line-through");
 
-SVG::StrokeDashArray::StrokeDashArray(const vector<float>& inDashArray) : XML::Attribute("stroke-dasharray", string()) 
+SVG::StrokeDashArray::StrokeDashArray(const vector<float>& inDashArray) : Attribute("stroke-dasharray", string()) 
 {
 	string lNumbers;
 	for ( unsigned i = 0; i < inDashArray.size(); i++ ) lNumbers += String::convert(inDashArray[i]) + " ";

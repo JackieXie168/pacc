@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.cpp
  * \brief Class methods for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2005/06/09 19:12:13 $
+ * $Revision: 1.19 $
+ * $Date: 2005/10/05 12:33:01 $
  */
 
 #include "Util/Timer.hpp"
@@ -49,7 +49,8 @@
 using namespace std;
 using namespace PACC;
 
-/*! Under windows, this method calls the QueryPerformanceFrequency function to determine the count period. When using the gcc compiler on an i386 family processor (Pentium or AMD), or on a PowerPC family processor, this method calibrates the hardware time-stamp using the standard gettimeofday function. This calibration is conducted by measuring a delay of approximatly \c inDelay micro-seconds, and the count period is averaged over \c inTimes runs. In all other cases, the count period is fixed at 1 micro-second (the maximum resolution of gettimeofday).
+/*! 
+Under Windows, this method calls the QueryPerformanceFrequency function to determine the count period. When using the gcc compiler on an i386 family processor (Pentium or AMD), or on a PowerPC family processor, this method calibrates the hardware time-stamp using the standard gettimeofday function. This calibration is conducted by measuring a delay of approximatly \c inDelay micro-seconds, and the count period is averaged over \c inTimes runs. In all other cases, the count period is fixed at 1 micro-second (the maximum resolution of gettimeofday).
 
 This method is called automatically by the class constructor. Under normal circumstances, the user should not concern himself with calibration. 
  */
@@ -58,7 +59,7 @@ void Timer::calibrateCountPeriod(unsigned int inDelay, unsigned int inTimes)
 #if defined(WIN32)
 	// use the windows counter
 	LARGE_INTEGER lFrequency;
-   PACC_AssertM(QueryPerformanceFrequency(&lFrequency), "Timer::Timer() no performance counter on this processor!");
+	PACC_AssertM(QueryPerformanceFrequency(&lFrequency), "Timer::Timer() no performance counter on this processor!");
 	mPeriod = 1. / lFrequency.QuadPart;
 #else
 #if defined(__GNUG__) && (defined(__i386__) || defined(__ppc__))
@@ -84,15 +85,16 @@ void Timer::calibrateCountPeriod(unsigned int inDelay, unsigned int inTimes)
 #endif
 }
 
-/*! This method returns the highest resolution count available on this platform. Under Windows, it returns the hardware performance counter value as provided by its QueryPerformanceCounter method. When using the gcc compiler on an i386 family processor (Pentium or AMD), or on a PowerPC family processor, this method also returns the hardware performance counter value using in-lined assembly code. In all other cases, it returns a count based on the standard gettimeofday function (in micro-seconds).
+/*! 
+This method returns the highest resolution count available on this platform. Under Windows, it returns the hardware performance counter value as provided by its QueryPerformanceCounter method. When using the gcc compiler on an i386 family processor (Pentium or AMD), or on a PowerPC family processor, this method also returns the hardware performance counter value using in-lined assembly code. In all other cases, it returns a count based on the standard gettimeofday function (in micro-seconds).
  */
 unsigned long long Timer::getCount(void) const
 {
 	unsigned long long lCount = 0;
 #if defined(WIN32)
-   LARGE_INTEGER lCurrent;
-   QueryPerformanceCounter(&lCurrent);
-   lCount = lCurrent.QuadPart;
+	LARGE_INTEGER lCurrent;
+	QueryPerformanceCounter(&lCurrent);
+	lCount = lCurrent.QuadPart;
 #else
 #if defined(__GNUG__) && defined(__i386__)
 	__asm__ volatile("rdtsc" : "=A" (lCount));

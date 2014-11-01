@@ -29,8 +29,8 @@
  * \file PACC/SVG/Primitives.hpp
  * \brief Class definitions for the SVG graphic primitives.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/09/22 13:19:31 $
+ * $Revision: 1.8 $
+ * $Date: 2005/10/05 12:33:52 $
  */
 
 #ifndef PACC_SVG_Graphic_hpp_
@@ -66,12 +66,12 @@ namespace PACC {
 			* If the same style attribute with the same name is already present, it
 			* will be replaced by the new value.
 			*/
-			void addStyle(const Style& inStyle) {operator+=((AttributeList)inStyle);}
+			void addStyle(const Style& inStyle) {*this += inStyle;}
 			
 			//! Remove any coordinate transformation applyed to this element.
 			void clearTransform(void) {removeAttribute("transform");}
 			
-			//! Set id of primtive.
+			//! Set id of primitive.
 			void setID(const string& inID) {setAttribute("id", inID);}
 			
 			/*!\brief  Set the coordinate transformation to apply.

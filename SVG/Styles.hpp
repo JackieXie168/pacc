@@ -29,8 +29,8 @@
  * \file PACC/SVG/Styles.hpp
  * \brief Class definition for the SVG element styles.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/09/17 03:50:09 $
+ * $Revision: 1.5 $
+ * $Date: 2005/10/04 01:52:23 $
  */
 
 #ifndef PACC_SVG_Styles_hpp_
@@ -48,22 +48,75 @@ namespace PACC {
 		
 		using namespace std;
 		
-		/*!\brief List of attributes representing the style of an element.
-		* \ingroup SVG
-		*
-		* A style object hold a list of style attributes.
-		*
-		* \see  StyleAttribute
+		class Style;
+		
+		/*! \brief Container for a single style attribute.
+			\ingroup SVG
+			
+			An attribute a pair of attribute name / attribute value. Its only 
+			constructor is protected in order to restrict its usage. It will be
+			sub-classed for specific %SVG style attributes.
+		*/
+		class Attribute : public pair<string, string> {
+
+			public:
+						
+			//! Return a style list of attributes by combining attribute \c inAttribute with this attribute.
+			Style operator+(const Attribute& inAttribute) const;
+			
+			//! Return a style list of attributes by merging list \c inAttrList with this attribute.
+			Style operator+(const Style& inAttrList) const;
+			
+			//! Return name of this attribute.
+			string& getName(void) {return first;}
+			
+			//! Return name of this attribute (const).
+			const string& getName(void) const {return first;}
+			
+			//! Return value of this attribute.
+			string& getValue(void) {return second;}
+
+			//! Return value of this attribute (const).
+			const string& getValue(void) const {return second;}
+			
+			protected:
+			
+			//! Construct an attribute style from name \c inName and value \c inValue.
+			Attribute(const string& inName, const string& inValue) : pair<string, string>(inName, inValue) {}
+		};
+		
+		/*! \brief List of attributes representing the style of an element.
+			\ingroup SVG
+
+			A style object holds a list of style attributes.
+
+			\see Attribute
 		*/
 		class Style : public XML::AttributeList {
+			
 			public:
+			
 			//! Make an empty style.
 			Style() {}
+			
 			//! Make a style from a single attribute \c inAttribute.
-			Style(const XML::Attribute& inAttribute) : XML::AttributeList(inAttribute) {}
+			Style(const Attribute& inAttribute) {insert(inAttribute);}
+			
 			//! Make a style from an attribute list \c inList.
 			Style(const XML::AttributeList& inList) : XML::AttributeList(inList) {}
 			
+			//! Return concatenation of style list \c inAttrList with this list.
+			Style operator+(const Style& inAttrList) const {
+				return Style(*this) += inAttrList;
+			}
+			
+			//! Append attribute list \c inAttrList to this list.
+			Style& operator+=(const Style& inAttrList) {
+				for(Style::const_iterator lPos = inAttrList.begin(); lPos != inAttrList.end(); ++lPos) {
+					(*this)[lPos->first] = lPos->second;
+				}
+				return *this;
+			}
 		};
 		
 		/*!\brief %Style attribute for object opacity.
@@ -76,10 +129,12 @@ namespace PACC {
 			* see the fill edge behind the stroke. With opacity the hole shape is
 			* rendered and then made transparent.
 			*/
-		class Opacity : public XML::Attribute {
+		class Opacity : public Attribute {
+			
 			public:
+
 			//! Set the graphic opacity to value \c inValue.
-			Opacity(float inValue) : XML::Attribute("opacity", String::convert(inValue)) {}
+			Opacity(float inValue) : Attribute("opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for fill color of shapes.
@@ -88,10 +143,12 @@ namespace PACC {
 			* Currently this class can only take plain color fills. 
 			* It may be extended in the future to support gradient or patterns.
 			*/
-		class Fill : public XML::Attribute {
+		class Fill : public Attribute {
+			
 			public:
+
 			//! Set the fill color to value \c inValue.
-			Fill(const Color &inValue) : XML::Attribute("fill", inValue) {}
+			Fill(const Color &inValue) : Attribute("fill", inValue) {}
 			
 			//! This constant represent an empty (or transparent) fill.
 			static const Fill cNone;
@@ -101,11 +158,12 @@ namespace PACC {
 			* \ingroup SVG
 			* \see  Fill
 			*/
-		class FillOpacity : public XML::Attribute {
-			public:
-			//! Set the fill opacity to value \c inValue (0=transparent).
-			FillOpacity(float inOpacity) : XML::Attribute("fill-opacity", String::convert(inOpacity)) {}
+		class FillOpacity : public Attribute {
 			
+			public:
+
+			//! Set the fill opacity to value \c inValue (0=transparent).
+			FillOpacity(float inOpacity) : Attribute("fill-opacity", String::convert(inOpacity)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the fill rule.
@@ -114,8 +172,10 @@ namespace PACC {
 			* Overlapping regions can be filled according to differents rules
 			* defined as constants inside this class.
 			*/
-		class FillRule : public XML::Attribute {
+		class FillRule : public Attribute {
+			
 			public:
+
 			/*! \brief After counting the crossings, if the result is zero then the 
 			*         point is outside the path. Otherwise, it is inside.
 			*
@@ -132,6 +192,7 @@ namespace PACC {
 			* \image html fillrule-nonzero.png
 			*/
 			static const FillRule cNonZero;
+
 			/*! \brief After counting the crossings, if the count is odd, the point
 			*         is inside; if even, the point is outside.
 			*
@@ -147,8 +208,9 @@ namespace PACC {
 			static const FillRule cEvenOdd;
 			
 			private:
+
 			//! Set fill rule to value \c inValue.
-			FillRule(const string &inFillRule) : XML::Attribute("fill-rule", inFillRule) {}
+			FillRule(const string &inFillRule) : Attribute("fill-rule", inFillRule) {}
 		};
 		
 		/*!\brief %Style attribute for specifying how to fill the stroke of a shape.
@@ -157,10 +219,12 @@ namespace PACC {
 			* Currently this class can only take plain color strokes. It may be 
 			* extended in the future to support gradient or patterns strokes.
 			*/
-		class Stroke : public XML::Attribute {
+		class Stroke : public Attribute {
+			
 			public:
+
 			//! Set stroke color to \c inColor.
-			Stroke(const Color& inColor) : XML::Attribute("stroke", inColor) {}
+			Stroke(const Color& inColor) : Attribute("stroke", inColor) {}
 			
 			//! This constant represent an non-existant (or invisible) stroke.
 			static const Stroke cNone;
@@ -168,11 +232,12 @@ namespace PACC {
 		
 		//! \brief %Style attribute for the opacity of strokes.
 		//! \ingroup SVG
-		class StrokeOpacity : public XML::Attribute {
-			public:
-			//! set stroke opacity to value \c inValue (0=transparent).
-			StrokeOpacity(float inValue) : XML::Attribute("stroke-opacity", String::convert(inValue)) {}
+		class StrokeOpacity : public Attribute {
 			
+			public:
+
+			//! set stroke opacity to value \c inValue (0=transparent).
+			StrokeOpacity(float inValue) : Attribute("stroke-opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute specifying width of the stroke.
@@ -180,10 +245,12 @@ namespace PACC {
 			*
 			* Defautl width of as stroke is 1.
 			*/
-		class StrokeWidth : public XML::Attribute {
+		class StrokeWidth : public Attribute {
+			
 			public:
+
 			//! Set stroke width to value \c inValue.
-			StrokeWidth(float inValue) : XML::Attribute("stroke-width", String::convert(inValue)) {}
+			StrokeWidth(float inValue) : Attribute("stroke-width", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying how to dash the stroke.
@@ -196,15 +263,18 @@ namespace PACC {
 			*
 			* \see  DashArray
 			*/
-		class StrokeDashArray : public XML::Attribute {
+		class StrokeDashArray : public Attribute {
+			
 			public:
+
 			/*!\brief  Make a dash array from a string.
 			* \param  inDashArray  A string with the lenght of dash and spaces
 			*                      separated by spaces characters.
 			*
 			* Sample dash array value: "10 2.5 5"
 			*/
-			StrokeDashArray(const std::string &inDashArray) : XML::Attribute("stroke-dasharray", inDashArray) {}
+			StrokeDashArray(const std::string &inDashArray) : Attribute("stroke-dasharray", inDashArray) {}
+
 			/*!\brief  Construct a dash array with a vector of floats.
 			* \param  inDashArray  A vector of floats as the list of dashes and 
 			*                      spaces.
@@ -213,8 +283,10 @@ namespace PACC {
 			
 			//! Default dash array for a continous line.
 			static const StrokeDashArray cContinuous;
+
 			//! Default dash array for a dotted line (valid only for stroke width of 1).
 			static const StrokeDashArray cDotted;
+
 			//! Default dash array for a dashed line.
 			static const StrokeDashArray cDashed;
 		};
@@ -223,19 +295,23 @@ namespace PACC {
 			* \ingroup SVG
 			* \see LineCap
 			*/
-		class StrokeLineCap : public XML::Attribute {
+		class StrokeLineCap : public Attribute {
+			
 			public:
+
 			//! \image html linecap-butt.png
 			static const StrokeLineCap cButt;
+
 			//! \image html linecap-round.png
 			static const StrokeLineCap cRound;
+
 			//! \image html linecap-square.png
 			static const StrokeLineCap cSquare;
 			
 			private:
+
 			//! Set line cap style to value \c inValue.
-			StrokeLineCap(const std::string &inValue) : XML::Attribute("stroke-linecap", inValue) {}
-			
+			StrokeLineCap(const std::string &inValue) : Attribute("stroke-linecap", inValue) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the type of join between stroke 
@@ -243,39 +319,48 @@ namespace PACC {
 			* \ingroup SVG
 			* \see LineJoin
 			*/
-		class StrokeLineJoin : public XML::Attribute {
+		class StrokeLineJoin : public Attribute {
+			
 			public:
+
 			//! \image html linejoin-miter.png
 			static const StrokeLineJoin cMiter;
+
 			//! \image html linejoin-round.png
 			static const StrokeLineJoin cRound;
+
 			//! \image html linejoin-bevel.png
 			static const StrokeLineJoin cBevel;
 			
 			private:
+
 			//! Set line join style to value \c inValue.
-			StrokeLineJoin(const std::string &inValue) : XML::Attribute("stroke-linejoin", inValue) {}
+			StrokeLineJoin(const std::string &inValue) : Attribute("stroke-linejoin", inValue) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the length to width ratio of strokes.
-			* \ingroup SVG
-			*
-			* This style attribute has no effect on strokes with line join that is not
-			* set to miter. The default miter limit ratio is 4.
-		*
-			* \see  StrokeLineJoin, MiterLimit
-			*/
-		class StrokeMiterLimit : public XML::Attribute {
+			\ingroup SVG
+
+			This style attribute has no effect on strokes with line join that is not
+			set to miter. The default miter limit ratio is 4.
+
+			\see  StrokeLineJoin, MiterLimit
+		*/
+		class StrokeMiterLimit : public Attribute {
+			
 			public:
+
 			//! Set the meter limit to ratio \c inRatio.
-			StrokeMiterLimit(float inRatio) : XML::Attribute("stroke-miterlimit", String::convert(inRatio)) {}
+			StrokeMiterLimit(float inRatio) : Attribute("stroke-miterlimit", String::convert(inRatio)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the font family.
 			* \ingroup SVG
 			*/
-		class FontFamily : public XML::Attribute {
+		class FontFamily : public Attribute {
+			
 			public:
+
 			/*!\brief  Constructor with family name.
 			* \param  inName  The name of the family.
 			* 
@@ -283,51 +368,62 @@ namespace PACC {
 			* this case the first matching family will be used. The list must be
 			* of the form: "Times, Times New Roman, serif".
 			*/
-			FontFamily(const std::string &inName) : XML::Attribute("font-family", inName) {}
+			FontFamily(const std::string &inName) : Attribute("font-family", inName) {}
 			
 			//! Default serif font from the viewer.
 			static const FontFamily cSerif;
+
 			//! \brief  Default sans serif font from the viewer.
 			static const FontFamily cSansSerif;
 		};
 		
 		//! \brief %Style attribute for specifying text style.
 		//! \ingroup SVG
-		class FontStyle : public XML::Attribute {
+		class FontStyle : public Attribute {
+			
 			public:
+
 			//! Use normal font style.
 			static const FontStyle cNormal;
+
 			//! Use italic font style (similar to cOblique).
 			static const FontStyle cItalic;
+
 			//! Use oblique font style (similar to cItalic).
 			static const FontStyle cOblique;
 			
 			private:
+
 			//! Constructor with font style name.
 			//! \param inName A valid CSS style name string.
-			FontStyle(const std::string &inName) : XML::Attribute("font-style", inName) {}
+			FontStyle(const std::string &inName) : Attribute("font-style", inName) {}
 		};
 		
 		//! \brief %Style attribute for defining font weight.
 		//! \ingroup SVG
-		class FontWeight : public XML::Attribute {
+		class FontWeight : public Attribute {
+			
 			public:
+
 			//! Normal font weight.
 			static const FontWeight cNormal;
+
 			//! Bold font weight.
 			static const FontWeight cBold;
 			
 			private:
+
 			//! Constructor with weight name.
-			FontWeight(const std::string &inName) : XML::Attribute("font-weight", inName) {}
+			FontWeight(const std::string &inName) : Attribute("font-weight", inName) {}
 		};
 		
 		//! \brief %Style attribute for specifying font size.
 		//! \ingroup SVG
-		class FontSize : public XML::Attribute {
+		class FontSize : public Attribute {
 			public:
+
 			//! Set font size to value \c inValue.
-			FontSize(float inValue) : XML::Attribute("font-size", String::convert(inValue)) {}
+			FontSize(float inValue) : Attribute("font-size", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying text positioning.
@@ -336,38 +432,48 @@ namespace PACC {
 			* start, the middle or the end of the text. Static member constants are
 			* defined for each allowed value.
 			*/
-		class TextAnchor : public XML::Attribute {
+		class TextAnchor : public Attribute {
+			
 			public:
+
 			//! Start the text at the anchor point.
 			static const TextAnchor cStart;
+
 			//! Put the middle of the text at the anchor point.
 			static const TextAnchor cMiddle;
+
 			//! Put the end of the text at the anchor point.
 			static const TextAnchor cEnd;
 			
 			private:
+
 			/*!\brief  Anchor the text using the value given in the string.
 			 * \param  inValue A valid SVG value for the <code>text-anchor</code>
 			 *                 attribute.
 			 */
-			TextAnchor(const std::string &inValue) : XML::Attribute("text-anchor", inValue) {}
+			TextAnchor(const std::string &inValue) : Attribute("text-anchor", inValue) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the text decoration.
-			*
-			* Supported decorations are underline and line-through.
-			*/
-		class TextDecoration : public XML::Attribute {
+
+			Supported decorations are underline and line-through.
+		*/
+		class TextDecoration : public Attribute {
+			
 			public:
+
 			//! Clears all text decorations.
 			static const TextDecoration cNone;
+			
 			//! Set an underline decoration for the text.
 			static const TextDecoration cUnderline;
+			
 			//! Set a line-through decoration for the text.
 			static const TextDecoration cLineThrough;
 			
 			private:
-			TextDecoration(const std::string &inDecoration) : XML::Attribute("text-decoration", inDecoration) {}
+			
+			TextDecoration(const std::string &inDecoration) : Attribute("text-decoration", inDecoration) {}
 		};
 		
 		typedef StrokeDashArray DashArray;

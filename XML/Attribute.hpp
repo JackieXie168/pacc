@@ -29,8 +29,8 @@
  * \file PACC/XML/Attribute.hpp
  * \brief Class definition for the %XML tag attributes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.12 $
- * $Date: 2005/09/17 03:50:24 $
+ * $Revision: 1.13 $
+ * $Date: 2005/10/04 01:54:46 $
  */
 
 #ifndef PACC_XML_Attribute_hpp_
@@ -44,38 +44,27 @@ namespace PACC {
 	using namespace std;
 	
 	namespace XML {
-		
-		class Attribute;
-		
+				
 		/*!\brief %Attribute list for tree nodes.
 		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup XML
 		*/
 		class AttributeList : public map<string, string> {
 			public:
+
 			//! Construct an empty attribute list.
 			AttributeList() {}
-			//! Construct this attribute list with attribute \c inAttribute.
-			AttributeList(const Attribute& inAttribute) {
-				*this += inAttribute;
-			}
-			
-			//! Return cancatenation of attribute \c inAttribute with this list.
-			AttributeList operator+(const Attribute& inAttribute) const {
-				return AttributeList(*this) += inAttribute;
-			}
-			//! Add attribute \c inAttribute to this list.
-			AttributeList& operator+=(const Attribute& inAttribute) {
-				insert((pair<string,string>&)inAttribute);
-				return *this;
-			}
+
 			//! Return concatenation of attribute list \c inAttrList with this list.
 			AttributeList operator+(const AttributeList& inAttrList) const {
 				return AttributeList(*this) += inAttrList;
 			}
+
 			//! Append attribute list \c inAttrList to this list.
 			AttributeList& operator+=(const AttributeList& inAttrList) {
-				insert(inAttrList.begin(), inAttrList.end());
+				for(AttributeList::const_iterator lPos = inAttrList.begin(); lPos != inAttrList.end(); ++lPos) {
+					(*this)[lPos->first] = lPos->second;
+				}
 				return *this;
 			}
 			
@@ -83,10 +72,12 @@ namespace PACC {
 			const string& getAttribute(const string& inName) const {
 				const_iterator lAttr = find(inName); 
 				return (lAttr != end() ? (*lAttr).second : mEmpty);}
+
 			//! Test wheter attribute name \c inName exists in this list.
 			bool isDefined(const std::string& inName) const {
 				return find(inName) != end();
 			}
+
 			//! Remove attribute name \c inName from this attribute list.
 			void removeAttribute(const string& inName) {
 				erase(inName);
@@ -95,6 +86,7 @@ namespace PACC {
 			void setAttribute(const string& inName, const string& inValue) {
 				(*this)[inName] = inValue;
 			}
+
 			//! Set attribute \c inName to value \c inValue.
 			void setAttribute(const string& inName, double inValue) {
 				(*this)[inName] = String::convert(inValue);
@@ -102,35 +94,6 @@ namespace PACC {
 			
 			private:
 			const string mEmpty;
-		};
-		
-		/*!\brief Markup attribute.
-			\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-			\ingroup XML
-			*/
-		class Attribute : protected pair<string, string> {
-			public:
-			//! Construct an attribute pair with name \c inName and value \c inValue.
-			Attribute(const string &inName, const string &inValue) : pair<string, string>(inName, inValue) {}
-			
-			//! Add attribute \c inAttribute and return a list.
-			AttributeList operator+(const Attribute& inAttribute) const {
-				return AttributeList(*this) += inAttribute;
-			}
-			//! Add list of attributes \c inAttrList and return a list.
-			AttributeList operator+(const AttributeList& inAttrList) const {
-				return AttributeList(*this) += inAttrList;
-			}
-			
-			//! Return attribute name.
-			string& getName(void) {return first;}
-			//! Return attribute name (const).
-			const string& getName(void) const {return first;}
-			
-			//! Return attribute name.
-			string& getValue(void) {return second;}
-			//! Return attribute name (const).
-			const string& getValue(void) const {return second;}
 		};
 		
 	} // end of XML namespace

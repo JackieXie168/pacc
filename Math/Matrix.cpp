@@ -29,8 +29,8 @@
  * \file   PACC/Math/Matrix.cpp
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2005/09/19 06:10:42 $
+ * $Revision: 1.12 $
+ * $Date: 2005/10/04 17:25:17 $
  */
 
 #include "Math/Matrix.hpp"
@@ -459,7 +459,7 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 	double eps = std::pow(2.0,-52.0);
 	for(unsigned int l = 0; l < n; l++) {
 		// Find small subdiagonal element
-		tst1 = std::max(tst1, std::abs(d[l]) + std::abs(e[l]));
+		tst1 = max(tst1, abs(d[l]) + abs(e[l]));
 		unsigned int m=l;
 		while((m+1) < n) {
 			if(std::abs(e[m]) <= eps*tst1) break;
