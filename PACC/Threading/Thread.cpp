@@ -29,12 +29,13 @@
  * \file PACC/Threading/Thread.cpp
  * \brief Class methods for the portable thread.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.45 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.46 $
+ * $Date: 2008/04/17 21:09:32 $
  */
 
 #include "PACC/Threading/Thread.hpp"
 #include "PACC/Util/Assert.hpp"
+#include <cstdlib>
 
 #ifdef WIN32
 #include <windows.h>

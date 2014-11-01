@@ -29,13 +29,15 @@
  * \file PACC/Util/Tokenizer.cpp
  * \brief Class methods for the input stream tokenizer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.25 $
- * $Date: 2007/02/24 19:30:41 $
+ * $Revision: 1.30 $
+ * $Date: 2008/04/17 21:16:35 $
  */
 
 #include "PACC/Util/Tokenizer.hpp"
 #include "PACC/Util/Assert.hpp"
 #include <stdexcept>
+#include <cstdlib>
+#include <cstring>
 
 using namespace std;
 using namespace PACC;
@@ -67,7 +69,7 @@ Tokenizer::Tokenizer(istream& inStream, unsigned int inBufSize)
 /*!
  */
 Tokenizer::~Tokenizer(void) {
-	if(mBuffer != 0) delete mBuffer;
+	delete[] mBuffer;
 }
 
 /*!
@@ -102,7 +104,7 @@ bool Tokenizer::getNextToken(string& outToken)
 		do {
 			lChar = mStream->get();
 			if(mStream->eof()) {
-				outToken.clear();
+				outToken.resize(0);
 				return false;
 			}
 			if(lChar == '\n') ++mLine;
@@ -132,7 +134,7 @@ bool Tokenizer::getNextToken(string& outToken)
 		// get rid of leading white space
 		do {
 			if(mBufCount == 0 && fillBuffer() == 0) {
-				outToken.clear();
+				outToken.resize(0);
 				return false;
 			}
 			lChar = *(mBufPtr++); --mBufCount;
@@ -161,7 +163,7 @@ bool Tokenizer::getNextToken(string& outToken)
 	return !outToken.empty();
 }
 
-/*
+/*!
  */
 string Tokenizer::getSingleCharTokens(void) const 
 {
@@ -170,7 +172,7 @@ string Tokenizer::getSingleCharTokens(void) const
 	return lSingleCharTokens;
 }
 
-/*
+/*!
  */
 string Tokenizer::getWhiteSpace(void) const 
 {
@@ -196,8 +198,10 @@ int Tokenizer::peekNextChar(void)
 	}
 }
 
-/*
- \attention Any number of tokens can be put back. However, take note that these WILL NOT be parsed again, if the user decides to change delimiters.
+/*!
+ This method uses a stack to store tokens that will be returned by Tokenizer::getNextToken in LIFO order.
+ 
+ \attention Any number of tokens can be put back, but take note that these WILL NOT be parsed again, if the user decides to change delimiters.
  */
 void Tokenizer::putbackToken(const string& inToken) 
 {
@@ -205,14 +209,14 @@ void Tokenizer::putbackToken(const string& inToken)
 	mTokens.push(inToken);
 }
 
-/*
+/*!
  The minimum buffer size is set to 10. A smaller buffer size will disable the use of the internal read buffer.
  
 \attention This method should be called prior to the first call of method Tokenizer::getNextToken, because it is an error to resize a buffer that is not empty. Method Tokenizer::setStream should be called explicitely to flush the buffer .
  */
 void Tokenizer::setBufferSize(unsigned int inSize)
 {
-	if(mBuffer != 0) delete mBuffer;
+	delete[] mBuffer;
 	if(inSize < 10) inSize = 0;	
 	if(inSize > 0) mBuffer = new char[inSize];
 	else mBuffer = 0;

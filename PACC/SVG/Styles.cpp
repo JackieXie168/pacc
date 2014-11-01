@@ -29,8 +29,8 @@
  * \file PACC/SVG/Styles.cpp
  * \brief Class methods for %SVG styles.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.7 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.8 $
+ * $Date: 2008/04/17 21:28:59 $
  */
 
 #include "PACC/SVG/Styles.hpp"
@@ -79,7 +79,7 @@ const SVG::TextDecoration SVG::TextDecoration::cNone("none");
 const SVG::TextDecoration SVG::TextDecoration::cUnderline("underline");
 const SVG::TextDecoration SVG::TextDecoration::cLineThrough("line-through");
 
-SVG::StrokeDashArray::StrokeDashArray(const vector<float>& inDashArray) : Attribute("stroke-dasharray", string()) 
+SVG::StrokeDashArray::StrokeDashArray(const vector<double>& inDashArray) : Attribute("stroke-dasharray", string()) 
 {
 	string lNumbers;
 	for ( unsigned i = 0; i < inDashArray.size(); i++ ) lNumbers += String::convert(inDashArray[i]) + " ";

@@ -57,11 +57,11 @@
 #ifndef MersenneTwister_hpp_
 #define MersenneTwister_hpp_
 
+#include <climits>
+#include <cmath>
 #include <iostream>
-#include <limits.h>
 #include <stdio.h>
 #include <time.h>
-#include <math.h>
 
 //! \brief Mersenne Twister random number generator
 //! \ingroup Util
@@ -87,7 +87,7 @@ class MTRand {
 	
 	uint32 state[N];   //!< internal state
 	uint32 *pNext;     //!< next value to get from state
-	int left;          //!< number of values left before reload needed
+	uint32 left;          //!< number of values left before reload needed
 	
 	
 	//Methods
@@ -249,7 +249,7 @@ inline void MTRand::seed( const uint32 *const bigSeed, const uint32 seedLength )
 	initialize(19650218UL);
 	register int i = 1;
 	register uint32 j = 0;
-	register int k = ( (uint32)N > seedLength ? (uint32)N : seedLength );
+	register uint32 k = ( (uint32)N > seedLength ? (uint32)N : seedLength );
 	for( ; k; --k )
 	{
 		state[i] =

@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.hpp
  * \brief Class definition for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.41 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.42 $
+ * $Date: 1970/05/08 23:05:04 $
  */
 
 #ifndef PACC_XML_Document_hpp_
@@ -86,12 +86,14 @@ for(Iterator lChild = lRoot->getFirstChild(); lChild; ++lChild) {
 
 		A document can also be constructed from scratch, or modified, using methods Document::addChild, Document::addRoot, Document::addSibling, Document::attachChild, Document::attachSibling, Document::detach, Document::erase, and Document::eraseRoots. It can be serialized into a stream using method Document::serialize, and parsed from a stream using Document::parse. To search for specific markup data, one may use an instance of the Finder class.
 		*/
-		class Document : private Node {
+		class Document : protected Node {
 			public:   
 			//! Constructs an empty document.
 			Document(void) {}
+			
 			//! Constructs a document from an input stream.
 			Document(istream& inStream, const string& inName="") {parse(inStream, inName);}
+			
 			//! Delete document.
 			~Document(void) {eraseRoots();}
 			

@@ -40,7 +40,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -202,10 +202,10 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = gnu
 
 #Build temp static libraries in these directories:
-SUBDIRS = Math XML SVG Socket Threading Util
+SUBDIRS = Math Socket SVG Threading Util XML
 
 #Distribute these directories:
-DIST_SUBDIRS = Math XML SVG Socket Threading Util
+DIST_SUBDIRS = Math Socket SVG Threading Util XML
 h_sources = Math.hpp Socket.hpp SVG.hpp Threading.hpp Util.hpp XML.hpp
 library_includedir = $(includedir)/PACC
 library_include_HEADERS = $(h_sources)

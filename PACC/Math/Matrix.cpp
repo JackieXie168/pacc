@@ -30,8 +30,8 @@
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et 
  syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.21 $
- * $Date: 2007/02/24 19:33:15 $
+ * $Revision: 1.23 $
+ * $Date: 2008/04/17 21:08:42 $
  */
 
 #include "PACC/Math/Matrix.hpp"
@@ -40,6 +40,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <cmath>
+#include <climits>
 
 using namespace std;
 using namespace PACC;
@@ -489,7 +490,7 @@ void Matrix::parse(const string& inString)
 	while(!lFinished) {
 		if(!lTokenizer.getNextToken(lToken)) {
 			lFinished = true;
-			lToken =   ";";
+			lToken = ";";
 		}
 		if(lToken == ";") {
 			// either end of string or end of row

@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.cpp
  * \brief Class methods for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.43 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.45 $
+ * $Date: 1970/05/08 22:59:39 $
  */
 
 #include "PACC/XML/Document.hpp"
@@ -101,9 +101,9 @@ XML::Iterator XML::Document::addSibling(const XML::Iterator& inPos, const string
 /*! 
 \return An iterator to the attached child.
 
-This method inserts the pre-allocated node \c inNode (and its sub-tree) as the last child of the referenced node. The node pointed by \c inNode then becomes property of this document. 
+This method inserts the pre-allocated node \c inChild (and its sub-tree) as the last child of the  node referenced by iterator \c inPos. Note that \c inPos is assumed to point within this document, and that the newly attached child becomes property of this document. 
 
-\attention A document sub-tree needs to be detached (see Document::detach) before it can be move to another document or another branch of the same document (node are not reference counted). Otherwise, the subtree will be owned twiced, and deallocated by the first owner which is deleted. This can produce strange behaviors that are very difficult to debug. Beware!
+\attention A document sub-tree needs to be detached (see Document::detach) before it can be move to another document or another branch of the same document (nodes are not reference counted). Otherwise, the subtree will be owned twiced, and deallocated by the first owner which is deleted. This can produce strange behaviors that are very difficult to debug. Beware!
 */
 XML::Iterator XML::Document::attachChild(const XML::Iterator& inPos, XML::Node* inChild)
 {
@@ -116,7 +116,7 @@ XML::Iterator XML::Document::attachChild(const XML::Iterator& inPos, XML::Node* 
 /*! 
 \return An Iterator to the attached sibling.
 
-This method inserts the pre-allocated node \c inNode (and its sub-tree) as the sibling that precedes the referenced node. The node pointed by \c inNode then becomes property of this document. 
+This method inserts the pre-allocated node \c inSibling (and its sub-tree) as the sibling that precedes the node referenced by iterator \c inPos. Note that \c inPos is assumed to point with this document, and that the newly attached sibling becomes property of this document. 
 
 \attention A document sub-tree needs to be detached (see Document::detach) before it can be move to another document or another branch of the same document (nodes are not reference counted). Otherwise, the subtree will be owned twiced, and deallocated by the first owner which is deleted. This can produce strange behaviors that are very difficult to debug. Beware!
 */
@@ -244,7 +244,7 @@ void XML::Document::parse(istream& inStream, const string& inName)
 }
 
 /*!
-A negative value of \c inValue disables all indentation (including line feeds). Argument \c inIndentAttributes controls the indentation of markup attributes. The default is to not indent attributes.
+A negative value of \c inWidth disables all indentation (including line feeds). Argument \c inIndentAttributes controls the indentation of markup attributes. The default is to not indent attributes.
  */
 void XML::Document::serialize(ostream& outStream, int inWidth, bool inIndentAttributes) const
 {

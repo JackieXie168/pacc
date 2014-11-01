@@ -30,8 +30,8 @@
  *  \brief  Definition of class Vector.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.18 $
- *  $Date: 2007/02/24 19:33:15 $
+ *  $Revision: 1.19 $
+ *  $Date: 2007/09/13 12:58:36 $
  */
 
 #ifndef PACC_Vector_hpp
@@ -42,6 +42,7 @@
 #include "PACC/XML/Document.hpp"
 #include "PACC/XML/Streamer.hpp"
 #include <cmath>
+#include <algorithm>
 
 namespace PACC {
 	

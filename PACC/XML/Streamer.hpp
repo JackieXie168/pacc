@@ -29,8 +29,8 @@
  * \file PACC/XML/Streamer.hpp
  * \brief Class definition for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.49 $
- * $Date: 2007/02/28 16:20:55 $
+ * $Revision: 1.51 $
+ * $Date: 2007/03/03 01:54:21 $
  */
 
 #ifndef PACC_XML_Streamer_hpp_
@@ -56,7 +56,9 @@ namespace PACC {
 		add a new markup tag, use method Streamer::openTag, followed by calls to 
 		Streamer::insertAttribute to add attributes. Then call again Streamer::openTag 
 		to insert any embedded markup. Don't forget to close each tag by calling 
-		Streamer::closeTag. Here is a simple usage example:
+		Streamer::closeTag or Streamer::closeAll. 
+		
+		Here is a simple usage example:
 		\code
 		Streamer lStream(cout);
 		lStream.insertHeader();
@@ -85,7 +87,7 @@ namespace PACC {
 			//! Constructs object for streaming %XML markup into output stream \c inStream using an indentation width of \c inWidth.
 			Streamer(ostream& inStream, unsigned int inWidth=2) : mStream(inStream), mIndentWidth(inWidth), mClosed(true), mOneAttribute(false), mIndentAttributes(false) {}
 			
-			//! Close all opened markup tag.
+			//! Close all opened markup tags.
 			void closeAll(void);
 			
 			//! Close the last opened markup tag.

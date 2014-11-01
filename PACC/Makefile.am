@@ -1,10 +1,10 @@
 AUTOMAKE_OPTIONS = gnu
 
 #Build temp static libraries in these directories:
-SUBDIRS = Math XML SVG Socket Threading Util
+SUBDIRS = Math Socket SVG Threading Util XML
 
 #Distribute these directories:
-DIST_SUBDIRS = Math XML SVG Socket Threading Util
+DIST_SUBDIRS = Math Socket SVG Threading Util XML
 
 h_sources =  Math.hpp Socket.hpp SVG.hpp Threading.hpp Util.hpp XML.hpp
 

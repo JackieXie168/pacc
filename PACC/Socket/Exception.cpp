@@ -29,8 +29,8 @@
  * \file PACC/Socket/Exception.cpp
  * \brief Class methods for the portable socket exception.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2007/01/23 21:27:46 $
+ * $Revision: 1.14 $
+ * $Date: 1970/05/08 18:26:05 $
  */
 
 #include "PACC/Socket/Exception.hpp"
@@ -101,22 +101,21 @@ string Socket::Exception::getMessage() const throw()
 	ostringstream lMessage;
 	switch(mCode)
 	{
-		case eAddressInUse: lMessage << "AddressInUse"; break;
-		case eAddressNotAvailable: lMessage << "AddressNotAvailable"; break;
-		case eBadDescriptor: lMessage << "BadDescriptor"; break;
-		case eBadMessage: lMessage << "BadMessage"; break;
-		case eConnectionClosed: lMessage << "ConnectionClosed"; break;
-		case eConnectionRefused: lMessage << "ConnectionRefused"; break;
-		case eDatagramTooLong: lMessage << "DatagramTooLong"; break;
-		case eInvalidOption: lMessage << "InvalidOption"; break;
-		case eIsConnected: lMessage << "IsConnected"; break;
-		case eNotConnected: lMessage << "NotConnected"; break;
-		case eOpNotSupported: lMessage << "OpNotSupported"; break;
-		case ePrivilegedPort: lMessage << "PrivilegedPort"; break;
-		case eTimeOut: lMessage << "TimeOut"; break;
-		default: lMessage << "OtherError"; break;
+		case eAddressInUse: lMessage << "address in use"; break;
+		case eAddressNotAvailable: lMessage << "address not available"; break;
+		case eBadDescriptor: lMessage << "bad descriptor"; break;
+		case eBadMessage: lMessage << "bad message"; break;
+		case eConnectionClosed: lMessage << "connection closed"; break;
+		case eConnectionRefused: lMessage << "connection refused"; break;
+		case eDatagramTooLong: lMessage << "datagram too long"; break;
+		case eInvalidOption: lMessage << "invalid option"; break;
+		case eIsConnected: lMessage << "is connected"; break;
+		case eNotConnected: lMessage << "not connected"; break;
+		case eOpNotSupported: lMessage << "operation not supported"; break;
+		case ePrivilegedPort: lMessage << "privileged port"; break;
+		case eTimeOut: lMessage << "time out"; break;
+		default: lMessage << "other error"; break;
 	}
-	if(mNativeCode) lMessage << " (" << mNativeCode << "): ";
-	else lMessage << ": ";
-	return lMessage.str()+what();
+	if(mNativeCode) lMessage << " (" << mNativeCode << ")";
+	return string("Socket ")+lMessage.str()+":\n"+what();
 }

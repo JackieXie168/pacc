@@ -29,8 +29,8 @@
  * \file PACC/SVG/Canvas.hpp
  * \brief Class definition for the SVG drawing canvas.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2007/02/08 14:45:14 $
+ * $Revision: 1.19 $
+ * $Date: 2008/04/17 21:26:51 $
  */
 
 #ifndef PACC_SVG_Canvas_hpp_
@@ -62,7 +62,7 @@ namespace PACC {
 			}
 			
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle, size \c inSize, and style \c inStyle.
-			Canvas(const string& inTitle, const Size& inSize, const Style& inStyle, const string& inHostPort="localhost:61250", unsigned int inPort=61250) : Document(inTitle, inSize, inStyle), Socket::Cafe(inHostPort) {
+			Canvas(const string& inTitle, const Size& inSize, const Style& inStyle, const string& inHostPort="localhost:61250") : Document(inTitle, inSize, inStyle), Socket::Cafe(inHostPort) {
 				initCanvas();
 			}
 			
@@ -99,7 +99,7 @@ namespace PACC {
 			}
 			
 			//! Set frame size to width \c inwidth and height \c inHeight.
-			void setSize(float inWidth, float inHeight) {
+			void setSize(double inWidth, double inHeight) {
 				setAttribute("width", inWidth);
 				setAttribute("height", inHeight);
 				updateViewer();
@@ -111,7 +111,7 @@ namespace PACC {
 		 private:
 			string mWinID; //<! Window ID of this canvas.
 			
-			//! Initialize canvas with title \c inTitle.
+			//! Pop canvas window on viewer.
 			void initCanvas(void);
 			
 			//! Send canvas to viewer.

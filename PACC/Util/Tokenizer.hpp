@@ -29,14 +29,14 @@
  * \file PACC/Util/Tokenizer.hpp
  * \brief Class definition for the input stream tokenizer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2006/01/27 20:55:38 $
+ * $Revision: 1.20 $
+ * $Date: 2007/09/13 15:04:41 $
  */
 
 #ifndef PACC_Tokenizer_hpp_
 #define PACC_Tokenizer_hpp_
 
-#include <istream>
+#include <iostream>
 #include <string>
 #include <stack>
 
@@ -118,12 +118,17 @@ namespace PACC {
 		
 		//! Fill the input read buffer
 		inline unsigned int fillBuffer(void) {
+#if __GNUC__ < 3
+			mStream->read(mBufPtr=mBuffer, mBufSize);
+			mBufCount = mStream->gcount();
+#else
 			mBufCount = mStream->readsome(mBufPtr=mBuffer, mBufSize);
 			if(mBufCount == 0) {
 				// in case of console input, wait for the next character
 				mStream->read(mBuffer, 1);
 				mBufCount = mStream->gcount();
 			}
+#endif
 			return mBufCount;
 		}
 		

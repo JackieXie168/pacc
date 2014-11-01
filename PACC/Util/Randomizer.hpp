@@ -29,8 +29,8 @@
  * \file PACC/Util/Randomizer.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.11 $
+ * $Date: 2008/04/17 21:13:57 $
  */
 
 #ifndef PACC_Randomizer_hpp_
@@ -81,6 +81,8 @@ namespace PACC {
 		unsigned long int getInteger(void) {return randInt();}
 		//! Return a uniformly distributed random integer in range [0,\c inValue].
 		unsigned long int getInteger(unsigned long int inValue) {return randInt(inValue);}
+		//! Return a uniformly distributed random integer in range [\c inLow,\c inHigh].
+		long int getInteger(long int inLow, long int inHigh) {return randInt(inHigh-inLow)+inLow;}
 		//! Return a uniformly distributed random floating point number in range [0,1].
 		double getFloat(void) {return rand();}
 		//! Return a uniformly distributed random floating point number in range [0,\c inValue].

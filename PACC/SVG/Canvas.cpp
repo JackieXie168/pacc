@@ -28,8 +28,8 @@
 /*!\file PACC/SVG/Canvas.cpp
  * \brief Class methods for the SVG containers (Group, Frame, and Canvas).
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2007/02/08 14:45:14 $
+ * $Revision: 1.13 $
+ * $Date: 2008/04/17 21:05:44 $
  */
 
 #include "PACC/SVG/Canvas.hpp"
@@ -41,27 +41,41 @@
 using namespace std;
 using namespace PACC;
 
-//! This method also adjusts the frame attributes, and connect to the viewer.
+/*!
+ */
 void SVG::Canvas::initCanvas(void) 
 {
-	// send canvas to viewer
-	ostringstream lStream;
-	lStream << "NEWW        ";
-	write(lStream);
-	sendMessage(lStream.str());
-	receiveMessage(mWinID);
+	try {
+		// construct new canvas message
+		ostringstream lStream;
+		lStream << "NEWW        ";
+		write(lStream);
+		// send message
+		sendMessage(lStream.str());
+		// save window id
+		receiveMessage(mWinID);
+		// close viewer connection
+		close();
+	} catch(const Socket::Exception& inErr) {
+		cerr << inErr.getMessage() << endl;
+	}
 }
 
-//!
+/*!
+ */
 void SVG::Canvas::updateViewer(void)
 {
-	// make the message
-	ostringstream lStream;
-	lStream << "REFR" << mWinID;
-	write(lStream);
-	// try send the message
 	try {
+		// reconnect to viewer
+		connect(std::string("localhost:61250"));
+		// construct update message
+		ostringstream lStream;
+		lStream << "REFR" << mWinID;
+		write(lStream);
+		// send message
 		sendMessage(lStream.str());
+		// close connection
+		close();
 	} catch(const Socket::Exception& inErr) {
 		cerr << inErr.getMessage() << endl;
 	}

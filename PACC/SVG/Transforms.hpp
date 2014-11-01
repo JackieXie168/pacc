@@ -29,8 +29,8 @@
  * \file PACC/SVG/Transforms.hpp
  * \brief Class definition for the SVG transform.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.9 $
+ * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Transforms_hpp_
@@ -71,13 +71,13 @@ namespace PACC {
 		class Rotate : public Transform {
 		 public:
 			//! Make a rotation transform of angle \c inAngle.
-			Rotate(float inAngle) : Transform("rotate", String::convert(inAngle)) {}
+			Rotate(double inAngle) : Transform("rotate", String::convert(inAngle)) {}
 			
 			//! make a rotation transform of angle \c inAngle from point \c inPoint.
-			Rotate(float inAngle, const Point &inPoint) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
+			Rotate(double inAngle, const Point &inPoint) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
 			
 			//! make a rotation transform of angle \c inAngle from coordinates \c inX and \c inY.
-			Rotate(float inAngle, float inX, float inY) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inX) + " " + String::convert(inY)) {}
+			Rotate(double inAngle, double inX, double inY) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inX) + " " + String::convert(inY)) {}
 		};
 		
 		/*!\brief Translation tranform.
@@ -92,7 +92,7 @@ namespace PACC {
 			Translate(const Point &inPoint) : Transform("translate", String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
 			
 			//! make a translation transform to relative coordinates \c inX and \c inY.
-			Translate(float inX, float inY) : Transform("translate", String::convert(inX) + " " + String::convert(inY)) {}
+			Translate(double inX, double inY) : Transform("translate", String::convert(inX) + " " + String::convert(inY)) {}
 		};
 		
 		//! \brief Scaling tranform.
@@ -100,10 +100,10 @@ namespace PACC {
 		class Scale : public Transform {
 		 public:
 			//! Make a scaling transform of scale \c inScale.
-			Scale(float inScale) : Transform("scale", String::convert(inScale)) {}
+			Scale(double inScale) : Transform("scale", String::convert(inScale)) {}
 			
 			//! make a scaling transformm of scale \c inX and \c inY.
-			Scale(float inX, float inY) : Transform("scale", String::convert(inX) + " " + String::convert(inY)) {}
+			Scale(double inX, double inY) : Transform("scale", String::convert(inX) + " " + String::convert(inY)) {}
 		};
 		
 		//! \brief Horizontal skewing tranform.
@@ -111,7 +111,7 @@ namespace PACC {
 		class SkewX : public Transform {
 		 public:
 			//! Make a horizontal skewing transform of angle \c inAngle. 
-			SkewX(float inAngle) : Transform("skewX", String::convert(inAngle)) {}
+			SkewX(double inAngle) : Transform("skewX", String::convert(inAngle)) {}
 		};
 		
 		//! \brief Vertical skewing tranform.
@@ -119,7 +119,7 @@ namespace PACC {
 		class SkewY : public Transform {
 		 public:
 			//! Make a vertical skewing transform of angle \c inAngle.
-			SkewY(float inAngle) : Transform("skewY", String::convert(inAngle)) {}
+			SkewY(double inAngle) : Transform("skewY", String::convert(inAngle)) {}
 		};
 		
 		//! \brief General matrix transformation.
@@ -141,7 +141,7 @@ namespace PACC {
 			*       [d e f]<br>
 			*       [0 0 1]</code>
 			*/
-			MatrixTransform(float inA, float inB, float inC, float inD, float inE, float inF) 
+			MatrixTransform(double inA, double inB, double inC, double inD, double inE, double inF) 
 			: Transform("matrix", String::convert(inA) + " " + String::convert(inB) + " " + String::convert(inC) + " " + String::convert(inD) + " " + String::convert(inE) + " " + String::convert(inF)) {}
 		};
 		

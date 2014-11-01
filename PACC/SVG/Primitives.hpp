@@ -29,8 +29,8 @@
  * \file PACC/SVG/Primitives.hpp
  * \brief Class definitions for the SVG graphic primitives.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2007/02/08 01:16:01 $
+ * $Revision: 1.12 $
+ * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Graphic_hpp_
@@ -184,7 +184,7 @@ namespace PACC {
 			}
 			
 			//! Retur circle radius.
-			float getRadius(void) const {
+			double getRadius(void) const {
 				return String::convertToFloat(getAttribute("r"));
 			}
 			
@@ -228,7 +228,7 @@ namespace PACC {
 			}
 			
 			//! Return ellipse first radius.
-			float getXRadius() const {
+			double getXRadius() const {
 				return String::convertToFloat(getAttribute("rx"));
 			}
 			
@@ -238,7 +238,7 @@ namespace PACC {
 			}
 			
 			//! Return ellipse second radius.
-			float getYRadius(void) const {
+			double getYRadius(void) const {
 				return String::convertToFloat(getAttribute("ry"));
 			}
 			

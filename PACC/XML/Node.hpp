@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.hpp
  * \brief Class definition for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.37 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.38 $
+ * $Date: 2007/09/15 01:29:01 $
  */
 
 #ifndef PACC_XML_Node_hpp_
@@ -84,12 +84,16 @@ namespace PACC {
 			public:
 			//! Construct empty root node.
 			Node(void);
+			
 			//! Construct node of type \c inType (default NodeType::eTag) with value \c inValue.
 			Node(const string& inValue, NodeType inType=eData);
+			
 			//! Construct node of type \c eData with value \c inValue and attribute list \c inAttrList.
 			Node(const string& inValue, const AttributeList& inAttrList);
+			
 			//! Copy constructor: make deep copy of node \c inNode.
 			Node(const Node& inNode);
+			
 			//! Delete the sub-tree rooted by this node.
 			~Node(void);
 			
@@ -98,46 +102,64 @@ namespace PACC {
 			
 			//! Return an iterator pointing to the first child of this node.
 			Node* getFirstChild(void) {return mFirstChild;}
+			
 			//! Return a const iterator pointing to the first child of this node.
 			const Node* getFirstChild(void) const {return mFirstChild;}
+			
 			//! Return an iterator pointing to the last child of this node.
 			Node* getLastChild(void) {return mLastChild;}
+			
 			//! Return a const iterator pointing to the last child of this node.
 			const Node* getLastChild(void) const {return mLastChild;}
+			
 			//! Return an iterator pointing to the next sibling of this node.
 			Node* getNextSibling(void) {return mNextSibling;}
+			
 			//! Return a const iterator pointing to the next sibling of this node.
 			const Node* getNextSibling(void) const {return mNextSibling;}
+			
 			//! Return an iterator pointing to the previous sibling of this node.
 			Node* getPreviousSibling(void) {return mPrevSibling;}
+			
 			//! Return a const iterator pointing to the previous sibling of this node.
 			const Node* getPreviousSibling(void) const {return mPrevSibling;}
+			
 			//! Return an iterator pointing to the parent of this node.
 			Node* getParent(void) {return mParent;}
+			
 			//! Return a const iterator pointing to the parent of this node.
 			const Node* getParent(void) const {return mParent;}
 			
 			//! Returns the node type (see enum XML::NodeType).
 			const NodeType getType(void) const {return mType;}
+			
 			//! Returns the node value (tag name for NodeType::eData).
-			const string& getValue(void) const {return getAttribute("");}         
+			const string& getValue(void) const {return getAttribute("");}   
+			
 			//! Set the node type (see enum XML::NodeType).
 			void setType(NodeType inType) {mType = inType;}         
+			
 			//! set node value (tag name for nodes of type NodeType::eTag).
 			void setValue(const string& inValue) {setAttribute("", inValue);}         
 			
 			//! Detach this node from its siblings and parent.
 			Node* detachFromSiblingsAndParent(void);
+			
 			//! Delete all children.
 			void eraseChildren(void);
+			
 			//! Return the number of child nodes.
 			unsigned int getChildCount(void) const;
+			
 			//! Insert node \c inChild after the last child of this node.
 			Node* insertAsLastChild(Node* inChild);
+			
 			//! Insert node \c inSibling as the sibling that preceeds this node.
 			Node* insertAsPreviousSibling(Node* inSibling);
+			
 			//! Parse next tag using stream tokenizer \c inTokenizer.
 			static Node* parse(Tokenizer& inTokenizer, const set<string>& inNoParseTags);
+			
 			//! Serialize this node into %XML streamer \c outStream.
 			void serialize(Streamer& outStream, bool inIndent=true) const;
 			
@@ -148,16 +170,26 @@ namespace PACC {
 			Node* mLastChild; //!< Pointer to last child node.
 			Node* mPrevSibling; //!< Pointer to previous sibling node.
 			Node* mNextSibling; //!< Pointer to next sibling node.
-			static map<string,char> smMap; //!< Conversion map for translating quotes.
+			
+			class DefaultQuotes : public std::map<std::string,char> {
+			public:
+				DefaultQuotes(void);
+			};
+			
+			static DefaultQuotes smMap; //!< Conversion map for translating quotes.
 			
 			//! Convert basic xml quotes into ascii characters.
 			static string& convertFromQuotes(string& ioString, map<string,char>& ioMap=smMap);
+			
 			//! Parse the attribute list using stream tokenizer \c inTokenizer.
 			void parseAttributeList(Tokenizer& inTokenizer, string& outToken);
+			
 			//! Parse in stream tokenizer \c inTokenizer the start tag of this node.
 			void parseStartTag(Tokenizer& inTokenizer, string& outToken);
+			
 			//! Read in stream tokenizer \c inTokenizer the content of this node (current tag) as a single string (do not parse content).
 			void readContentAsString(Tokenizer& inTokenizer);
+			
 			//! Throw runtime error with message \c inMessage using tokenizer \c inTokenizer.
 			void throwError(Tokenizer& inTokenizer, const string& inMessage) const;
 			

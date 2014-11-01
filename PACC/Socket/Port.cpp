@@ -29,8 +29,8 @@
  * \file PACC/Socket/Port.cpp
  * \brief Class methods for the portable socket base class.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.51 $
- * $Date: 2007/01/23 21:27:46 $
+ * $Revision: 1.52 $
+ * $Date: 1970/05/08 18:26:31 $
  */
 
 #include "PACC/Socket/Port.hpp"
@@ -152,8 +152,8 @@ void Socket::Port::connect(const Socket::Address& inPeer)
 	if(::connect(mDescriptor, (struct sockaddr*) &lSock, sizeof(lSock)) != 0) {
 		int lCode = ErrNo;
 		ostringstream lMessage;
-		lMessage << "Port::connect() unable to connect to server: \"" << inPeer.getHostName();
-		lMessage << "\" at port:" << inPeer.getPortNumber();
+		lMessage << "Port::connect() unable to connect to server \"" << inPeer.getHostName();
+		lMessage << "\" at port " << inPeer.getPortNumber();
 		throw Exception(lCode, lMessage.str());
 	}
 }

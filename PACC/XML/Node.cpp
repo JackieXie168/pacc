@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.cpp
  * \brief Class methods for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.40 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.43 $
+ * $Date: 2008/04/17 21:17:03 $
  */
 
 #include "PACC/XML/Node.hpp"
@@ -39,11 +39,12 @@
 #include "PACC/Util/Assert.hpp"
 #include <sstream>
 #include <stdexcept>
+#include <cstring>
 
 using namespace std;
 using namespace PACC;
 
-map<string,char> XML::Node::smMap;
+XML::Node::DefaultQuotes XML::Node::smMap;
 
 /*!
 */
@@ -118,20 +119,23 @@ XML::Node& XML::Node::operator=(const Node& inRoot)
 	return *this;
 }
 
+/*!
+ */
+XML::Node::DefaultQuotes::DefaultQuotes(void) {
+	// initialize quote list
+	(*this)["amp"] = '&';
+	(*this)["lt"] = '<';
+	(*this)["gt"] = '>';
+	(*this)["apos"] = '\'';
+	(*this)["quot"] = '"';
+}
+
 /*! 
 \return A reference to the converted string.
 The default quotes are "&amp;", "&lt;", "&gt;", "&apos;", and "&quot;". Argument \c ioMap can be used to specify any conversion table. 
 */
 string& XML::Node::convertFromQuotes(string& ioString, map<string,char>& ioMap)
 {
-	if(ioMap.empty()) {
-		// initialize quote list
-		ioMap["amp"] = '&';
-		ioMap["lt"] = '<';
-		ioMap["gt"] = '>';
-		ioMap["apos"] = '\'';
-		ioMap["quot"] = '"';
-	}
 	string::size_type lStart, lEnd = 0;
 	while((lStart = ioString.find('&', lEnd)) < ioString.size() && 
 				(lEnd = ioString.find(';', lStart)) < ioString.size())
@@ -447,7 +451,7 @@ void XML::Node::readContentAsString(PACC::Tokenizer& inTokenizer)
 	size_type lPos = lString.find_first_not_of(" \t\r\n");
 	if(lPos == string::npos) {
 		// string is all white space
-		lString.clear();
+		lString.resize(0);
 	} else {
 		// erase leading white space
 		lString.erase(0, lPos);

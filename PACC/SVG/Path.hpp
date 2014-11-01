@@ -29,8 +29,8 @@
  * \file PACC/SVG/Path.hpp
  * \brief Class definition for the SVG path primitive.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.7 $
+ * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Path_hpp_
@@ -106,7 +106,7 @@ namespace PACC {
 			//! make moveto from point \c inPoint.
 			MoveTo(const Point &inPoint) : PathData(string("M") + inPoint.getStringValue()) {}
 			//! Make moveto from coordinates \c inX and \c inY.
-			MoveTo(float inX, float inY) : PathData(string("M") + Point(inX, inY).getStringValue()) {}
+			MoveTo(double inX, double inY) : PathData(string("M") + Point(inX, inY).getStringValue()) {}
 		};
 		
 		//! \brief %Path command for drawing a line.
@@ -116,7 +116,7 @@ namespace PACC {
 			//! Make lineto with point \c inPoint. 
 			LineTo(const Point &inPoint)  : PathData(string("L") + inPoint.getStringValue()) {}
 			//! Make lineto with coordinates \c inX and \c inY,
-			LineTo(float inX, float inY) : PathData(string("L") + Point(inX, inY).getStringValue()) {}
+			LineTo(double inX, double inY) : PathData(string("L") + Point(inX, inY).getStringValue()) {}
 		};
 		
 		/*!\brief %Path command to close the current subpath.
@@ -210,7 +210,7 @@ namespace PACC {
 			* \param  inSweep          True to turn by a positive angle, false
 			*                          for a negative one.
 			*/
-			EllipticalArcTo(const Point &inPoint, float inXRadius, float inYRadius, float inXAxisRotation, bool inLargeArc, bool inSweep) : PathData(string("A") + String::convert(inXRadius) + "," +  String::convert(inYRadius) + " " + String::convert(inXAxisRotation) + " " + ( inLargeArc ? "1" : "0" ) + " " + ( inSweep ? "1" : "0" ) + " " + inPoint.getStringValue()) {}
+			EllipticalArcTo(const Point &inPoint, double inXRadius, double inYRadius, double inXAxisRotation, bool inLargeArc, bool inSweep) : PathData(string("A") + String::convert(inXRadius) + "," +  String::convert(inYRadius) + " " + String::convert(inXAxisRotation) + " " + ( inLargeArc ? "1" : "0" ) + " " + ( inSweep ? "1" : "0" ) + " " + inPoint.getStringValue()) {}
 		};
 		
 		//! Short name for a cubic Bezier curve path command.

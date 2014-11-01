@@ -29,8 +29,8 @@
  * \file PACC/SVG/Styles.hpp
  * \brief Class definition for the SVG element styles.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.9 $
+ * $Date: 2008/04/17 21:28:59 $
  */
 
 #ifndef PACC_SVG_Styles_hpp_
@@ -128,7 +128,7 @@ namespace PACC {
 		class Opacity : public Attribute {
 		 public:
 			//! Set the graphic opacity to value \c inValue.
-			Opacity(float inValue) : Attribute("opacity", String::convert(inValue)) {}
+			Opacity(double inValue) : Attribute("opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for fill color of shapes.
@@ -153,7 +153,7 @@ namespace PACC {
 		class FillOpacity : public Attribute {
 		 public:
 			//! Set the fill opacity to value \c inValue (0=transparent).
-			FillOpacity(float inOpacity) : Attribute("fill-opacity", String::convert(inOpacity)) {}
+			FillOpacity(double inOpacity) : Attribute("fill-opacity", String::convert(inOpacity)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the fill rule.
@@ -220,7 +220,7 @@ namespace PACC {
 		class StrokeOpacity : public Attribute {
 		 public:
 			//! set stroke opacity to value \c inValue (0=transparent).
-			StrokeOpacity(float inValue) : Attribute("stroke-opacity", String::convert(inValue)) {}
+			StrokeOpacity(double inValue) : Attribute("stroke-opacity", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute specifying width of the stroke.
@@ -231,7 +231,7 @@ namespace PACC {
 		class StrokeWidth : public Attribute {
 		 public:
 			//! Set stroke width to value \c inValue.
-			StrokeWidth(float inValue) : Attribute("stroke-width", String::convert(inValue)) {}
+			StrokeWidth(double inValue) : Attribute("stroke-width", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying how to dash the stroke.
@@ -258,7 +258,7 @@ namespace PACC {
 			 * \param  inDashArray  A vector of floats as the list of dashes and 
 			 *                      spaces.
 			 */
-			StrokeDashArray(const vector<float> &inDashArray);
+			StrokeDashArray(const vector<double> &inDashArray);
 			
 			//! Default dash array for a continous line.
 			static const StrokeDashArray cContinuous;
@@ -322,7 +322,7 @@ namespace PACC {
 		class StrokeMiterLimit : public Attribute {
 		 public:
 			//! Set the meter limit to ratio \c inRatio.
-			StrokeMiterLimit(float inRatio) : Attribute("stroke-miterlimit", String::convert(inRatio)) {}
+			StrokeMiterLimit(double inRatio) : Attribute("stroke-miterlimit", String::convert(inRatio)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying the font family.
@@ -385,7 +385,7 @@ namespace PACC {
 		class FontSize : public Attribute {
 		 public:
 			//! Set font size to value \c inValue.
-			FontSize(float inValue) : Attribute("font-size", String::convert(inValue)) {}
+			FontSize(double inValue) : Attribute("font-size", String::convert(inValue)) {}
 		};
 		
 		/*!\brief %Style attribute for specifying text positioning.

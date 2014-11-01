@@ -29,8 +29,8 @@
  * \file PACC/Util/Date.cpp
  * \brief Class methods for the portable time and date.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.13 $
- * $Date: 2007/02/24 22:11:38 $
+ * $Revision: 1.14 $
+ * $Date: 2007/08/18 23:59:11 $
  */
 
 #include "PACC/Util/Date.hpp"
@@ -38,45 +38,168 @@
 using namespace std;
 using namespace PACC;
 
-//! Construct with specified date \c inYear, \c inMonth, and \c inDay.
+/*!
+ */
 Date::Date(unsigned int inYear, unsigned int inMonth, unsigned int inDay) : mTime(0)
 {
 	setDate(inYear, inMonth, inDay);
 	setTime(0, 0, 0);
 }
 
-//! Return formatted date and time using the std::strftime string format \c inFormat.
-std::string Date::get(const string& inFormat) const 
+/*!
+*/
+string Date::get(const string& inFormat) const
 {
-	tm* lTime = ::localtime(&mTime);
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
 	int lBufSize = 128;
 	char* lBuffer = new char[lBufSize];
-	while(::strftime(lBuffer, lBufSize, inFormat.c_str(), lTime) == 0) {
+	while(::strftime(lBuffer, lBufSize, inFormat.c_str(), &lTime) == 0) {
 		// buffer needs to be enlarged
-		delete lBuffer;
+		delete[] lBuffer;
 		lBuffer = new char[lBufSize*=2];
 	}
 	string lDate(lBuffer);
-	delete lBuffer;
+	delete[] lBuffer;
 	return lDate;
 }
 
-//! Set date to year \c inyear, month \c inMonth, and day \c inDay (time is unchanged).
-void Date::setDate(unsigned int inYear, unsigned int inMonth, unsigned int inDay)
+/*!
+*/
+unsigned int Date::getDayOfMonth(void) const
 {
-	struct tm* lTime = localtime(&mTime);
-	lTime->tm_year = inYear-1900;
-	lTime->tm_mon = inMonth-1;
-	lTime->tm_mday = inDay;
-	mTime = ::mktime(lTime);
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_mday;
 }
 
-//! Set time to \c inHour hour, \c inMinutes minutes, and \c inSeconds seconds (date is unchanged).
+/*!
+*/
+unsigned int Date::getDayOfWeek(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_wday;
+}
+
+/*!
+*/
+unsigned int Date::getDayOfYear(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_yday+1;
+}
+
+/*!
+*/
+unsigned int Date::getHourOfDay(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_hour;
+}
+
+/*!
+*/
+unsigned int Date::getMinutesOfHour(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_min;
+}
+
+/*!
+*/
+double Date::getSecondsOfMinute(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_sec;
+}
+
+/*!
+*/
+unsigned int Date::getMonthOfYear(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_mon+1;
+}
+
+/*!
+*/
+unsigned int Date::getYear(void) const
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	return lTime.tm_year+1900;
+}
+
+/*!
+*/
+void Date::setDate(unsigned int inYear, unsigned int inMonth, unsigned int inDay)
+{
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	lTime.tm_year = inYear-1900;
+	lTime.tm_mon = inMonth-1;
+	lTime.tm_mday = inDay;
+	mTime = ::mktime(&lTime);
+}
+
+/*!
+*/
 void Date::setTime(unsigned int inHour, unsigned int inMinutes, unsigned int inSeconds)
 {
-	struct tm* lTime = localtime(&mTime);
-	lTime->tm_hour = inHour;
-	lTime->tm_min = inMinutes;
-	lTime->tm_sec = inSeconds;
-	mTime = ::mktime(lTime);
+#ifdef WIN32
+	struct tm& lTime = *::localtime(&mTime);
+#else
+    struct tm lTime;
+	::localtime_r(&mTime, &lTime);
+#endif
+	lTime.tm_hour = inHour;
+	lTime.tm_min = inMinutes;
+	lTime.tm_sec = inSeconds;
+	mTime = ::mktime(&lTime);
 }

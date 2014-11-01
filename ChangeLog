@@ -1,9 +1,16 @@
 PACC change log:
 
+1.3.6 (April 17th, 2008)
+
+- Class Date is now thread safe.
+- SVG::Canvas now reconnects to the viewer after each update.
+- Added method in class Randomizer to generate integer in a [low,high] interval.
+- added some includes (cstring, cstdlib, and climits) for gcc 4.3 compatibility.
+
 1.3.5 (March 2th, 2007)
 
 - The new configure file now builds a single library named "pacc" (no more pacc-math, pacc-socket, pacc-svg, pacc-threading, pacc-util, pacc-xml);
-- The dynamic link version now follows the gnu numbering convention (current version is );
+- The dynamic link version now follows the gnu numbering convention (current version is 1.2.0);
 - added method XML::Streamer:closeAll. 
 
 1.3.4 (February 23th, 2007)

@@ -29,8 +29,8 @@
  * \file PACC/XML/Finder.cpp
  * \brief Class methods for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.20 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.21 $
+ * $Date: 2007/06/20 04:17:10 $
  */
 
 #include "PACC/XML/Finder.hpp"
@@ -75,7 +75,7 @@ XML::Iterator XML::Finder::find(const string& inPath)
 				continue;
 			} else throw runtime_error(string("Finder::find() invalid search path: ")+inPath);
 		}
-		char lNextChar = lTokenizer.peekNextChar();
+		int lNextChar = lTokenizer.peekNextChar();
 		if(lNextChar == -1) break;
 		// process '//' special case
 		if(lNextChar == '/') {
@@ -201,7 +201,7 @@ XML::ConstIterator XML::ConstFinder::find(const string& inPath)
 				continue;
 			} else throw runtime_error(string("ConstFinder::find() invalid search path: ")+inPath);
 		}
-		char lNextChar = lTokenizer.peekNextChar();
+		int lNextChar = lTokenizer.peekNextChar();
 		if(lNextChar == -1) break;
 		// process '//' special case
 		if(lNextChar == '/') {

@@ -29,12 +29,13 @@
 * \file PACC/Socket/Cafe.cpp
  * \brief Class methods for the cafe protocol.
  * \author Marc Parizeau and Marc Dubreuil, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.26 $
- * $Date: 2007/01/23 21:27:46 $
+ * $Revision: 1.28 $
+ * $Date: 2008/04/17 21:09:08 $
  */
 
 #include "PACC/Socket/Cafe.hpp"
 #include <iostream>
+#include <cstring>
 
 #ifdef WIN32
 ///////////// specifics for windows /////////////
@@ -76,7 +77,7 @@ void Socket::Cafe::compress(const std::string& inMessage, std::string& outMessag
 		// check for error
 		if(lReturn != Z_OK) 
 		{
-			outMessage.clear();
+			outMessage.resize(0);
 			throw Exception(eOtherError, "Cafe::compress() unable to compress message!");
 		}
 		// resize message to size of compressed message

@@ -29,14 +29,15 @@
  * \file PACC/Util/SignalHandler.cpp
  * \brief Class methods for the signal handler.
  * \author Marc Dubreuil, Christian Gagn&eacute; and Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.10 $
+ * $Date: 2008/04/17 21:16:07 $
  */
 
 #include "PACC/Util/SignalHandler.hpp"
 #include "PACC/Util/Assert.hpp"
 #include <signal.h>
 #include <stdexcept>
+#include <cstdlib>
 
 using namespace std;
 using namespace PACC;

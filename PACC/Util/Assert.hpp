@@ -29,8 +29,8 @@
  *  \file   PACC/Util/Assert.hpp
  *  \brief  Assert macro.
  *  \author Marc Parizeau
- *  $Revision: 1.17 $
- *  $Date: 2006/09/15 18:13:09 $
+ *  $Revision: 1.18 $
+ *  $Date: 1970/01/23 01:42:13 $
  
  This macro can be used to assert the validity of a boolean condition 
  (first argument: \c COND). If the  expression is true nothing happens. Otherwise,
@@ -73,7 +73,7 @@ if(!(COND)) { \
 if(!(COND)) { \
 	std::cerr << "\n***** PACC assert failed *****\nin "; \
 	std::cerr << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE; \
-	std::cerr << "\n******************************" << endl; \
+	std::cerr << "\n******************************" << std::endl; \
 	exit(-1); \
 }
 #endif // WIN32
