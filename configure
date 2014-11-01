@@ -1507,7 +1507,7 @@ GENERIC_LIBRARY_NAME=pacc
 
 GENERIC_MAJOR_VERSION=1
 GENERIC_MINOR_VERSION=3
-GENERIC_MICRO_VERSION=1
+GENERIC_MICRO_VERSION=2
 GENERIC_API_VERSION=$GENERIC_MAJOR_VERSION.$GENERIC_MINOR_VERSION
 
 
@@ -18996,7 +18996,7 @@ fi
 
 
 
-                                                                                                                                  ac_config_files="$ac_config_files Makefile paccutil.pc paccxml.pc paccmath.pc paccsocket.pc paccsvg.pc paccthreading.pc Math/Makefile Socket/Makefile SVG/Makefile Threading/Makefile Util/Makefile XML/Makefile"
+                                                                                ac_config_files="$ac_config_files Makefile PACC/Makefile PACC/Math/Makefile PACC/Socket/Makefile PACC/SVG/Makefile PACC/Threading/Makefile PACC/Util/Makefile PACC/XML/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -19540,18 +19540,13 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "paccutil.pc" ) CONFIG_FILES="$CONFIG_FILES paccutil.pc" ;;
-  "paccxml.pc" ) CONFIG_FILES="$CONFIG_FILES paccxml.pc" ;;
-  "paccmath.pc" ) CONFIG_FILES="$CONFIG_FILES paccmath.pc" ;;
-  "paccsocket.pc" ) CONFIG_FILES="$CONFIG_FILES paccsocket.pc" ;;
-  "paccsvg.pc" ) CONFIG_FILES="$CONFIG_FILES paccsvg.pc" ;;
-  "paccthreading.pc" ) CONFIG_FILES="$CONFIG_FILES paccthreading.pc" ;;
-  "Math/Makefile" ) CONFIG_FILES="$CONFIG_FILES Math/Makefile" ;;
-  "Socket/Makefile" ) CONFIG_FILES="$CONFIG_FILES Socket/Makefile" ;;
-  "SVG/Makefile" ) CONFIG_FILES="$CONFIG_FILES SVG/Makefile" ;;
-  "Threading/Makefile" ) CONFIG_FILES="$CONFIG_FILES Threading/Makefile" ;;
-  "Util/Makefile" ) CONFIG_FILES="$CONFIG_FILES Util/Makefile" ;;
-  "XML/Makefile" ) CONFIG_FILES="$CONFIG_FILES XML/Makefile" ;;
+  "PACC/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/Makefile" ;;
+  "PACC/Math/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/Math/Makefile" ;;
+  "PACC/Socket/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/Socket/Makefile" ;;
+  "PACC/SVG/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/SVG/Makefile" ;;
+  "PACC/Threading/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/Threading/Makefile" ;;
+  "PACC/Util/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/Util/Makefile" ;;
+  "PACC/XML/Makefile" ) CONFIG_FILES="$CONFIG_FILES PACC/XML/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
