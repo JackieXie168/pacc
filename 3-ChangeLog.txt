@@ -1,0 +1,104 @@
+1.3.8 (September 21th, 2009)
+
+- migration from autotools to CMake.
+
+1.3.7 (January 7th, 2009)
+
+- minor language tweaks to remove warnings
+- migration to SourceForge (and SVN)
+
+1.3.6 (April 17th, 2008)
+
+- Class Date is now thread safe.
+- SVG::Canvas now reconnects to the viewer after each update.
+- Added method in class Randomizer to generate integer in a [low,high] interval.
+- added some includes (cstring, cstdlib, and climits) for gcc 4.3 compatibility.
+
+1.3.5 (March 2th, 2007)
+
+- The new configure file now builds a single library named "pacc" (no more pacc-math, pacc-socket, pacc-svg, pacc-threading, pacc-util, pacc-xml);
+- The dynamic link version now follows the gnu numbering convention (current version is 1.2.0);
+- added method XML::Streamer:closeAll. 
+
+1.3.4 (February 23th, 2007)
+
+- Added methods Matrix::parse and Matrix::serialize.
+- new implementation of Matrix::read (attributes "rows" and "cols" are now optional).
+- Implementation of Vector::read now reuses Matrix::read.
+- Added method Matrix::setWritePrecision to eventually replace Matrix::setPrecision (now depricated);
+
+1.3.3 (February 8th, 2007)
+
+- Added class SVG::Document
+- New implementation for SVG::Canvas
+
+1.3.2 (February 6th, 2007)
+
+- For the pacc-lib module, changed the library names to pacc-math, pacc-socket, pacc-svg, pacc-treading, pacc-util, and pacc-xml, instead of paccmath, paccsocket, paccsvg, paccthreading, and paccxml. 
+- All include paths for PACC files are now prefixed with PACC/ (the PACC sub-directory is no longer required to be in the compiler's search path).
+- Many new methods have been added to PACC::Matrix.
+- Added new Threading::TLS class for thread local storage.
+
+1.3.1 (September 26th, 2006)
+
+- The output precision of the Matrix::write and Vector::write methods can now be set using method setPrecision (default is 15)
+- Corrected a problem in the automatic conversion of XML special characters to quotes
+- Improved error checking for XML::Streamer
+- Corrected bug that prevented the deep copy of an XML::Document
+- Corrected bug under windows with PACC_AssertM macro when using unicode strings
+
+1.3 (May 12th, 2006)
+
+- Added some error checking in Socket::Port and Threading::Thread
+- Fixed a potential bug with reference counted strings in the receive methods of Socket classes
+- Added a new helper constructor in Socket::Address to parse a host:port address string
+- Corrected bug in SVG::Canvas for operator=
+- The hardware time-stamp counter period in the Timer class is now a static member (calibrated once for all class objects); the use of the hardware time-stamp can now be deactivated
+- Corrected bug in parsing of XML CDATA section 
+- Added methods getArgMin and getMin to class Math::Vector
+- Added class Math::QRandSequencer
+
+1.2.1 (October 4th, 2005)
+
+- Corrected a bug in XML::AttributeList where an attribute would not be replaced by operator+= if already defined in the list
+- Miscellaneous changes in formatting and documentation
+
+1.2.0 (September 22th, 2005)
+
+- Corrected bug in PACC_AssertM macro (file Util/Assert.hpp); namespace std no longer assumed
+- Added some new asserts in XML::Iterator
+- Removed deprecated NumberGenerator class (use Randomizer instead)
+- Major upgrade to Matrix and Vector classes for better support of mixed operations
+- Added new constructors in Matrix and Vector to initialize with value
+- Added some new asserts in Matrix and Vector
+- Corrected a bug in Matrix::extractRow
+- Corrected a bug in Matrix::tql2
+- Corrected potential problems with self-assignments in Matrix::multiply and Matrix::transpose
+- Better indentation control in XML::Streamer
+- Corrected a potential bug in Tokenizer::getNextToken where the input stream could get corrupted by very long lines
+
+1.1.0 (June 9th, 2005)
+
+- Fixed the Makefile.am files.
+- Fixed the configure.ac file to set variable PACC_NDEBUG correctly.
+- Added module SVG for producing scalable vector graphics (this is a 
+  re-implementation of the EPIG classes)
+- Modified the implementation of the Timer class (in subdir Util); added methods 
+  getCount, getCountPeriod, and calibrateCountPeriod.
+- Some minor documentation updates.
+
+1.0.1 (June 2nd, 2005)
+
+- Minor bug fixes for the automake/autoconf files
+- Some minor documentation updates
+
+1.0.0  (June 1st, 2005)
+
+- Initial release of the automake/autoconf files
+- XML::Finder now provides partial xpath support
+- XML::Streamer can now indent markup attributes
+- New Randomizer class based on Mersenne Twister
+- New Matrix/Vector classes (in Math directory)
+- Timer now uses performance counter on Linux/Pentium
+- New string functions for converting to floats or integers
+- Some minor bug fixes

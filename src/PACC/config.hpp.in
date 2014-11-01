@@ -1,0 +1,26 @@
+/* Constantes de compilation
+//
+//
+// Définies automatiquement par CMake
+*/
+
+#ifndef PACC_config_h
+#define PACC_config_h
+
+#cmakedefine PACC_USE_WINDOWS
+#cmakedefine PACC_USE_UNIX
+
+#cmakedefine PACC_ZLIB
+
+#cmakedefine PACC_THREADS_WIN32
+#cmakedefine PACC_THREADS_POSIX
+
+#cmakedefine PACC_SOCKET_UNIX
+#cmakedefine PACC_SOCKET_WIN32
+
+#cmakedefine PACC_NDEBUG
+
+#cmakedefine PACC_GCC_LESS_THAN_3
+
+#cmakedefine PACC_PARALLEL_STL
+#endif
