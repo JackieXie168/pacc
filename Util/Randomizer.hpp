@@ -29,8 +29,8 @@
  * \file PACC/Util/Randomizer.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.4 $
- * $Date: 2005/06/02 06:59:17 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/04 04:44:26 $
  */
 
 #ifndef PACC_Randomizer_hpp_
@@ -89,7 +89,7 @@ namespace PACC {
 		double getFloat(const double& inFirst, const double& inLast) {return inFirst+rand()*(inLast-inFirst);}
 		//! Return a 53 bits uniformly distributed random floating point number in range [0,1[.
 		double getFloat53(const double& inFirst=0, const double& inLast=1) {return rand53();}
-		//! Return a gaussian distributed random floating point number with mean \c inMean and standard deviation \c inStdDev. Default distribution is N(0,1).
+		//! Return a gaussian distributed random float with mean \c inMean and standard deviation \c inStdDev. Default is N(0,1).
 		double getGaussian(const double& inMean=0, const double& inStdDev=1) {return randNorm(inMean, inStdDev);}
 		
 		//! Return state of generator.

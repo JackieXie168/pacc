@@ -29,8 +29,8 @@
  * \file PACC/XML/Finder.cpp
  * \brief Class methods for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2005/05/26 15:10:45 $
+ * $Revision: 1.16 $
+ * $Date: 2005/06/04 04:43:52 $
  */
 
 #include "XML/Finder.hpp"
@@ -92,7 +92,7 @@ XML::Iterator XML::Finder::find(const string& inPath)
 		lPos = mMatches.front();
 		mMatches.pop();
 	}
-	// return first match
+	// return first match or null iterator
 	return lPos;
 }
 
@@ -113,10 +113,12 @@ for(Iterator lTag = lDocument.find("//Mytag"); lTag; lTag = lDocument.findNext()
 XML::Iterator XML::Finder::findNext(void)
 {
 	Iterator lPos;
+	// pop next match from the queue
 	if(!mMatches.empty()) {
 		lPos = mMatches.front();
 		mMatches.pop();
 	}
+	// return next match or null iterator
 	return lPos;
 }
 
@@ -216,7 +218,7 @@ XML::ConstIterator XML::ConstFinder::find(const string& inPath)
 		lPos = mMatches.front();
 		mMatches.pop();
 	}
-	// return first match
+	// return first match or null iterator
 	return lPos;
 }
 
@@ -237,10 +239,12 @@ for(ConstIterator lTag = lDocument.find("//Mytag"); lTag; lTag = lDocument.findN
 XML::ConstIterator XML::ConstFinder::findNext(void)
 {
 	ConstIterator lPos;
+	// pop next match from queue
 	if(!mMatches.empty()) {
 		lPos = mMatches.front();
 		mMatches.pop();
 	}
+	// return next match or null iterator
 	return lPos;
 }
 

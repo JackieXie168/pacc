@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.hpp
  * \brief Class definition for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.9 $
- * $Date: 2005/04/23 18:27:02 $
+ * $Revision: 1.13 $
+ * $Date: 2005/06/04 06:12:53 $
  */
 
 #ifndef PACC_Timer_hpp
@@ -42,29 +42,36 @@ namespace PACC {
        \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
        \ingroup Util
 	
-	This class implements a simple stopwatch timer that is always running. Method Timer::getValue can be used to return the current timer value in seconds. Method Timer::reset resets this value to 0. Under the Windows OS, this class uses the QueryPerformanceCounter method to retrieves a high-resolution hardware time-stamp. When using the gcc compiler, this class also retrieves a hardware time-stamp counter on the following platforms:
+	This class implements a simple stopwatch timer that is always running. Method Timer::getValue can be used to return the current timer value in seconds. Method Timer::reset resets this value to 0. Under Windows, this class uses the QueryPerformanceCounter method to retrieves a high-resolution hardware time-stamp. When using the gcc compiler, this class also retrieves a hardware time-stamp counter on the following platforms:
 	- Pentium family (i386)
 	- PowerPC family (ppc)
 	.
-	for all other cases, the class uses the standard gettimeofday method to retrieve a somewhat high resolution time stamp.
+	For all other cases, the class uses the standard gettimeofday method to retrieve a somewhat high resolution time stamp (max resolution is micro-seconds).
 	
-	\attention: hardware time-stamp counters are dependent of the CPU clock frequency. On platforms where this frequency is variable (e.g. laptops), the time values in seconds may become false if the clock frequency is changed by the OS. When using a hardware counter, the class constructor conducts a calibration procedure using method gettimeofday. This procedure (if applicable) lasts about 0.5 sec.   
+	The current high resolution time stamp can be retrieved using method Timer::getCount. The time period associated with a single count increment is platform dependent. Its value can be fetch with method Timer::getCountPeriod.
+	
+	\attention Hardware time-stamp counters are dependent of the CPU clock frequency. On platforms where this frequency is variable (e.g. laptops), the time values in seconds may become false if the clock frequency is changed by the OS. When using a hardware counter, the class constructor conducts a calibration procedure using method gettimeofday. This procedure (if applicable) lasts about 0.1 sec with default parameters (see Timer::calibrateCountPeriod).   
     */
    class Timer {
 
-public:
-		Timer(void);
-      Timer(const Timer& inTimer);
-      ~Timer(void);
+    public:
+		//! Construct using current system date and time.
+		Timer(void) {calibrateCountPeriod(); reset();}
       
-      Timer& operator=(const Timer& inTimer);
+		//! Calibrate the count period.
+		void calibrateCountPeriod(unsigned int inDelay=10000, unsigned int inTimes=10);
+		//! Return current high resolution count.
+		unsigned long long getCount(void) const;
+		//! Return time period of count (in seconds).
+		double getCountPeriod(void) const {return mPeriod;}
+		//! Return current value of timer (in seconds).
+      double getValue(void) const {return (getCount()-mCount)*mPeriod;}
+		//! reset timer to zero.
+      void reset(void) {mCount = getCount();}
       
-      double getValue(void) const;
-      void reset(void);
-      
-protected:
-      void* mTimer; //!< Opaque structure of timer
-		      
+    protected:
+		unsigned long long mCount; //!< Count at last reset.
+		double mPeriod; //!< Time period of a single count.
 	};
    
 } // end of PACC namespace

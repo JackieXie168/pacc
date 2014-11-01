@@ -108,7 +108,7 @@ cc_sources = Matrix.cpp \
 library_includedir = $(includedir)/PACC/Math
 library_include_HEADERS = $(h_sources)
 
-INCLUDES = -I$(top_srcdir)/PACC -I$(top_srcdir)/PACC/XML -I$(top_srcdir)/PACC/Util
+INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpaccmath.la
 libpaccmath_la_LIBADD = ../Util/libpaccutil.la ../XML/libpaccxml.la

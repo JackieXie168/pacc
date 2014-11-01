@@ -120,7 +120,7 @@ cc_sources = Date.cpp \
 library_includedir = $(includedir)/PACC/Util
 library_include_HEADERS = $(h_sources)
 
-INCLUDES = -I$(top_srcdir)/PACC -I$(top_srcdir)/PACC/Util
+INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpaccutil.la
 libpaccutil_la_SOURCES = $(h_sources) $(cc_sources)

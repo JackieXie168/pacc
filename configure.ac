@@ -13,8 +13,8 @@ dnl -----------------------------------------------
 GENERIC_LIBRARY_NAME=pacc
 
 GENERIC_MAJOR_VERSION=1
-GENERIC_MINOR_VERSION=0
-GENERIC_MICRO_VERSION=1
+GENERIC_MINOR_VERSION=1
+GENERIC_MICRO_VERSION=0
 GENERIC_API_VERSION=$GENERIC_MAJOR_VERSION.$GENERIC_MINOR_VERSION
 AC_SUBST(GENERIC_API_VERSION)
 
@@ -55,12 +55,11 @@ dnl Compilation options
 dnl ----------------------------------
 
 debug_default="no"
-AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] Turning on debugging
-                       [default=$debug_default]],, enable_debug=$debug_default)
+AC_ARG_ENABLE(debug, [  --enable-debug [=no/yes] Turning on debugging [default=no]],, enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-    CXXFLAGS="$CXXFLAGS -g -O0 -DPACC_NDEBUG"
+   CXXFLAGS="$CXXFLAGS -O0 -g3"
 else
-    CXXFLAGS="$CXXFLAGS -O2"
+   CXXFLAGS="$CXXFLAGS -O2 -g0 -DPACC_NDEBUG"
 fi
 
 dnl -----------------------------------------------
@@ -107,11 +106,13 @@ AC_OUTPUT(  Makefile \
             paccxml.pc \
             paccmath.pc \
             paccsocket.pc \
+            paccsvg.pc \
             paccthreading.pc \
-            Util/Makefile \
-            XML/Makefile \
             Math/Makefile \
             Socket/Makefile \
+            SVG/Makefile \
             Threading/Makefile
+            Util/Makefile \
+            XML/Makefile \
 )
 

@@ -122,7 +122,7 @@ cc_sources = Address.cpp \
 library_includedir = $(includedir)/PACC/Socket
 library_include_HEADERS = $(h_sources)
 
-INCLUDES = -I$(top_srcdir)/PACC -I$(top_srcdir)/PACC/Socket -I$(top_srcdir)/PACC/Threading -I$(top_srcdir)/PACC/Util
+INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpaccsocket.la                            
 libpaccsocket_la_LIBADD = ../Util/libpaccutil.la ../Threading/libpaccthreading.la

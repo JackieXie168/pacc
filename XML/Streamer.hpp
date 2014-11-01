@@ -29,8 +29,8 @@
  * \file PACC/XML/Streamer.hpp
  * \brief Class definition for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.35 $
- * $Date: 2005/05/12 05:01:34 $
+ * $Revision: 1.36 $
+ * $Date: 2005/06/04 04:43:52 $
  */
 
 #ifndef PACC_XML_Streamer_hpp_
@@ -112,7 +112,9 @@ which will produce the following result:
 			//! Open new markup tag using name \c inName.
 			void openTag(const string& inName);
 			
+			//! Set attribute indentation mode if argument \c inValue is true.
 			void setAttributeIndentation(bool inValue) {mIndentAttributes = inValue;}
+			//! Set width of markup indentation to \c inValue columns.
 			void setIndentationWidth(unsigned int inValue) {mIndentWidth = inValue;}
 			
 			//! Insert an integer markup with value \c inValue into this streamer.

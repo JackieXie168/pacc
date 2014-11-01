@@ -97,40 +97,41 @@ VERSION = @VERSION@
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
-h_sources = Attribute.hpp \
-            Document.hpp \
-            Finder.hpp \
-            Iterator.hpp \
-            Node.hpp \
-            Streamer.hpp
+h_sources = Canvas.hpp \
+            Frame.hpp \
+            Group.hpp \
+            Path.hpp \
+            Primitives.hpp \
+            Styles.hpp \
+            Transforms.hpp \
+            Types.hpp
 
 
-cc_sources = Document.cpp \
-                Finder.cpp \
-                Node.cpp \
-                Streamer.cpp
+cc_sources = Canvas.cpp \
+                Styles.cpp \
+                Types.cpp
 
 
-library_includedir = $(includedir)/PACC/XML
+library_includedir = $(includedir)/PACC/SVG
 library_include_HEADERS = $(h_sources)
 
 INCLUDES = -I$(top_srcdir)
 
-lib_LTLIBRARIES = libpaccxml.la
-libpaccxml_la_LIBADD = ../Util/libpaccutil.la
-libpaccxml_la_SOURCES = $(h_sources) $(cc_sources)
-libpaccxml_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION)
-subdir = XML
+lib_LTLIBRARIES = libpaccsvg.la                            
+libpaccsvg_la_LIBADD = ../Util/libpaccutil.la ../XML/libpaccxml.la
+libpaccsvg_la_SOURCES = $(h_sources) $(cc_sources)
+libpaccsvg_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION)
+subdir = SVG
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libpaccxml_la_DEPENDENCIES = ../Util/libpaccutil.la
+libpaccsvg_la_DEPENDENCIES = ../Util/libpaccutil.la ../XML/libpaccxml.la
 am__objects_1 =
-am__objects_2 = Document.lo Finder.lo Node.lo Streamer.lo
-am_libpaccxml_la_OBJECTS = $(am__objects_1) $(am__objects_2)
-libpaccxml_la_OBJECTS = $(am_libpaccxml_la_OBJECTS)
+am__objects_2 = Canvas.lo Styles.lo Types.lo
+am_libpaccsvg_la_OBJECTS = $(am__objects_1) $(am__objects_2)
+libpaccsvg_la_OBJECTS = $(am_libpaccsvg_la_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -139,8 +140,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Document.Plo ./$(DEPDIR)/Finder.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Node.Plo ./$(DEPDIR)/Streamer.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Canvas.Plo ./$(DEPDIR)/Styles.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Types.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -158,11 +159,11 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libpaccxml_la_SOURCES)
+DIST_SOURCES = $(libpaccsvg_la_SOURCES)
 HEADERS = $(library_include_HEADERS)
 
 DIST_COMMON = $(library_include_HEADERS) Makefile.am Makefile.in
-SOURCES = $(libpaccxml_la_SOURCES)
+SOURCES = $(libpaccsvg_la_SOURCES)
 
 all: all-am
 
@@ -170,7 +171,7 @@ all: all-am
 .SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  XML/Makefile
+	  $(AUTOMAKE) --gnu  SVG/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 libLTLIBRARIES_INSTALL = $(INSTALL)
@@ -201,8 +202,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libpaccxml.la: $(libpaccxml_la_OBJECTS) $(libpaccxml_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libpaccxml_la_LDFLAGS) $(libpaccxml_la_OBJECTS) $(libpaccxml_la_LIBADD) $(LIBS)
+libpaccsvg.la: $(libpaccsvg_la_OBJECTS) $(libpaccsvg_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libpaccsvg_la_LDFLAGS) $(libpaccsvg_la_OBJECTS) $(libpaccsvg_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -210,10 +211,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Finder.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Node.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Streamer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Canvas.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Styles.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Types.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

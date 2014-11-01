@@ -3,8 +3,9 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: PACC Util
-Description: Portable Agile C++ Classes (Util)
+Name: PACC SVG
+Description: Portable Agile C++ Classes (SVG)
 Version: @VERSION@
-Libs: -L${libdir} -lpaccutil
+Requires : paccutil paccxml
+Libs: -L${libdir} -lpaccsvg
 Cflags: -I${includedir} -I${includedir}/PACC

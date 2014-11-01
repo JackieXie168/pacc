@@ -29,8 +29,8 @@
  * \file PACC/XML/Finder.hpp
  * \brief Class definition for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2005/05/26 15:10:45 $
+ * $Revision: 1.15 $
+ * $Date: 2005/06/04 04:43:52 $
  */
 
 #ifndef PACC_XML_Finder_hpp_
@@ -63,7 +63,7 @@ namespace PACC {
 //! - "chapter//para" finds para elements descendants of the chapter element children of the root node
 //! - "//para" finds all the para descendants of the root node
 //! - "//para/*" finds all element children of all para descendants of the root node
-//! - "//para/.." finds the parent of all para descendants of the root node
+//! - "//para/.." finds the parents of all para descendants of the root node
 //! .
 //! There can be no spaces in a search path.
 		class Finder : private Iterator {
@@ -88,7 +88,7 @@ namespace PACC {
 //! \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 //! \ingroup XML
 //!	
-//! This class is for finding markup tags in a document sub-tree using const iterator (see class Finder for more details).
+//! This class is for finding markup tags in a document sub-tree using const iterators (see class Finder for more details).
 		class ConstFinder : private ConstIterator {
        public:   
 			//! Construct a const finder for the sub-tree rooted on \c inRoot.

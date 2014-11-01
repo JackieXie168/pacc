@@ -16,7 +16,7 @@ cc_sources =    Condition.cpp \
 library_includedir = $(includedir)/PACC/Threading
 library_include_HEADERS = $(h_sources)
 
-INCLUDES = -I$(top_srcdir)/PACC -I$(top_srcdir)/PACC/Threading -I$(top_srcdir)/PACC/Util
+INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpaccthreading.la
 libpaccthreading_la_LIBADD = ../Util/libpaccutil.la 

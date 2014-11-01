@@ -66,10 +66,11 @@
 //! \brief Mersenne Twister random number generator
 //! \ingroup Util
 //!
-//! Based on code by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus
-//! Richard J. Wagner  v1.0  15 May 2003  rjwagner@writeme.com
+//! Based on code by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus\n
+//! Richard J. Wagner, v1.0 15 May 2003 <rjwagner@writeme.com>.
+//!
 //! Not thread safe (unless auto-initialization is avoided and each thread has
-//! its own MTRand object)
+//! its own MTRand object).
 class MTRand {
 	// Data
 public:

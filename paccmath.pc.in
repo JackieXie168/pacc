@@ -8,4 +8,4 @@ Description: Portable Agile C++ Classes (Math)
 Version: @VERSION@
 Requires : paccutil paccxml
 Libs: -L${libdir} -lpaccmath
-Cflags: -I${includedir}/PACC
+Cflags: -I${includedir} -I${includedir}/PACC

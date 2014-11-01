@@ -8,4 +8,4 @@ Description: Portable Agile C++ Classes (Socket)
 Version: @VERSION@
 Requires : paccutil paccthreading
 Libs: -L${libdir} -lpaccsocket
-Cflags: -I${includedir}/PACC
+Cflags: -I${includedir} -I${includedir}/PACC

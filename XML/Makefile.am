@@ -13,7 +13,7 @@ cc_sources =    Document.cpp \
 library_includedir = $(includedir)/PACC/XML
 library_include_HEADERS = $(h_sources)
 
-INCLUDES = -I$(top_srcdir)/PACC -I$(top_srcdir)/PACC/XML -I$(top_srcdir)/PACC/Util
+INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpaccxml.la
 libpaccxml_la_LIBADD = ../Util/libpaccutil.la
