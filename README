@@ -33,7 +33,7 @@ basic PACC classes. You then get the equivalent of "pacc-base" but with
 automake/autoconf files.
 
 Another alternative is to retrieve the latest distribution of "pacc-lib" at 
-the following address: <http://manitou.gel.ulaval.ca/~parizeau/pacc-lib.tar.gz>.
+the following address: <http://manitou.gel.ulaval.ca/~parizeau/PACC>.
 
 The PACC collection is said to be portable because it can run on both Unix 
 and Windows platforms. In general, the PACC classes have been tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to compile succesfully on AIX.

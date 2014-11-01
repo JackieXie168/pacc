@@ -29,8 +29,8 @@
  * \file PACC/SVG/Primitives.hpp
  * \brief Class definitions for the SVG graphic primitives.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.11 $
+ * $Date: 2007/02/08 01:16:01 $
  */
 
 #ifndef PACC_SVG_Graphic_hpp_
@@ -83,7 +83,7 @@ namespace PACC {
 			 */
 			void setTransform(const Transform& inTransform) {setAttribute("transform", inTransform);}
 			
-			//! Write serialized primitive into stream \c outStream.
+			//! Serialize this primitive into stream \c outStream.
 			void write(ostream& outStream) const {
 				XML::Streamer lStream(outStream);
 				serialize(lStream);
@@ -410,7 +410,7 @@ namespace PACC {
 			// Make text from string \c inString, typeset at point \c inAnchor, using style \c inStyle.
 			Text(const string &inString, const Point &inAnchor, const Style inStyle = Style()) : Primitive("text", inStyle) {
 				setAttribute("x", String::convert(inAnchor.x));
-				setAttribute("y", String::convert(-inAnchor.y));
+				setAttribute("y", String::convert((inAnchor.y!=0?-inAnchor.y:0)));
 				setTransform(Scale(1, -1));
 				insertAsLastChild(new Node(inString, XML::eString));
 			}

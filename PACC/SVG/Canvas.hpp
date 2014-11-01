@@ -29,15 +29,14 @@
  * \file PACC/SVG/Canvas.hpp
  * \brief Class definition for the SVG drawing canvas.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2007/02/01 03:45:34 $
+ * $Revision: 1.16 $
+ * $Date: 2007/02/08 14:45:14 $
  */
 
 #ifndef PACC_SVG_Canvas_hpp_
 #define PACC_SVG_Canvas_hpp_
 
-#include "PACC/SVG/Frame.hpp"
-#include "PACC/Socket/Address.hpp"
+#include "PACC/SVG/Document.hpp"
 #include "PACC/Socket/Cafe.hpp"
 
 namespace PACC {
@@ -46,7 +45,7 @@ namespace PACC {
 		
 		using namespace std;
 		
-		/*!\brief Specialized frame to display on screen graphics.
+		/*!\brief Specialized document to display on screen graphics.
 		* \ingroup SVG
 		*
 		* A canvas opens a TCP/IP connection with a running viewer 
@@ -55,62 +54,72 @@ namespace PACC {
 		* The viewer opens a window showing the canvas. Changes made to the
 		* canvas are updated in real-time on the viewer side.
 		*/
-		class Canvas : public Frame {
+		class Canvas : public Document, protected Socket::Cafe {
 		 public:
-			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle and size \c inSize.
-			Canvas(const string &inTitle, const Size &inSize, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(Point(0, 0), inSize), mAddress(inAddress), mPort(inPort), mSocket(0) {
-				initCanvas(inTitle);
+			//! Pop canvas on viewer at address \c inHostPort with title \c inTitle and size \c inSize.
+			Canvas(const string& inTitle, const Size& inSize, const string& inHostPort="localhost:61250") : Document(inTitle, inSize), Socket::Cafe(inHostPort) {
+				initCanvas();
 			}
 			
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle, size \c inSize, and style \c inStyle.
-			Canvas(const string &inTitle, const Size &inSize, const Style &inStyle, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(Point(0, 0), inSize, inStyle), mAddress(inAddress), mPort(inPort), mSocket(0) {
-				initCanvas(inTitle);
+			Canvas(const string& inTitle, const Size& inSize, const Style& inStyle, const string& inHostPort="localhost:61250", unsigned int inPort=61250) : Document(inTitle, inSize, inStyle), Socket::Cafe(inHostPort) {
+				initCanvas();
 			}
 			
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle and using frame \c inFrame.
-			Canvas(const string &inTitle, const Frame &inFrame, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(inFrame), mAddress(inAddress), mPort(inPort), mSocket(0) {
-				initCanvas(inTitle);
+			Canvas(const string& inTitle, const Frame& inFrame, const string& inHostPort="localhost:61250") : Document(inTitle, inFrame), Socket::Cafe(inHostPort) {
+				initCanvas();
 			}
 			
-			//! Delete canvas.
-			~Canvas(void) {if(mSocket) delete mSocket;}
+			//! Pop canvas on viewer at address \c inAddress:inPort using document \c inDocument.
+			Canvas(const Document& inDocument, const string& inHostPort="localhost:61250") : Document(inDocument), Socket::Cafe(inHostPort) {
+				initCanvas();
+			}
 			
 			//! Assign frame \c inFrame to this canvas.
-			Canvas &operator=(const Frame& inFrame);
+			Canvas& operator=(const Frame& inFrame) {
+				Frame::operator=(inFrame);
+				updateViewer();
+				return *this;
+			}
 			
 			//! Insert graphic primitive \c inGraphic into this canvas.
-			Canvas &operator<<(const Primitive& inGraphic);
+			Canvas& operator<<(const Primitive& inGraphic) {
+				Group::operator<<(inGraphic); 
+				updateViewer(); 
+				return *this;
+			}
 			
-			//! Remove all primitives in this Canvas.
-			void clear(void);
+			//! Erase all drwing elements.
+			void clear(void) {Group::clear(); updateViewer();}
 			
-			//! Return title of this canvas.
-			string getTitle() const;
+			//! Set size of canvas to size \c inSize.
+			void setSize(const Size& inSize) {
+				setSize(inSize.width, inSize.height);
+			}
 			
-			//! Set title of this canvas.
-			void setTitle(const string& inTitle);
+			//! Set frame size to width \c inwidth and height \c inHeight.
+			void setSize(float inWidth, float inHeight) {
+				setAttribute("width", inWidth);
+				setAttribute("height", inHeight);
+				updateViewer();
+			}	
 			
 			//! Wait up to \c inMaxDelay seconds for the user to click a mouse button.
-			Point waitForClick(int &outButtonClicked, double inMaxDelay=0) const;
+			Point waitForClick(int &outButtonClicked, double inMaxDelay=0);
 			
 		 private:
-			string mAddress; //<! The IP address of the viewer.
-			unsigned int mPort; //!< The port number of the viewer.
-			Socket::Cafe *mSocket; //<! The network socket of this canvas.
-			string mWinID; //<! The window ID of this canvas.
-			
-			Point getOrigin() const;
-			void setOrigin(const Point &);
-			void setOrigin(float, float);
+			string mWinID; //<! Window ID of this canvas.
 			
 			//! Initialize canvas with title \c inTitle.
-			void initCanvas(const string& inTitle);
+			void initCanvas(void);
 			
-			//! Send canvas as serialized %SVG code.
-			void updateViewer(void) const;
+			//! Send canvas to viewer.
+			void updateViewer(void);
 			
-			// Must be disabled because of coordinate flip.
-			void setViewBox(const Point&, const Size&);
+			//! Disabled methods.
+			void setOrigin(const Point& inOrigin);
+			void setOrigin(float inX, float inY);
 		};
 		
 	} // end of namespace SVG

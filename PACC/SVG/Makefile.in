@@ -98,6 +98,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 h_sources = Canvas.hpp \
+            Document.hpp \
             Frame.hpp \
             Group.hpp \
             Path.hpp \
@@ -108,8 +109,9 @@ h_sources = Canvas.hpp \
 
 
 cc_sources = Canvas.cpp \
-                Styles.cpp \
-                Types.cpp
+             Document.cpp \
+             Styles.cpp \
+             Types.cpp
 
 
 library_includedir = $(includedir)/PACC/SVG
@@ -118,7 +120,7 @@ library_include_HEADERS = $(h_sources)
 INCLUDES = -I$(top_srcdir)
 
 lib_LTLIBRARIES = libpacc-svg.la                            
-libpacc_svg_la_LIBADD = ../Util/libpacc-util.la ../XML/libpacc-xml.la
+libpacc_svg_la_LIBADD = ../Util/libpacc-util.la ../XML/libpacc-xml.la ../Socket/libpacc-socket.la
 libpacc_svg_la_SOURCES = $(h_sources) $(cc_sources)
 libpacc_svg_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION)
 subdir = PACC/SVG
@@ -128,9 +130,9 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libpacc_svg_la_DEPENDENCIES = ../Util/libpacc-util.la \
-	../XML/libpacc-xml.la
+	../XML/libpacc-xml.la ../Socket/libpacc-socket.la
 am__objects_1 =
-am__objects_2 = Canvas.lo Styles.lo Types.lo
+am__objects_2 = Canvas.lo Document.lo Styles.lo Types.lo
 am_libpacc_svg_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libpacc_svg_la_OBJECTS = $(am_libpacc_svg_la_OBJECTS)
 
@@ -141,8 +143,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Canvas.Plo ./$(DEPDIR)/Styles.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Types.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Canvas.Plo ./$(DEPDIR)/Document.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Styles.Plo ./$(DEPDIR)/Types.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -213,6 +215,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Canvas.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Styles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Types.Plo@am__quote@
 

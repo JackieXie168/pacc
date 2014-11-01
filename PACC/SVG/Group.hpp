@@ -29,8 +29,8 @@
  * \file PACC/SVG/Group.hpp
  * \brief Class definition for the SVG primitive group.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.7 $
+ * $Date: 2007/02/08 01:46:29 $
  */
 
 #ifndef PACC_SVG_Group_hpp_
@@ -76,6 +76,7 @@ namespace PACC {
 			
 			//! Return the number of primitives in this group.
 			unsigned count() const {return getChildCount();}
+			
 			//! Remove all primitives in this group.
 			void clear() {eraseChildren();}
 			

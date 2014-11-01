@@ -29,8 +29,8 @@
  * \file PACC/SVG/Frame.hpp
  * \brief Class definition for the %SVG clipping frame.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2007/01/23 21:27:47 $
+ * $Revision: 1.9 $
+ * $Date: 2007/02/08 01:48:35 $
  */
 
 #ifndef PACC_SVG_Frame_hpp_
@@ -103,13 +103,7 @@ namespace PACC {
 										 + String::convert(inOrigin.y) + " "
 										 + String::convert(inSize.width) + " "
 										 + String::convert(inSize.height) + " ");
-			}
-			
-			//! Write serialized frame into stream \c outStream.
-			void write(ostream& outStream) const {
-				XML::Streamer lStream(outStream);
-				lStream.insertHeader();
-				serialize(lStream);
+				setAttribute("preserveAspectRatio", "none");
 			}
 			
 		 private:

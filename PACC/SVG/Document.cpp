@@ -25,14 +25,14 @@
  *
  */
 
-/*!\file PACC/SVG/Canvas.cpp
- * \brief Class methods for the SVG containers (Group, Frame, and Canvas).
+/*!\file PACC/SVG/Document.cpp
+ * \brief Class methods for the SVG Document.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2007/02/08 14:45:14 $
+ * $Revision: 1.1 $
+ * $Date: 2007/02/08 14:44:13 $
  */
 
-#include "PACC/SVG/Canvas.hpp"
+#include "PACC/SVG/Document.hpp"
 #include "PACC/XML/Finder.hpp"
 #include "PACC/XML/Document.hpp"
 #include <iostream>
@@ -41,44 +41,51 @@
 using namespace std;
 using namespace PACC;
 
-//! This method also adjusts the frame attributes, and connect to the viewer.
-void SVG::Canvas::initCanvas(void) 
+/*!
+*/
+void SVG::Document::read(const XML::Iterator& inNode)
 {
-	// send canvas to viewer
-	ostringstream lStream;
-	lStream << "NEWW        ";
-	write(lStream);
-	sendMessage(lStream.str());
-	receiveMessage(mWinID);
-}
-
-//!
-void SVG::Canvas::updateViewer(void)
-{
-	// make the message
-	ostringstream lStream;
-	lStream << "REFR" << mWinID;
-	write(lStream);
-	// try send the message
-	try {
-		sendMessage(lStream.str());
-	} catch(const Socket::Exception& inErr) {
-		cerr << inErr.getMessage() << endl;
-	}
+	if(!inNode) throw runtime_error("read() nothing to read!");
+	XML::Finder lFinder(inNode);
+	XML::Iterator lPos = lFinder.find("/svg/g/svg");
+	if(!lPos) throw runtime_error("read() invalid document!");
+	XML::Node::operator=(*lPos);
 }
 
 /*!
- */
-SVG::Point SVG::Canvas::waitForClick(int &outButtonClicked, double inMaxDelay)
+*/
+void SVG::Document::write(ostream& outStream) const 
 {
-	ostringstream lOutStream;
-	lOutStream << "GCLK" << mWinID;
-	sendMessage(lOutStream.str());
-	string lMessage;
-	receiveMessage(lMessage);
-	Point lPos;
-	istringstream lInStream(lMessage);
-	lInStream >> lPos.x >> lPos.y >> outButtonClicked;
-	lPos.y = getSize().height - lPos.y;
-	return lPos;
+	XML::Streamer lStream(outStream);
+	lStream.insertHeader();
+	lStream.openTag("svg");
+	lStream.insertAttribute("width", getSize().width);
+	lStream.insertAttribute("height", getSize().height);
+	lStream.insertAttribute("xmlns", "http://www.w3.org/2000/svg");
+	lStream.openTag("title", false);
+	lStream.insertStringContent(mTitle);
+	lStream.closeTag();
+	lStream.openTag("g");
+	lStream.insertAttribute("transform", Scale(1,-1)+Translate(0, -getSize().height));
+	serialize(lStream);
+	lStream.closeTag();
+	lStream.closeTag();
+}
+
+/*!
+*/
+ostream& PACC::operator<<(ostream &outStream, const SVG::Document& inDocument)
+{
+	inDocument.write(outStream);
+	return outStream;
+}
+
+/*!
+*/
+istream& PACC::operator>>(istream &inStream, SVG::Document& outDocument)
+{
+	XML::Document lDocument;
+	lDocument.parse(inStream);
+	outDocument.read(lDocument.getFirstDataTag());
+	return inStream;
 }
