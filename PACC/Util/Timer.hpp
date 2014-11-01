@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.hpp
  * \brief Class definition for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.19 $
- * $Date: 2006/11/21 17:01:17 $
+ * $Revision: 1.20 $
+ * $Date: 2008/10/29 21:54:56 $
  */
 
 #ifndef PACC_Timer_hpp
@@ -62,7 +62,7 @@ namespace PACC {
 		
 		Under Windows, timer values are always computed using functions QueryPerformanceCounter and QueryPerformanceFrequency.
 		*/
-		Timer(bool inHardware=true) : mHardware(inHardware) {
+		Timer(bool inHardware=true) : mHardware(inHardware), mCount(0) {
 			if(mPeriod == 0) calibrateCountPeriod(); 
 			reset();
 		}

@@ -30,8 +30,8 @@
  * \brief Class methods for the portable Thread Local Storage (TLS).
  * \author Guillaume Mayer, ForwardSim Inc.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.3 $
- * $Date: 2007/02/08 23:27:03 $
+ * $Revision: 1.4 $
+ * $Date: 2008/10/29 21:54:30 $
  */
 
 #include "PACC/Threading/TLS.hpp"
@@ -51,7 +51,7 @@ using namespace PACC;
 
 /*! 
 */
-Threading::TLS::TLS(void)
+Threading::TLS::TLS(void) : mIndex(0)
 {
 	TlsIndex* lIndex = new TlsIndex;
 #ifdef WIN32

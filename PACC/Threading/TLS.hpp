@@ -30,8 +30,8 @@
  * \brief Class definition for the portable Thread Local Storage (%TLS).
  * \author Guillaume Mayer, ForwardSim Inc.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2007/02/01 22:50:24 $
+ * $Revision: 1.2 $
+ * $Date: 2008/10/29 21:54:30 $
  */
 
 #ifndef PACC_Threading_TLS_hpp_
@@ -48,24 +48,28 @@ namespace PACC {
 		
 		This class incapsulates the thread local storage mechanisms found in Windows or POSIX pthread.
 		*/
-		class TLS{
+		class TLS {
 		 public:
-			
 			//! Construct local storage.
 			TLS(void);
 			
 			//! Delete local storage.
 			~TLS(void);
 			
-			// Set local storage to object \c inObject.
+			//! Set local storage to object \c inObject.
 			void setValue(void *inObject);
 			
-			// Retrieve local storage object.
+			//! Retrieve local storage object.
 			void* getValue(void);
 			
 		 protected:
-			
 			void* mIndex; //!< Opaque structure of native index.
+			
+		 private:
+			//! restrict (disable) copy constructor.
+			TLS(const TLS&);
+			//! restrict (disable) assignment operator.
+			void operator=(const TLS&);
 		};
 		
 	} // end of Threading namespace

@@ -29,8 +29,8 @@
  * \file PACC/Socket/Address.cpp
  * \brief Class methods for the portable network address.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2007/01/23 21:27:46 $
+ * $Revision: 1.19 $
+ * $Date: 2008/10/29 21:51:53 $
  */
 
 #include "PACC/Socket/Address.hpp"
@@ -58,7 +58,7 @@ using namespace PACC;
 /*!
 This method is a helper constructor that parses a tipical "host:port" string. The host name can be either an IP address (e.g. 198.137.240.92) or an internet address (e.g. whitehouse.gov). Any error raises a Socket::exception.
  */
-Socket::Address::Address(const string& inHostPort)
+Socket::Address::Address(const string& inHostPort) : mPortNumber(0), mIPAddress(), mHostName()
 {
 	istringstream lStream(inHostPort);
 	Tokenizer lTokenizer(lStream);

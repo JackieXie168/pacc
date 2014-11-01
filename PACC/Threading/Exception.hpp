@@ -29,8 +29,8 @@
  * \file PACC/Threading/Exception.hpp
  * \brief Class definition for the threading exception.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2005/09/17 03:50:14 $
+ * $Revision: 1.15 $
+ * $Date: 2008/10/29 21:53:09 $
  */
 
 #ifndef PACC_Threading_Exception_hpp_
@@ -64,9 +64,9 @@ namespace PACC {
 			public:
 			//! Construct with native error code.
 			explicit Exception(int inNativeCode, const string& inMessage)
-			: runtime_error(inMessage), mNativeCode(inNativeCode) {mCode = convertNativeError(inNativeCode);}
+			: runtime_error(inMessage), mCode(convertNativeError(inNativeCode)), mNativeCode(inNativeCode) {}
 			//! Construct with multithreading error code.
-			explicit Exception(Error inCode, const string& inMessage) : runtime_error(inMessage), mCode(inCode) {mNativeCode = 0;}
+			explicit Exception(Error inCode, const string& inMessage) : runtime_error(inMessage), mCode(inCode), mNativeCode(0) {}
 			
 			static Error convertNativeError(int inError);
 			

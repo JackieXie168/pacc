@@ -29,8 +29,8 @@
  * \file PACC/Socket/Port.cpp
  * \brief Class methods for the portable socket base class.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.52 $
- * $Date: 1970/05/08 18:26:31 $
+ * $Revision: 1.53 $
+ * $Date: 2008/10/29 21:52:40 $
  */
 
 #include "PACC/Socket/Port.hpp"
@@ -59,6 +59,7 @@ typedef int socklen_t;
 
 #include <signal.h>
 #include <sstream>
+#include <cstring>
 
 using namespace std;
 using namespace PACC;

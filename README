@@ -2,7 +2,7 @@
 
 PACC: Portable Agile C++ Classes
 
-Copyright (C) 2005
+Copyright (C) 2005-2009
 by Marc Parizeau <parizeau@gel.ulaval.ca> and other contributors (see AUTHORS)
 
 +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
@@ -11,46 +11,23 @@ by Marc Parizeau <parizeau@gel.ulaval.ca> and other contributors (see AUTHORS)
 ABOUT
 =====
 
-PACC is a collection of Portable Agile C++ Classes. It can be retrieved from 
-the following anonymous CVS pserver repository:
+PACC is a collection of Portable Agile C++ Classes that can be retrieved at
+http://sourceforge.net/projects/pacc/. It is said to be portable because it can
+run on both Unix and Windows platforms. In general, the PACC classes have been
+tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to
+compile succesfully on AIX.
 
-:pserver:anonymous@manitou.gel.ulaval.ca:/Users/parizeau/CVS
+The PACC collection is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation; either version 2.1 of the License, or (at your option)
+any later version.
 
-by checking out one of the following CVS modules:
-
-  - "pacc-base" for the basic PACC classes (Math, Socket, Threading, Util, and XML)
-  - "pacc-math" for the mathematical classes (Matrix & Vector)
-  - "pacc-socket" for the socket classes (TCP & UDP)
-  - "pacc-thread" for the threading classes (Threads & Semaphores)
-  - "pacc-util" for miscellaneous utility classes
-  - "pacc-xml" for the XML classes (simple DOM package)
-  - "pacc-fuzzy" for the fuzzy set and fuzzy associative memory classes
-  - "pacc-mlp" for the multilayer perceptron classes
-  - "pacc-full" for all of the above
-
-You can also checkout module "pacc-lib" if you want to build libraries for the 
-basic PACC classes. You then get the equivalent of "pacc-base" but with 
-automake/autoconf files.
-
-Another alternative is to retrieve the latest distribution of "pacc-lib" at 
-the following address: <http://manitou.gel.ulaval.ca/~parizeau/PACC>.
-
-The PACC collection is said to be portable because it can run on both Unix 
-and Windows platforms. In general, the PACC classes have been tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to compile succesfully on AIX.
-
-The PACC collection is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-It is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. See the GNU Lesser General Public License for more details.
 
 DOCUMENTATIONS
 ==============
 
-Consult the PACC web page (http://manitou.gel.ulaval.ca/~parizeau/PACC) 
+Consult the PACC web page (http://manitou.gel.ulaval/PACC/) 
 to get all the necessary information to use this framework.

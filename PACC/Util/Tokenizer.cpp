@@ -29,8 +29,8 @@
  * \file PACC/Util/Tokenizer.cpp
  * \brief Class methods for the input stream tokenizer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.30 $
- * $Date: 2008/04/17 21:16:35 $
+ * $Revision: 1.31 $
+ * $Date: 2008/10/29 21:55:14 $
  */
 
 #include "PACC/Util/Tokenizer.hpp"
@@ -48,7 +48,7 @@ The internal read buffer size can be set with argument \c inBufSize (default=102
  \attention It should be noted that the use of such a buffer implies that the stream must be fully parsed by this tokenizer, because there is no way to put it's content back into the stream.
  */
 Tokenizer::Tokenizer(unsigned int inBufSize) 
-: mLine(1), mStream(0), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0) 
+: mLine(1), mName(), mStream(0), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0), mTokens()
 {
 	setDelimiters(" \t\n\r", "");
 	setBufferSize(inBufSize);
@@ -60,7 +60,7 @@ The internal read buffer size can be set with argument \c inBufSize (default=102
  \attention It should be noted that the use of such a buffer implies that the stream must be fully parsed by this tokenizer, because there is no way to put it's content back into the stream.
  */
 Tokenizer::Tokenizer(istream& inStream, unsigned int inBufSize) 
-: mLine(1), mStream(&inStream), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0)  
+: mLine(1), mName(), mStream(&inStream), mBuffer(0), mBufSize(0), mBufPtr(0), mBufCount(0), mTokens()
 {
 	setDelimiters(" \t\n\r", "");
 	setBufferSize(inBufSize);
