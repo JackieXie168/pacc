@@ -249,8 +249,8 @@ const SVG::Attribute SVG::strokeDash(SVG::DashType inType)
 	string lValue;
 	switch(inType) {
 		case eContinuous: lValue = "none";
-		case eDashed: lValue = "3";
-		case eDotted: lValue = "1";
+		case eDashed: lValue = "5 4";
+		case eDotted: lValue = "1 2";
 	}			
 	PACC_AssertM(!lValue.empty(), "Invalid dash  type!");
 	return Attribute("stroke-dasharray",lValue);
@@ -337,7 +337,7 @@ const SVG::Attribute SVG::strokeWidth(double inValue) {
  * \see AnchorType
  *
  * This attribute allows you to specify the position of the text anchor. 
- * valid options are: eStart, eMiddle, and eEnd.
+ * valid options are: eStart, eMiddle, and eEnd. Default is eStart.
  */
 const SVG::Attribute SVG::textAnchor(SVG::AnchorType inType)
 {
@@ -349,4 +349,26 @@ const SVG::Attribute SVG::textAnchor(SVG::AnchorType inType)
 	}
 	PACC_AssertM(!lValue.empty(), "Invalid text anchor type!");
 	return Attribute("text-anchor",lValue);
+}
+
+/*!\brief Make text baseline attribute using type \c inType.
+ * \ingroup SVGstyle
+ * \see BaselineType
+ *
+ * This attribute allows you to specify the position of the text baseline. 
+ * valid options are: eAlpha, eTop, eCentral, and eBottom. Default is eAlpha.
+ *
+ * This attribute appears not yet supported by Qt SVG.
+ */
+const SVG::Attribute SVG::textBaseline(SVG::BaselineType inType)
+{
+	string lValue;
+	switch(inType) {
+		case eAlpha: lValue = "alphabetical"; break;
+		case eBottom: lValue = "text-after-edge"; break;
+		case eCentral: lValue = "central"; break;
+		case eTop: lValue = "hanging"; break;
+	}
+	PACC_AssertM(!lValue.empty(), "Invalid text baseline type!");
+	return Attribute("dominant-baseline",lValue);
 }

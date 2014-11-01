@@ -121,6 +121,7 @@ namespace PACC {
 		const Attribute strokeOpacity(double inValue);
 		const Attribute strokeWidth(double inValue);
 		const Attribute textAnchor(AnchorType inType);
+		const Attribute textBaseline(BaselineType inType);
 		
 	} // end of SVG namespace
 	

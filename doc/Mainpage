@@ -1,0 +1,44 @@
+/*
+ *  Portable Agile C++ Classes (PACC)
+ *  Copyright (C) 2001-2003 by Marc Parizeau
+ *  http://manitou.gel.ulaval.ca/~parizeau/PACC
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *  Contact:
+ *  Laboratoire de Vision et Systemes Numeriques
+ *  Departement de genie electrique et de genie informatique
+ *  Universite Laval, Quebec, Canada, G1K 7P4
+ *  http://vision.gel.ulaval.ca
+ *
+ */
+
+/*! \mainpage
+
+%PACC is a collection of Portable Agile C++ Classes that can be retrieved at <a href="http://sourceforge.net/projects/pacc/">http://sourceforge.net/projects/pacc/</a>. It is said to be portable because it can run on both Unix and Windows platforms. In general, the %PACC classes have been tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to compile succesfully on AIX.
+
+The %PACC collection is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public License</a> for more details.
+
+ \author Marc Parizeau and other contributors<br>
+<A HREF="http://vision.gel.ulaval.ca/en/index.php">Laboratoire de Vision et Syst&egrave;mes Num&eacute;riques</A><br>
+<A HREF="http://www.gel.ulaval.ca/">D&eacute;partement de g&eacute;nie &eacute;lectrique et de g&eacute;nie informatique</A><br>
+<A HREF="http://www.ulaval.ca/">Universit&eacute; Laval</A>, <A HREF="http://vision.gel.ulaval.ca/fr/About/Quebec/quebec.html">Qu&eacute;bec</A>, Canada, G1K 7P4
+ */
+
+/*! \namespace PACC 
+ * \brief Portable Agile C++ Classes.
+ */

@@ -1,3 +1,6 @@
+1.4.1 (January 30th, 2010)
+- Corrected bug in SVG::Frame::setViewBox
+
 1.4.0 (November 2th, 2009)
 - Major overall of module PACC::SVG (API changed).
 - Improved documentation.

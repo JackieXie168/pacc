@@ -49,11 +49,6 @@ namespace PACC {
 		 public:
 			Document(const string& inTitle, const Size& inSize, const Style& inStyle=Style());
 			
-			Size getSize() const;
-			string getTitle() const;
-			
-			void setSize(const Size& inSize);
-			void setSize(double inWidth, double inHeight);
 			void setTitle(const string& inTitle);
 			
 			void read(const XML::ConstIterator& inNode);			
@@ -61,7 +56,6 @@ namespace PACC {
 			
 		 private:
 			string mTitle; //<! Title of this document.
-			Size mSize; //<! Size in pixels of this document.
 			
 			//! Disabled methods.
 			void clearTransform(void);

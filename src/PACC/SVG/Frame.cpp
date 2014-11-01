@@ -97,11 +97,11 @@ void SVG::Frame::setSize(double inWidth, double inHeight)
 }	
 			
 //! Set viewbox of this frame to origin \c inOrigin and size \c inSize.
-void SVG::Frame::setViewBox(const Point& inOrigin, const Size& inSize) 
+void SVG::Frame::setViewBox(const Point& inOrigin, const Size& inSize, bool inPreserveAspect) 
 {
 	setAttribute("viewBox", String::convert(inOrigin.x) + " "
 				 + String::convert(inOrigin.y) + " "
 				 + String::convert(inSize.width) + " "
-				 + String::convert(inSize.height) + " ");
-	setAttribute("preserveAspectRatio", "none");
+				 + String::convert(inSize.height));
+	setAttribute("preserveAspectRatio", inPreserveAspect?"xMidYMid":"none");
 }

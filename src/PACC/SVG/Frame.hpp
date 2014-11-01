@@ -62,7 +62,7 @@ namespace PACC {
 			void setSize(const Size& inSize);
 			void setSize(double inWidth, double inHeight);
 			
-			void setViewBox(const Point& inOrigin, const Size& inSize);
+			void setViewBox(const Point& inOrigin, const Size& inSize, bool inPreserveAspect=false);
 			
 		protected:
 			Frame(const string& inName, const XML::AttributeList& inAttributes=XML::AttributeList());

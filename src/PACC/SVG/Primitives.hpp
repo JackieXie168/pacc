@@ -71,6 +71,7 @@ namespace PACC {
 			Primitive(const string& inName, const XML::AttributeList& inAttrList = XML::AttributeList());
 			
 			friend class Group; //!< Allowing the use of Element's << operator.
+			friend class Document; //!< Allowing access to method Node::serialize
 		};
 		
 		/*!\brief Graphic primitive for circles.
@@ -183,27 +184,35 @@ namespace PACC {
 		 * enclosed text is represented by a glyph on with standard stroke and fill
 		 * attributes apply. For example you can put a stroke on the text to make
 		 * an outline, and you can change the color of the character using
-		 * Fill::Color.
+		 * style attribute strokeColor.
 		 *
 		 * There is also some special attributes that can be applyed to text to
 		 * control the appearence of the glyphs, like the font family, size, and
 		 * style.
 		 *
 		 * The text is placed on screen around an anchor point. How text is aligned
-		 * on the anchor depends of the TextAnchor attribute.
+		 * on the anchor depends of the textAnchor style attribute.
 		 */
 		class Text : public Primitive {
 		 public:
+			//! Text substring.
+			class Span : protected XML::Node {
+			public:
+				Span(const string& inString, const Style& inStyle=Style());
+				Span(const string& inString, const RelPos& inPos, const Style& inStyle=Style());
+				
+				friend class Text;
+			};
+					 
 			Text(const string& inString, const Point& inPoint, const Style& inStyle=Style());
-//			Text(const Point& inPoint, const TextData& in, const Style& inStyle=Style());
 			
 			void setAnchor(const Point& inAnchor);
+			
+			Text& operator<<(const Span& inSpan);
+			
+		private:
+			XML::Node* mText; //<! pointer to text node 
 		};
-
-//		class Text : public Primitive {
-//		public:
-//			TextSpan(const string& inString, const Style inStyle=Style());
-//		};
 		
 	} // end of SVG namespace
 	

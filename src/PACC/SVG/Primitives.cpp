@@ -331,10 +331,24 @@ void SVG::Rectangle::setSize(const Size& inSize) {
  *  \param inStyle  Specific style attributes.
  */
 SVG::Text::Text(const string& inString, const Point& inPoint, const Style&  inStyle)
-: Primitive("text", inStyle) 
+: Primitive("g", inStyle), mText(insertAsLastChild(new Node("text", XML::eData)))
 {
 	setAnchor(inPoint);
-	setTransform(Scale(1,-1)+Translate(0,-2*inPoint.y));
+	mText->setAttribute("transform", Scale(1,-1)+Translate(0,-2*inPoint.y));
+	mText->insertAsLastChild(new Node(inString, XML::eString));
+}
+
+SVG::Text::Span::Span(const string& inString, const Style& inStyle)
+: XML::Node("tspan", inStyle) 
+{
+	insertAsLastChild(new Node(inString, XML::eString));
+}
+
+SVG::Text::Span::Span(const string& inString, const RelPos& inPos, const Style& inStyle)
+: XML::Node("tspan", inStyle) 
+{
+	setAttribute("dx", String::convert(inPos.x));
+	setAttribute("dy", String::convert(inPos.y));
 	insertAsLastChild(new Node(inString, XML::eString));
 }
 
@@ -343,8 +357,14 @@ SVG::Text::Text(const string& inString, const Point& inPoint, const Style&  inSt
  */
 void SVG::Text::setAnchor(const Point& inPoint) 
 {
-	setAttribute("x", String::convert(inPoint.x));
-	setAttribute("y", String::convert(inPoint.y));
+	mText->setAttribute("x", String::convert(inPoint.x));
+	mText->setAttribute("y", String::convert(inPoint.y));
+}
+
+SVG::Text& SVG::Text::operator<<(const Span& inSpan)
+{
+	mText->insertAsLastChild(new Node(inSpan));
+	return *this;
 }
 
 /*! \brief Insert primitive into output stream.

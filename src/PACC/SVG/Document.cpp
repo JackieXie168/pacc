@@ -49,35 +49,12 @@ using namespace PACC;
 //! Construct a valid document with title \c inTitle, size \c inSize, and style \c inStyle.
 SVG::Document::Document(const string& inTitle, const Size& inSize, 
 						const Style& inStyle) 
-: mTitle(inTitle), Frame("g") 
+: Frame("svg"), mTitle(inTitle) 
 {
+	setOrigin(0, 0);
 	setSize(inSize);
 	*this += inStyle; 
 }
-
-//! Return document size.
-SVG::Size SVG::Document::getSize() const 
-{
-	return mSize;
-}
-
-//! Return title of this canvas.
-string SVG::Document::getTitle() const 
-{
-	return mTitle;
-}
-
-//! Set frame size to size \c inSize.
-void SVG::Document::setSize(const Size& inSize) 
-{
-	mSize = inSize;
-	Group::setTransform(Scale(1,-1) + Translate(0,-mSize.height));
-}
-
-//! Set frame size to width \c inwidth and height \c inHeight.
-void SVG::Document::setSize(double inWidth, double inHeight) {
-	setSize(Size(inWidth,inHeight));
-}	
 
 //! Set title of this canvas.
 void SVG::Document::setTitle(const string& inTitle) 
@@ -94,7 +71,7 @@ void SVG::Document::read(const XML::ConstIterator& inNode)
 	if(lPos && lPos->getType() == XML::eString) {
 		mTitle = lPos->getValue();
 	}
-	lPos = lFinder.find("/svg/g");
+	lPos = lFinder.find("/svg/g/svg");
 	if(!lPos) throw runtime_error("read() invalid document!");
 	XML::Node::operator=(*lPos);
 }
@@ -105,13 +82,18 @@ void SVG::Document::write(ostream& outStream) const
 	XML::Streamer lStream(outStream);
 	lStream.insertHeader();
 	lStream.openTag("svg");
-	lStream.insertAttribute("width", mSize.width);
-	lStream.insertAttribute("height", mSize.height);
+	lStream.insertAttribute("width", getSize().width);
+	lStream.insertAttribute("height", getSize().height);
 	lStream.insertAttribute("xmlns", "http://www.w3.org/2000/svg");
+	lStream.insertAttribute("version", "1.2");
+	lStream.insertAttribute("baseProfile", "tiny");
 	lStream.openTag("title", false);
 	lStream.insertStringContent(mTitle);
 	lStream.closeTag();
-	serialize(lStream);
+	Group lCoords;
+	lCoords.setTransform(Scale(1,-1) + Translate(0,-getSize().height));
+	lCoords << *this;
+	lCoords.serialize(lStream);
 	lStream.closeTag();
 }
 

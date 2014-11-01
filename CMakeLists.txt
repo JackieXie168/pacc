@@ -1,17 +1,15 @@
-# CMakeLists.txt
+# CMakeLists.txt toto
 # Auto configuration script
 # For PACC (Portable Agile C++ Classes), by Marc Parizeau
 # Laboratoire de vision et systèmes numériques, Université Laval
 # Copyright (c) 2009
 #
-# Last modification : 02/11/09
-
 
 project(PACC C CXX)
-set(PACC_VERSION 1.4.0)
+set(PACC_VERSION 1.4.1)
 
 # This is the shared library versioning info
-set(LIBRARY_VERSION 5.0.0)
+set(LIBRARY_VERSION 5.1.0)
 #                   | | |
 #            +------+ | +---+
 #            |        |     |
@@ -25,7 +23,6 @@ set(LIBRARY_VERSION 5.0.0)
 #            +- increment if interfaces have been added, removed or changed
 
 cmake_minimum_required(VERSION 2.6) 		# Minimum cmake version required
-
 
 # Define build mode
 if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
@@ -83,7 +80,6 @@ else(PACC_LIBRARY_TYPE STREQUAL "STATIC")
 	endif(MSVC)
 endif(PACC_LIBRARY_TYPE STREQUAL "STATIC")
 
-
 # OS detection and packaging options
 if(APPLE)
 	option(PACC_CREATE_PKG "Do you want to create a PACC .dmg package?" ON)
@@ -116,7 +112,6 @@ if(NOT DEFINED PACC_SOURCE_PACKAGE_TYPE)
 	set(PACC_SOURCE_PACKAGE_TYPE "TGZ;ZIP" CACHE STRING "CPack source package type (TGZ, TZ, TBZ2, STGZ, ZIP)")
 endif(NOT DEFINED PACC_SOURCE_PACKAGE_TYPE)
 
-
 message(STATUS "++ System configuration detection...")
 
 # Offer to disable any compilation warnings on Microsoft Visual C++
@@ -139,7 +134,6 @@ if (ZLIB_FOUND)
 else (ZLIB_FOUND)
 	message(STATUS "++ Cannot find ZLib, socket compression disabled...")
 endif (ZLIB_FOUND)
-
 
 # Look for threads libraries
 message(STATUS "++ Looking for threads libraries...")
@@ -172,7 +166,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	endif(CMAKE_CXX_COMPILER_VERSION MATCHES "4?\\.[3-9]?\\.[0-9]" AND NOT DEFINED PACC_USE_PARALLEL_STL)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-
 if(UNIX)
     # Checking for some socket headers
     check_include_files("sys/types.h;sys/socket.h;netinet/in.h;arpa/inet.h;netdb.h;sys/errno.h;sys/time.h;netinet/tcp.h" TEST_SOCKET_UNIX)
@@ -184,7 +177,6 @@ if(UNIX)
 	set(PACC_SOCKET_UNIX true)
     endif(NOT TEST_SOCKET_UNIX)
 endif(UNIX)
-
 
 if(WIN32 AND NOT CYGWIN)
 	# Check for socket headers
@@ -198,7 +190,6 @@ if(WIN32 AND NOT CYGWIN)
     set(PACC_SOCKET_WIN32 true)
     message(STATUS "++ Using Win32 sockets...")
 endif(WIN32 AND NOT CYGWIN)
-
 
 message(STATUS "++ Adding includes paths...")
 
@@ -247,8 +238,6 @@ file(GLOB PACC_XML_HEADERS	src/PACC/XML/*.hpp )
 file(GLOB PACC_Math_HEADERS	src/PACC/Math/*.hpp )
 file(GLOB PACC_SVG_HEADERS	src/PACC/SVG/*.hpp )
 
-
-
 message(STATUS "++ Configuration...")
 # Writing results in configuration file
 configure_file("${PROJECT_SOURCE_DIR}/src/PACC/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/PACC/config.hpp")
@@ -278,7 +267,6 @@ if(PACC_ZLIB)
 	target_link_libraries(pacc ${ZLIB_LIBRARIES})
 endif(PACC_ZLIB)
 
-
 # On Windows, we have to link to the socket library
 if(PACC_SOCKET_WIN32)
 	message(STATUS "++ Linking winsock2 library...")
@@ -307,7 +295,6 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/2-License.txt")
 set(CPACK_PACKAGE_VERSION ${PACC_VERSION})
 set(CPACK_PACKAGE_CONTACT "marc.parizeau@gel.ulaval.ca")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "PACC is a collection of Portable Agile C++ Classes that can be retrieved at http://sourceforge.net/projects/pacc/. It is said to be portable because it can run on both Unix and Windows platforms. In general, the PACC classes have been tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to compile succesfully on AIX.")
-
 
 # Binary packages options
 if(PACC_CREATE_PKG)	# Create a .dmg

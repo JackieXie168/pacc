@@ -106,6 +106,10 @@ namespace PACC {
 		//! Enumeration of text anchor types.
 		//! ingroup SVGtype
 		enum AnchorType {eStart, eMiddle, eEnd};
+
+		//! Enumeration of text baseline types.
+		//! ingroup SVGtype
+		enum BaselineType {eAlpha, eBottom, eCentral, eTop};
 		
 		//! \brief Basic %SVG color string.
 		//! \ingroup SVGtype
