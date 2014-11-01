@@ -14,12 +14,12 @@ GENERIC_LIBRARY_NAME=pacc
 
 GENERIC_MAJOR_VERSION=1
 GENERIC_MINOR_VERSION=3
-GENERIC_MICRO_VERSION=4
+GENERIC_MICRO_VERSION=5
 GENERIC_API_VERSION=$GENERIC_MAJOR_VERSION.$GENERIC_MINOR_VERSION
 AC_SUBST(GENERIC_API_VERSION)
 
 dnl Shared library versioning
-GENERIC_LIBRARY_VERSION=2:0:1
+GENERIC_LIBRARY_VERSION=3:0:2
 dnl                     | | |
 dnl              +------+ | +---+
 dnl              |        |     |
@@ -102,12 +102,7 @@ dnl Generates Makefile's, configuration files and scripts
 dnl -----------------------------------------------
 
 AC_OUTPUT(  Makefile \
-            pacc-util.pc \
-            pacc-xml.pc \
-            pacc-math.pc \
-            pacc-socket.pc \
-            pacc-svg.pc \
-            pacc-threading.pc \
+            pacc.pc \
             PACC/Makefile \
             PACC/Math/Makefile \
             PACC/Socket/Makefile \

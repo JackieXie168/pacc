@@ -18,8 +18,6 @@ library_include_HEADERS = $(h_sources)
 
 INCLUDES = -I$(top_srcdir)
 
-lib_LTLIBRARIES = libpacc-svg.la                            
-libpacc_svg_la_LIBADD = ../Util/libpacc-util.la ../XML/libpacc-xml.la ../Socket/libpacc-socket.la
+noinst_LTLIBRARIES = libpacc-svg.la                            
 libpacc_svg_la_SOURCES = $(h_sources) $(cc_sources)
-libpacc_svg_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION)
 

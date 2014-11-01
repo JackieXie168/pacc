@@ -1,5 +1,11 @@
 PACC change log:
 
+1.3.5 (March 2th, 2007)
+
+- The new configure file now builds a single library named "pacc" (no more pacc-math, pacc-socket, pacc-svg, pacc-threading, pacc-util, pacc-xml);
+- The dynamic link version now follows the gnu numbering convention (current version is );
+- added method XML::Streamer:closeAll. 
+
 1.3.4 (February 23th, 2007)
 
 - Added methods Matrix::parse and Matrix::serialize.

@@ -30,8 +30,8 @@
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et 
  syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.20 $
- * $Date: 2007/02/23 06:24:00 $
+ * $Revision: 1.21 $
+ * $Date: 2007/02/24 19:33:15 $
  */
 
 #include "PACC/Math/Matrix.hpp"
@@ -539,13 +539,13 @@ void Matrix::parse(const string& inString)
  
  Any parse error raises an std::runtime_error exception.
  */
-string Matrix::read(const XML::Iterator& inNode)
+string Matrix::read(const XML::ConstIterator& inNode)
 {
 	if(!inNode) throw runtime_error("Matrix::read() nothing to read!");
 	if(inNode->getType() == XML::eData) {
 		// read first format
 		bool lStringParsed = false;
-		for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
+		for(XML::ConstIterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
 			if(lChild->getType() == XML::eString) {
 				if(lStringParsed) 
 					throwError("Matrix::read() invalid format, matrix contains multiple strings!", inNode);
@@ -604,7 +604,15 @@ void Matrix::scaleLU(vector<double>& outScales) const
 }
 
 /*!
-*/
+This method enumerates matrix elements matrix elements in row order, with row 
+ elements separated by comas or white space, and rows separated by semi-columns. 
+ For example, the following defines a 3x4 matrix:
+ \verbatim
+ 1,2,3,4;5,6,7,8;9,10,11,12
+ \endverbatim
+ By default, the output precision of the matrix elements can be set with method 
+ Matrix::setOutputPrecision.
+ */
 string Matrix::serialize(void) const
 {
 	ostringstream lContent;
@@ -960,7 +968,7 @@ Matrix& Matrix::transpose(Matrix& outMatrix) const
 
 /*!
 */
-void Matrix::throwError(const string& inMessage, const XML::Iterator& inNode) const
+void Matrix::throwError(const string& inMessage, const XML::ConstIterator& inNode) const
 {
 	ostringstream lStream;
 	lStream << inMessage << " for markup:\n";
@@ -970,9 +978,12 @@ void Matrix::throwError(const string& inMessage, const XML::Iterator& inNode) co
 }
 
 /*!
- See Matrix::read for a description of the write format. By default, the precision 
- of the output is set to 15 digits. This value can be changed using method
- Matrix::setWritePrecision.
+The following markup illustrates the write format for a 3x4 matrix:
+ \verbatim
+ <Matrix name="My Matrix" rows="3" cols="4">1,2,3,4;5,6,7,8;9,10,11,12</Matrix>
+ \endverbatim
+ when using the default tag name \c inTag="Matrix". The output precision of the 
+ matrix elements can be set using method Matrix::setOutputPrecision.
 */
 void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 {

@@ -30,8 +30,8 @@
  *  \brief  Definition of class Matrix.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.22 $
- *  $Date: 2007/02/23 06:20:45 $
+ *  $Revision: 1.23 $
+ *  $Date: 2007/02/24 19:33:15 $
  */
 
 #ifndef PACC_Matrix_hpp
@@ -138,13 +138,13 @@ namespace PACC {
 		//! Multiply this matrix with matrix \c inMatrix, and assign result to this matrix.
 		inline Matrix operator*=(const Matrix& inMatrix) {return multiply(*this, inMatrix);}
 		
-		//! Return number of columns (this function is depricated; use Matrix::cols).
+		//! Return number of columns (this function is deprecated; use Matrix::cols).
 		inline unsigned int getCols(void) const {return mCols;}
 		
 		//! Return number of columns.
 		inline unsigned int cols(void) const {return mCols;}
 		
-		//! Return number of rows (this function is depricated; use Matrix::rows).
+		//! Return number of rows (this function is deprecated; use Matrix::rows).
 		inline unsigned int getRows(void) const {return mRows;}
 		
 		//! Return number of rows.
@@ -250,16 +250,16 @@ namespace PACC {
 		inline void setName(const string& inName) {mName = inName;};
 		
 		//! Read this matrix from parse tree node \c inNode.
-		string read(const XML::Iterator& inNode);
+		string read(const XML::ConstIterator& inNode);
 		
 		//! Write this matrix into streamer \c outStream using tag name \c inTag.
 		void write(XML::Streamer& outStream, const string& inTag="Matrix") const;
 		
-		//! Set output write precision to \c inPrecision number of digits (this method is deprecated in favor of Matrix::setWritePrecision).
-		void setPrecision(unsigned int inPrecision) {setWritePrecision(inPrecision);}
+		//! Set output write precision to \c inPrecision number of digits (this method is deprecated in favor of Matrix::setOutputPrecision).
+		void setPrecision(unsigned int inPrecision) {setOutputPrecision(inPrecision);}
 		
 		//! Set output write precision to \c inPrecision number of digits.
-		void setWritePrecision(unsigned int inPrecision) {mPrec = inPrecision;}
+		void setOutputPrecision(unsigned int inPrecision) {mPrec = inPrecision;}
 		
 	 protected:
 		unsigned int mRows; //!< Number of rows.
@@ -298,7 +298,7 @@ namespace PACC {
 		string serialize(void) const;
 		
 		//! Throw runtime error with message \c inMessage using parse tree node \c inNode.
-		void throwError(const string& inMessage, const XML::Iterator& inNode) const;
+		void throwError(const string& inMessage, const XML::ConstIterator& inNode) const;
 		
 	 private:
 		// disabled methods

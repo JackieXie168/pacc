@@ -23,8 +23,7 @@ library_include_HEADERS = $(h_sources)
 
 INCLUDES = -I$(top_srcdir)
 
-lib_LTLIBRARIES = libpacc-socket.la                            
-libpacc_socket_la_LIBADD = ../Util/libpacc-util.la ../Threading/libpacc-threading.la
+noinst_LTLIBRARIES = libpacc-socket.la                            
 libpacc_socket_la_SOURCES = $(h_sources) $(cc_sources)
-libpacc_socket_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION) $(PACC_ZLIB_LDFLAGS)
+
 

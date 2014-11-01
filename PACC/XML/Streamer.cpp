@@ -30,8 +30,8 @@
  * \brief Class methods for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
  
- * $Revision: 1.39 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.40 $
+ * $Date: 2007/02/28 16:20:55 $
  */
 
 #include "PACC/XML/Streamer.hpp"
@@ -40,6 +40,13 @@
 
 using namespace std;
 using namespace PACC;
+
+/*!
+*/
+void XML::Streamer::closeAll(void)
+{
+	while(!mTags.empty()) closeTag();
+}
 
 /*!
 */

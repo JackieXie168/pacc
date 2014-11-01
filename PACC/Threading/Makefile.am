@@ -20,8 +20,7 @@ library_include_HEADERS = $(h_sources)
 
 INCLUDES = -I$(top_srcdir)
 
-lib_LTLIBRARIES = libpacc-threading.la
-libpacc_threading_la_LIBADD = ../Util/libpacc-util.la 
+noinst_LTLIBRARIES = libpacc-threading.la
 libpacc_threading_la_SOURCES = $(h_sources) $(cc_sources)
-libpacc_threading_la_LDFLAGS = -version-info $(GENERIC_LIBRARY_VERSION) -lpthread
+
 

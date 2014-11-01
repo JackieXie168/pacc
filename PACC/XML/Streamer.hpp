@@ -29,8 +29,8 @@
  * \file PACC/XML/Streamer.hpp
  * \brief Class definition for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.48 $
- * $Date: 2007/01/30 05:47:03 $
+ * $Revision: 1.49 $
+ * $Date: 2007/02/28 16:20:55 $
  */
 
 #ifndef PACC_XML_Streamer_hpp_
@@ -84,6 +84,9 @@ namespace PACC {
 		 public:
 			//! Constructs object for streaming %XML markup into output stream \c inStream using an indentation width of \c inWidth.
 			Streamer(ostream& inStream, unsigned int inWidth=2) : mStream(inStream), mIndentWidth(inWidth), mClosed(true), mOneAttribute(false), mIndentAttributes(false) {}
+			
+			//! Close all opened markup tag.
+			void closeAll(void);
 			
 			//! Close the last opened markup tag.
 			void closeTag(void);

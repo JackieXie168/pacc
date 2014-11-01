@@ -29,8 +29,8 @@
  * \file PACC/Util/Date.cpp
  * \brief Class methods for the portable time and date.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.13 $
+ * $Date: 2007/02/24 22:11:38 $
  */
 
 #include "PACC/Util/Date.hpp"
@@ -45,23 +45,20 @@ Date::Date(unsigned int inYear, unsigned int inMonth, unsigned int inDay) : mTim
 	setTime(0, 0, 0);
 }
 
-#include <iostream>
-
 //! Return formatted date and time using the std::strftime string format \c inFormat.
 std::string Date::get(const string& inFormat) const 
 {
 	tm* lTime = ::localtime(&mTime);
-	string lBuffer;
-	// reserve large enough buffer
-	lBuffer.resize(1);
-	int lSize;
-	while((lSize = ::strftime((char*)lBuffer.data(), lBuffer.size(), inFormat.c_str(), lTime)) == 0) 
-	{
-		// enlarge buffer if necessary
-		lBuffer.resize(2*lBuffer.capacity());
+	int lBufSize = 128;
+	char* lBuffer = new char[lBufSize];
+	while(::strftime(lBuffer, lBufSize, inFormat.c_str(), lTime) == 0) {
+		// buffer needs to be enlarged
+		delete lBuffer;
+		lBuffer = new char[lBufSize*=2];
 	}
-	lBuffer.resize(lSize);
-	return lBuffer;
+	string lDate(lBuffer);
+	delete lBuffer;
+	return lDate;
 }
 
 //! Set date to year \c inyear, month \c inMonth, and day \c inDay (time is unchanged).

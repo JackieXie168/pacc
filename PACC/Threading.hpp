@@ -29,8 +29,8 @@
  * \file PACC/Threading.hpp
  * \brief Include all headers for the multithreading module.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2007/02/03 18:41:03 $
+ * $Revision: 1.17 $
+ * $Date: 2007/02/24 19:29:55 $
  */
 
 /*! \namespace PACC::Threading
@@ -46,4 +46,4 @@
 #include "PACC/Threading/Semaphore.hpp"
 #include "PACC/Threading/Thread.hpp"
 #include "PACC/Threading/ThreadPool.hpp"
-#incldue "PACC/Threading/TLS.hpp"
+#include "PACC/Threading/TLS.hpp"

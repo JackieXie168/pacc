@@ -30,8 +30,8 @@
  *  \brief  Definition of class Vector.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.17 $
- *  $Date: 2007/02/03 17:04:35 $
+ *  $Revision: 1.18 $
+ *  $Date: 2007/02/24 19:33:15 $
  */
 
 #ifndef PACC_Vector_hpp
@@ -247,7 +247,7 @@ namespace PACC {
 		}
 		
 		//! Read from parse tree node \c inNode.
-		string read(const XML::Iterator& inNode);
+		string read(const XML::ConstIterator& inNode);
 		
 		//! Write this vector into streamer \c outStream using tag name \c inTag.
 		void write(XML::Streamer& outStream, const string& inTag="Vector") const;

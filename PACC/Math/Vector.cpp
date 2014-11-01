@@ -29,8 +29,8 @@
  * \file   PACC/Math/Vector.cpp
  * \brief  Method definitions for class Vector.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2007/02/23 06:22:29 $
+ * $Revision: 1.16 $
+ * $Date: 2007/02/24 19:33:15 $
  */
 
 #include "PACC/Math/Vector.hpp"
@@ -61,7 +61,7 @@ using namespace PACC;
  </Vector>
  \endverbatim
  */
-string Vector::read(const XML::Iterator& inNode)
+string Vector::read(const XML::ConstIterator& inNode)
 {
 	if(!inNode) throw runtime_error("Vector::read() nothing to read!");
 	try {
@@ -76,7 +76,7 @@ string Vector::read(const XML::Iterator& inNode)
 	} catch(const runtime_error& inError) {
 		// try the deprecated format
 		clear();
-		for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
+		for(XML::ConstIterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
 			if(lChild->getType() == XML::eData && lChild->getValue() == "Float") {
 				string lValue;
 				if((lValue = lChild->getAttribute("v")) != "" || (lValue = lChild->getAttribute("value")) != "") push_back(String::convertToFloat(lValue));

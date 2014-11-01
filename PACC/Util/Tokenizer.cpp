@@ -29,8 +29,8 @@
  * \file PACC/Util/Tokenizer.cpp
  * \brief Class methods for the input stream tokenizer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.24 $
- * $Date: 2007/01/23 21:28:09 $
+ * $Revision: 1.25 $
+ * $Date: 2007/02/24 19:30:41 $
  */
 
 #include "PACC/Util/Tokenizer.hpp"
@@ -74,7 +74,7 @@ Tokenizer::~Tokenizer(void) {
 \return String of next token found.
  
  This method finds the next token in the default input stream, after removing any leading white space. An empty token (string) means that end of stream was reached.
- \attention This method is depricated.
+ \attention This method is deprecated.
  */
 string Tokenizer::getNextToken(void)
 {

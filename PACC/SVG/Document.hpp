@@ -29,8 +29,8 @@
  * \file PACC/SVG/Document.hpp
  * \brief Class definition for the SVG drawing document.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2007/02/08 14:44:13 $
+ * $Revision: 1.2 $
+ * $Date: 2007/02/24 19:31:38 $
  */
 
 #ifndef PACC_SVG_Document_hpp_
@@ -62,7 +62,7 @@ namespace PACC {
 			void setTitle(const string& inTitle) {mTitle = inTitle;}
 			
 			//! Read this document from parser tree node \c inNode.
-			void read(const XML::Iterator& inNode);
+			void read(const XML::ConstIterator& inNode);
 			
 			//! Serialize this document into stream \c outStream.
 			void write(ostream& outStream) const;

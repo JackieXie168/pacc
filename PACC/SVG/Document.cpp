@@ -28,8 +28,8 @@
 /*!\file PACC/SVG/Document.cpp
  * \brief Class methods for the SVG Document.
  * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2007/02/08 14:44:13 $
+ * $Revision: 1.2 $
+ * $Date: 2007/02/24 19:31:38 $
  */
 
 #include "PACC/SVG/Document.hpp"
@@ -43,11 +43,11 @@ using namespace PACC;
 
 /*!
 */
-void SVG::Document::read(const XML::Iterator& inNode)
+void SVG::Document::read(const XML::ConstIterator& inNode)
 {
 	if(!inNode) throw runtime_error("read() nothing to read!");
-	XML::Finder lFinder(inNode);
-	XML::Iterator lPos = lFinder.find("/svg/g/svg");
+	XML::ConstFinder lFinder(inNode);
+	XML::ConstIterator lPos = lFinder.find("/svg/g/svg");
 	if(!lPos) throw runtime_error("read() invalid document!");
 	XML::Node::operator=(*lPos);
 }
