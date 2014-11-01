@@ -1,5 +1,12 @@
 PACC change log:
 
+1.3.4 (February 23th, 2007)
+
+- Added methods Matrix::parse and Matrix::serialize.
+- new implementation of Matrix::read (attributes "rows" and "cols" are now optional).
+- Implementation of Vector::read now reuses Matrix::read.
+- Added method Matrix::setWritePrecision to eventually replace Matrix::setPrecision (now depricated);
+
 1.3.3 (February 8th, 2007)
 
 - Added class SVG::Document

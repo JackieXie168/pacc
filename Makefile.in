@@ -108,7 +108,8 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = pacc-util.pc pacc-xml.pc pacc-math.pc \
+	pacc-socket.pc pacc-svg.pc pacc-threading.pc
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
@@ -118,7 +119,8 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
 	Makefile.in NEWS aclocal.m4 config.guess config.h.in config.sub \
 	configure configure.ac depcomp install-sh ltmain.sh missing \
-	mkinstalldirs
+	mkinstalldirs pacc-math.pc.in pacc-socket.pc.in pacc-svg.pc.in \
+	pacc-threading.pc.in pacc-util.pc.in pacc-xml.pc.in
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -156,6 +158,18 @@ $(srcdir)/config.h.in:  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+pacc-util.pc: $(top_builddir)/config.status pacc-util.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+pacc-xml.pc: $(top_builddir)/config.status pacc-xml.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+pacc-math.pc: $(top_builddir)/config.status pacc-math.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+pacc-socket.pc: $(top_builddir)/config.status pacc-socket.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+pacc-svg.pc: $(top_builddir)/config.status pacc-svg.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+pacc-threading.pc: $(top_builddir)/config.status pacc-threading.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -278,6 +292,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
+	$(mkinstalldirs) $(distdir)/.
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \

@@ -30,8 +30,8 @@
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et 
  syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.19 $
- * $Date: 2007/02/06 20:30:50 $
+ * $Revision: 1.20 $
+ * $Date: 2007/02/23 06:24:00 $
  */
 
 #include "PACC/Math/Matrix.hpp"
@@ -471,39 +471,107 @@ Matrix& Matrix::multiply(Matrix& outMatrix, const Matrix& inMatrix) const
 }
 
 /*!
-Matrix elements must be enumerated in row order and delimited by either commas 
-(','), semi-columns (';'), or white space. The recommended style is to seperate 
-elements with comas, and rows with semi-columns. For example:
-\verbatim
-<Matrix name="My Matrix" rows="3" cols="4">1,2,3,4;5,6,7,8;9,10,11,12</Matrix>
-\endverbatim
-The number of elements must match the product of the "rows" and "cols" attributes.
-*/
+ This method parses the input string for matrix elements. Elements should be in 
+ row order, separated by either comas (',') or white space. Rows should be separated
+ by semi-columns (';'). See method Matrix::read for more details.
+ 
+ */
+void Matrix::parse(const string& inString)
+{
+	clear();
+	mRows = mCols = 0;
+	istringstream lStream(inString);
+	Tokenizer lTokenizer(lStream);
+	lTokenizer.setDelimiters(" \n\r\t,", ";");
+	string lToken;
+	unsigned int lColumn = 0;
+	bool lFinished = false;
+	while(!lFinished) {
+		if(!lTokenizer.getNextToken(lToken)) {
+			lFinished = true;
+			lToken =   ";";
+		}
+		if(lToken == ";") {
+			// either end of string or end of row
+			if(lColumn > 0 && mCols == 0) {
+				// this token marks the end of the first row
+				mCols = lColumn;
+				++mRows;
+			} else if(lColumn > 0 && lColumn == mCols) {
+				// the current row is valid
+				++mRows;
+			} else if(lColumn != mCols) {
+				// rows don't have the same number of columns
+				XML::Node lNode(inString, XML::eString);
+				throwError("Matrix::parse() invalid format, variable number of columns!", &lNode);
+			}
+			lColumn = 0;
+		} else {
+			push_back(String::convertToFloat(lToken));
+			++lColumn;
+		}
+	}
+}
+
+/*!
+ Two types of input nodes are supported: either XML::eData or XML::eString.
+
+ In the first case, the input node is any valid data tag that embeds a string 
+ which enumerates the matrix elements. These must be enumerated in row order with 
+ row elements delimited by commas (',') or white space, and rows separated by 
+ semi-columns (';'). For example, the following defines a 3x4 matrix:
+ \verbatim
+ <Matrix name="My Matrix" rows="3" cols="4">1,2,3,4;5,6,7,8;9,10,11,12</Matrix>
+ \endverbatim
+ Note that the tag name (here "Matrix") is irrelevant; any name can be used. The 
+ method either returns the value of the "name" attribute, if present, or an empty 
+ string, otherwise. Attributes "rows" and "cols" are optional, but must be 
+ coherent with the parsed matrix, if present. Otherwise, an std::runtime_error 
+ exception will be raised.
+ 
+ In the second case, matrix elements are directly enumerated in a string, in row 
+ order, with row elements separated by comas or white space, and rows separated 
+ by semi-columns. For example, the following also defines a valid 3x4 matrix:
+ \verbatim
+ 1,2,3,4;5,6,7,8;9,10,11,12
+ \endverbatim
+ In this case, however, the method always returns an empty string.
+ 
+ Any parse error raises an std::runtime_error exception.
+ */
 string Matrix::read(const XML::Iterator& inNode)
 {
 	if(!inNode) throw runtime_error("Matrix::read() nothing to read!");
-	clear();
-	for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
-		if(lChild->getType() == XML::eString) {
-			istringstream lStream(lChild->getValue());
-			Tokenizer lTokenizer(lStream);
-			lTokenizer.setDelimiters(" \n\r\t,;", "");
-			string lToken;
-			while(lTokenizer.getNextToken(lToken)) push_back(String::convertToFloat(lToken));
+	if(inNode->getType() == XML::eData) {
+		// read first format
+		bool lStringParsed = false;
+		for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
+			if(lChild->getType() == XML::eString) {
+				if(lStringParsed) 
+					throwError("Matrix::read() invalid format, matrix contains multiple strings!", inNode);
+				parse(lChild->getValue());
+				lStringParsed = true;
+			}
 		}
+		if(inNode->isDefined("rows")) {
+			// validate number of rows
+			int lRows = String::convertToInteger(inNode->getAttribute("rows"));
+			if((int)mRows != lRows) throwError("Matrix::read() invalid 'rows' attribute!", inNode);
+		}
+		if(inNode->isDefined("cols")) {
+			// validate number of cols
+			int lCols = String::convertToInteger(inNode->getAttribute("cols"));
+			if((int)mCols != lCols) throwError("Matrix::read() invalid 'cols' attribute!", inNode);
+		}
+	} else if(inNode->getType() == XML::eString) {
+		// read second format
+		parse(inNode->getValue());
+	} else {
+		// unsupported node type
+		throwError("Matrix::read() node type must be XML::eData or XML::eString!", inNode);
 	}
-	if(inNode->isDefined("rows")) 
-		mRows = String::convertToInteger(inNode->getAttribute("rows"));
-	else throw runtime_error("Matrix::read() missing 'rows' attribute!");
-	if(inNode->isDefined("cols")) 
-		mCols = String::convertToInteger(inNode->getAttribute("cols"));
-	else throw runtime_error("Matrix::read() missing 'cols' attribute!");
-	if(vector<double>::size() != mRows*mCols) {
-		throwError("Matrix::read() number of elements does not match the rows x cols attributes", inNode);
-	}
-	string lName = inNode->getAttribute("name");
-	if(lName != "") mName = lName;
-	return lName;
+	if(inNode->isDefined("name")) mName = inNode->getAttribute("name");
+	return mName;
 }
 
 /*!
@@ -533,6 +601,20 @@ void Matrix::scaleLU(vector<double>& outScales) const
 		if(lMax == 0.) throw runtime_error("<Matrix::scaleLU> matrix is singular!");
 		outScales[i] = 1./lMax;
 	}
+}
+
+/*!
+*/
+string Matrix::serialize(void) const
+{
+	ostringstream lContent;
+	lContent.precision(mPrec);
+	for(unsigned int i = 0; i < size(); ++i) {
+		if(i != 0 && i % mCols == 0) lContent << ";";
+		else if(i != 0) lContent << ",";
+		lContent << (*this)[i];
+	}
+	return lContent.str();
 }
 
 /*!
@@ -883,14 +965,14 @@ void Matrix::throwError(const string& inMessage, const XML::Iterator& inNode) co
 	ostringstream lStream;
 	lStream << inMessage << " for markup:\n";
 	XML::Streamer lStreamer(lStream);
-	inNode->serialize(lStreamer);
+	if(inNode) inNode->serialize(lStreamer);
 	throw runtime_error(lStream.str());
 }
 
 /*!
  See Matrix::read for a description of the write format. By default, the precision 
  of the output is set to 15 digits. This value can be changed using method
- Matrix::setPrecision.
+ Matrix::setWritePrecision.
 */
 void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 {
@@ -898,14 +980,7 @@ void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 	if(mName != "") outStream.insertAttribute("name", mName);
 	outStream.insertAttribute("rows", mRows);
 	outStream.insertAttribute("cols", mCols);
-	ostringstream lContent;
-	lContent.precision(mPrec);
-	for(unsigned int i = 0; i < size(); ++i) {
-		if(i != 0 && i % mCols == 0) lContent << ";";
-		else if(i != 0) lContent << ",";
-		lContent << (*this)[i];
-	}
-	outStream.insertStringContent(lContent.str());
+	outStream.insertStringContent(serialize());
 	outStream.closeTag();
 }
 

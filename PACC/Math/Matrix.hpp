@@ -30,8 +30,8 @@
  *  \brief  Definition of class Matrix.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.21 $
- *  $Date: 2007/02/03 17:04:35 $
+ *  $Revision: 1.22 $
+ *  $Date: 2007/02/23 06:20:45 $
  */
 
 #ifndef PACC_Matrix_hpp
@@ -255,8 +255,11 @@ namespace PACC {
 		//! Write this matrix into streamer \c outStream using tag name \c inTag.
 		void write(XML::Streamer& outStream, const string& inTag="Matrix") const;
 		
+		//! Set output write precision to \c inPrecision number of digits (this method is deprecated in favor of Matrix::setWritePrecision).
+		void setPrecision(unsigned int inPrecision) {setWritePrecision(inPrecision);}
+		
 		//! Set output write precision to \c inPrecision number of digits.
-		void setPrecision(unsigned int inPrecision) {mPrec = inPrecision;}
+		void setWritePrecision(unsigned int inPrecision) {mPrec = inPrecision;}
 		
 	 protected:
 		unsigned int mRows; //!< Number of rows.
@@ -287,6 +290,12 @@ namespace PACC {
 			mRows = inRows; mCols = inCols;
 			vector<double>::resize(mRows*mCols);
 		}
+		
+		//! Parse matrix elements in string \c inString.
+		void parse(const string& inString);
+		
+		//! Serialize matrix elements.
+		string serialize(void) const;
 		
 		//! Throw runtime error with message \c inMessage using parse tree node \c inNode.
 		void throwError(const string& inMessage, const XML::Iterator& inNode) const;

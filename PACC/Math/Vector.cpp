@@ -29,8 +29,8 @@
  * \file   PACC/Math/Vector.cpp
  * \brief  Method definitions for class Vector.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2007/02/03 17:04:35 $
+ * $Revision: 1.15 $
+ * $Date: 2007/02/23 06:22:29 $
  */
 
 #include "PACC/Math/Vector.hpp"
@@ -41,57 +41,63 @@ using namespace std;
 using namespace PACC;
 
 /*!
-Vector elements must be enumerated in row order, and seperated by semi-columns (';'), comas (','), or white space (the semi-column is the recommended delimiter). For example:
-\verbatim
-<Vector name="My Vector" size="4">1;2;3;4</Vector>
-\endverbatim
-The number of elements must match the value of the "size" attribute.
+ This method will try to interpret the input node as a matrix (see Matrix::read).
+ For example, the following defines a vector of size 4:
+ \verbatim
+ <Vector name="My Vector" size="4">1;2;3;4</Vector>
+ \endverbatim
+ Note that the tag name (here "Vector") is irrelevant; any name can be used. The 
+ method either returns the value of the "name" attribute, if present, or an empty 
+ string, otherwise. Attribute "size"is optional, but must be 
+ coherent with the parsed matrix, if present. Otherwise, an std::runtime_error 
+ exception will be raised.
 
-This method also supports the following deprecated markup style:
-\verbatim
-<Vector name="My Vector">
-  <Float v="1.2"/>
-  <Float v="23.8"/>
-  ...
-</Vector>
-\endverbatim
-Any read error raises an std::runtime_error exception.
-*/
+ This method also supports the following deprecated markup style:
+ \verbatim
+ <Vector name="My Vector">
+   <Float v="1.2"/>
+   <Float v="23.8"/>
+   ...
+ </Vector>
+ \endverbatim
+ */
 string Vector::read(const XML::Iterator& inNode)
 {
 	if(!inNode) throw runtime_error("Vector::read() nothing to read!");
-	clear();
-	for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
-		if(lChild->getType() == XML::eString) {
-			// this is the recommended markup style
-			istringstream lStream(lChild->getValue());
-			Tokenizer lTokenizer(lStream);
-			lTokenizer.setDelimiters(" \n\r\t,;", "");
-			string lToken;
-			while(lTokenizer.getNextToken(lToken)) {
-				push_back(String::convertToFloat(lToken));
-			}
-		} else if(lChild->getType() == XML::eData && lChild->getValue() == "Float") {
-			string lValue;
-			if((lValue = lChild->getAttribute("v")) != "" || (lValue = lChild->getAttribute("value")) != "") push_back(String::convertToFloat(lValue));
-			else if(lChild->getFirstChild() && lChild->getFirstChild()->getType() == XML::eString) push_back(String::convertToFloat(lChild->getFirstChild()->getValue()));
+	try {
+		// try the standard matrix format
+		Matrix::read(inNode);
+		if(mCols != 1 && (mCols != 0 || mRows != 0)) 
+			throwError("Vector::read() must a single column!", inNode);
+		if(inNode->isDefined("size")) {
+			int lSize = String::convertToInteger(inNode->getAttribute("size"));
+			if((int)mRows != lSize) throwError("Vector::read() invalid 'size' attribute!", inNode);
 		}
+	} catch(const runtime_error& inError) {
+		// try the deprecated format
+		clear();
+		for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
+			if(lChild->getType() == XML::eData && lChild->getValue() == "Float") {
+				string lValue;
+				if((lValue = lChild->getAttribute("v")) != "" || (lValue = lChild->getAttribute("value")) != "") push_back(String::convertToFloat(lValue));
+				else if(lChild->getFirstChild() && lChild->getFirstChild()->getType() == XML::eString) push_back(String::convertToFloat(lChild->getFirstChild()->getValue()));
+			}
+		}
+		mCols = 1;
+		mRows = vector<double>::size();
+		if(inNode->isDefined("size")) {
+			int lSize = String::convertToInteger(inNode->getAttribute("size"));
+			if((int)mRows != lSize) throwError("Vector::read() invalid size attribute", inNode);
+		}
+		if(inNode->isDefined("name")) mName = inNode->getAttribute("name");
 	}
-	mCols = 1;
-	mRows = vector<double>::size();
-	if(inNode->isDefined("size")) {
-		unsigned int lSize = String::convertToInteger(inNode->getAttribute("size"));
-		if(mRows != lSize) throwError("Vector::read() number of elements does not match the size attribute", inNode);
-	}
-	string lName = inNode->getAttribute("name");
-	if(lName != "") mName = lName;
-	return lName;
+	return mName;
 }
 
 /*!
  See Vector::read for a description of the write format. By default, the precision 
  of the output is set to 15 digits. This value can be changed using method
- Matrix::setPrecision.
+ Matrix::setWritePrecision.
  */
 void Vector::write(XML::Streamer& outStream, const string& inTag) const
 {
