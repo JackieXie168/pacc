@@ -30,8 +30,8 @@
  *  \brief  Definition of class Matrix.
  *  \author Christian Gagne
  *  \author Marc Parizeau
- *  $Revision: 1.15 $
- *  $Date: 2006/05/12 15:06:28 $
+ *  $Revision: 1.17 $
+ *  $Date: 2006/08/09 02:56:51 $
  */
 
 #ifndef PACC_Matrix_hpp
@@ -50,26 +50,31 @@ namespace PACC {
 	class Vector;
 	
 	/*! \brief %Matrix of floating point numbers.
-		\author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et 
+		syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup Math
 		\ingroup MLP
 		
-		This class encapsulates a vector of floating point numbers (double) as a matrix. It contains operators and methods for sum, difference, and product of matrices, as well as product with a scalar. It also includes matrix transposition and inversion methods, as well as computation of eigenvalues and eigenvectors for symetric matrices. Matrices can read and write themselves in %XML.
+		This class encapsulates a vector of floating point numbers (double) as a matrix. 
+		It contains operators and methods for sum, difference, and product of matrices, 
+		as well as product with a scalar. It also includes matrix transposition and 
+		inversion methods, as well as computation of eigenvalues and eigenvectors 
+		for symetric matrices. Matrices can read and write themselves in %XML.
 		
 		\attention Row and column indices start at 0.
     */
 	class Matrix : protected vector<double> {
 	 public:		
 		//! Construct an empty matrix with name \c inName.
-		Matrix(const string& inName="") : mRows(0), mCols(0), mName(inName) {}
+		Matrix(const string& inName="") : mRows(0), mCols(0), mPrec(15), mName(inName) {}
 		
 		//! Construct a matrix of size \c inRows rows by \c inColumns columns, initialized with 0, and with name \c inName.
 		explicit Matrix(unsigned int inRows, unsigned int inCols, const string& inName="") 
-		: vector<double>(inRows*inCols, 0), mRows(inRows), mCols(inCols), mName(inName) {}
+		: vector<double>(inRows*inCols, 0), mRows(inRows), mCols(inCols), mPrec(15), mName(inName) {}
 		
 		//! Construct a matrix of size \c inRows rows by \c inColumns columns, initialized with value \c inValue, and with name \c inName.
 		explicit Matrix(unsigned int inRows, unsigned int inCols, double inValue, const string& inName="") 
-		: vector<double>(inRows*inCols, inValue), mRows(inRows), mCols(inCols), mName(inName) {}
+		: vector<double>(inRows*inCols, inValue), mRows(inRows), mCols(inCols), mPrec(15), mName(inName) {}
 		
 		//! Delete this matrix.
 		virtual ~Matrix() {mRows = mCols = 0;}
@@ -201,9 +206,13 @@ namespace PACC {
 		//! Write this matrix into streamer \c outStream using tag name \c inTag.
 		void write(XML::Streamer& outStream, const string& inTag="Matrix") const;
 		
+		//! Set output write precision to \c inPrecision number of digits.
+		void setPrecision(unsigned int inPrecision) {mPrec = inPrecision;}
+		
 	 protected:
 		unsigned int mRows; //!< Number of rows.
 		unsigned int mCols; //!< Number of columns.
+		unsigned int mPrec; //!< Output precision.
 		string mName; //!< Name of matrix.
 		
 		//! Compute back substitution for the L-U decomposition.

@@ -29,13 +29,14 @@
  * \file PACC/XML/Streamer.hpp
  * \brief Class definition for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.43 $
- * $Date: 2005/10/05 12:21:11 $
+ * $Revision: 1.45 $
+ * $Date: 2006/08/09 14:40:19 $
  */
 
 #ifndef PACC_XML_Streamer_hpp_
 #define PACC_XML_Streamer_hpp_
 
+#include "Util/Assert.hpp"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -80,67 +81,67 @@ namespace PACC {
 		\endcode
 		*/
 		class Streamer {
-			public:
+		 public:
 			//! Constructs object for streaming %XML markup into output stream \c inStream using an indentation width of \c inWidth.
 			Streamer(ostream& inStream, unsigned int inWidth=2) : mStream(inStream), mIndentWidth(inWidth), mClosed(true), mOneAttribute(false), mIndentAttributes(false) {}
 			
 			//! Close the last opened markup tag.
 			void closeTag(void);
 			
+			//! Convert special xml characters to quotes.
+			static string& convertToQuotes(string& ioString, const char* inQuotes="<>&'\"");
+			
+			//! Return precision of output stream for double values.
+			unsigned int getPrecision(void) {return mStream.precision();}
+			
 			//!Return output stream of streamer.
 			ostream& getStream(void) {return mStream;}
 			
-			/*!
-			Insert an attribute with name \c inName and value \c inValue into the current start tag.
+			//! Insert a string attribute with name \c inName and value \c inValue into the current start tag.
+			void insertAttribute(const string& inName, const char* inValue);
 				
+			//! Insert a string attribute with name \c inName and value \c inValue into the current start tag.
+			void insertAttribute(const string& inName, const string& inValue) {
+				insertAttribute(inName, inValue.c_str());
+			}
+				
+			/*!
+			Insert a template attribute with name \c inName and value \c inValue into the current start tag.
+
 			This method assumes that typename \c Type knows how to insert itself into a stream using \c operator<<.
 			 */
 			template <typename Type>
-				void insertAttribute(const string& inName, Type inValue, bool inConvert=false) {
+				void insertAttribute(const string& inName, Type inValue) {
 					if(mIndentAttributes && mTags.top().second) {
 						mStream << endl << std::string(mTags.size()*mIndentWidth, ' ');
-					} else {
-						mStream << " ";
-					}
-					if(inConvert) {
-						ostringstream lStream;
-						lStream << inValue;
-						std::string lValue(lStream.str());
-						mStream << inName << "=\"" << convertToQuotes(lValue) << "\"";
-					} else {
-						mStream << inName << "=\"" << inValue << "\"";
-					}
+					} else mStream << " ";
+					mStream << inName << "=\"" << inValue << "\"";
 					mOneAttribute = true;
 				}
 			
-			//! Insert CDATA section \c inCDATA.
+			//! Insert CDATA section \c inCDATA (cannot contain any "]]>" substring).
 			void insertCDATA(const string& inCDATA) {
+				PACC_AssertM(inCDATA.find("]]>",0)==string::npos, "an XML CDATA cannot contain any ']]>' substring!");
 				insertStringContent(string("<![CDATA[")+inCDATA+string("]]>"), false);
 			}
 			
-			//! Insert comment \c inComment.
+			//! Insert comment \c inComment (cannot contain any "--" substring).
 			void insertComment(const string& inComment) {
+				PACC_AssertM(inComment.find("--",0)==string::npos, "an XML comment cannot contain any '--' substring!");
 				insertStringContent(string("<!--")+inComment+string("-->"), false);
 			}
 			
-			/*! \brief Insert into this streamer STL container \c inObject using tag name \c inName.
+			/*! \brief Insert STL container \c inObject into this streamer, using tag name \c inName.
 				
 				If no tag name is specified, the container's content is inserted into the current tag. Assumes that the container's elements can insert themselves into a streamer using \c operator<<.
 				*/
 			template <typename Container>
-				void insertContainer(const Container& inObject, const string& inName="", bool inConvert=false) {
+				void insertContainer(const Container& inObject, const string& inName="") {
 					// insert optional tag name
 					if(inName != "") openTag(inName);
 					// iterate through container
 					for(typename Container::const_iterator i = inObject.begin(); i != inObject.end(); ++i) {
-						if(inConvert) {
-							ostringstream lStream;
-							lStream << (*i);
-							std::string lValue(lStream.str());
-							(*this) << convertToQuotes(lValue);
-						} else {
-							(*this) << (*i);
-						}
+						(*this) << (*i);
 					}
 					if(inName != "") closeTag();
 				}
@@ -160,7 +161,7 @@ namespace PACC {
 				}
 			
 			//! Insert string \c inString as content of current markup.
-			void insertStringContent(const string& inContent, bool inConvert=false);
+			void insertStringContent(const string& inContent, bool inConvert=true);
 			
 			//! Open new markup tag using name \c inName.
 			void openTag(const string& inName, bool inIndent=true);
@@ -168,9 +169,9 @@ namespace PACC {
 			//! Set attribute indentation mode if argument \c inValue is true.
 			void setAttributeIndentation(bool inValue) {mIndentAttributes = inValue;}
 			
-			//! Convert special xml characters to quotes.
-			static string& convertToQuotes(string& ioString, const string& inQuotes="&<>");		
-			
+			//! Set precision of output stream to \c inValue digits for double values.
+			void setPrecision(unsigned int inValue) {mStream.precision(inValue);}
+
 			//! Insert an integer markup with value \c inValue into this streamer.
 			Streamer& operator<<(int inValue) {
 				insertPrimitiveTag(inValue, "Integer");
@@ -196,7 +197,7 @@ namespace PACC {
 					return *this;
 				}
 			
-			protected:
+		 protected:
 			ostream& mStream; //!< Output stream
 			stack< pair<string, bool> > mTags; //!< Stack of opened tags
 			unsigned int mIndentWidth; //!< Width of markup indentation

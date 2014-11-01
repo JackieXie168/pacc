@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.cpp
  * \brief Class methods for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.36 $
- * $Date: 2006/01/16 04:05:31 $
+ * $Revision: 1.39 $
+ * $Date: 2006/09/26 04:53:47 $
  */
 
 #include "XML/Node.hpp"
@@ -42,6 +42,8 @@
 
 using namespace std;
 using namespace PACC;
+
+map<string,char> XML::Node::smMap;
 
 /*!
 */
@@ -65,7 +67,7 @@ XML::Node::Node(const string& inValue, const XML::AttributeList& inAttrList) : A
 
 /*!
 */
-XML::Node::Node(const XML::Node& inNode) {
+XML::Node::Node(const XML::Node& inNode) : AttributeList() {
 	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = NULL;
 	operator=(inNode);
 }
@@ -107,7 +109,7 @@ XML::Node& XML::Node::operator=(const Node& inRoot)
 		else {
 			//adjust sibling pointers
 			mLastChild->mNextSibling = lChildNode;
-			lChild->mPrevSibling = mLastChild;
+			lChildNode->mPrevSibling = mLastChild;
 			mLastChild = lChildNode;
 		}
 		// adjust parent pointer
@@ -118,26 +120,25 @@ XML::Node& XML::Node::operator=(const Node& inRoot)
 
 /*! 
 \return A reference to the converted string.
-The supported quotes are "&amp;", "&lt;", "&gt;", "&apos;", and "&quot;".
+The default quotes are "&amp;", "&lt;", "&gt;", "&apos;", and "&quot;". Argument \c ioMap can be used to specify any conversion table. 
 */
-string& XML::Node::convertFromQuotes(string& ioString)
+string& XML::Node::convertFromQuotes(string& ioString, map<string,char>& ioMap)
 {
-	static map<string,char> lMap;
-	if(lMap.empty()) {
+	if(ioMap.empty()) {
 		// initialize quote list
-		lMap["amp"] = '&';
-		lMap["lt"] = '<';
-		lMap["gt"] = '>';
-		lMap["apos"] = '\'';
-		lMap["quot"] = '"';
+		ioMap["amp"] = '&';
+		ioMap["lt"] = '<';
+		ioMap["gt"] = '>';
+		ioMap["apos"] = '\'';
+		ioMap["quot"] = '"';
 	}
 	string::size_type lStart, lEnd = 0;
 	while((lStart = ioString.find('&', lEnd)) < ioString.size() && 
 				(lEnd = ioString.find(';', lStart)) < ioString.size())
 	{
 		string lToken = ioString.substr(lStart+1, lEnd-lStart-1);
-		if(lMap.find(lToken) != lMap.end()) {
-			ioString[lStart] = lMap[lToken];
+		if(ioMap.find(lToken) != ioMap.end()) {
+			ioString[lStart] = ioMap[lToken];
 			ioString.erase(lStart+1, lEnd-lStart);
 			lEnd = lStart+1;
 		}
@@ -275,7 +276,8 @@ XML::Node* XML::Node::parse(PACC::Tokenizer& inTokenizer, const set<string>& inN
 		lNode->mType = eString;
 		// remove any ending white space
 		lPos = lToken.find_last_not_of(" \t\r\n");
-		if(lPos != lToken.size()-1) lToken.resize(lPos+1);
+		PACC_AssertM(lPos != string::npos, "Internal error!");
+		if(lPos < lToken.size()-1) lToken.resize(lPos+1);
 		// convert basic quotes
 		(*lNode)[""] = convertFromQuotes(lToken);
 	}
@@ -421,7 +423,7 @@ void XML::Node::readContentAsString(PACC::Tokenizer& inTokenizer)
 	// create child node
 	Node* lChild = new Node;
 	insertAsLastChild(lChild);
-	lChild->setType(eString);
+	lChild->setType(eNoParse);
 	// parse until end tag
 	inTokenizer.setDelimiters("", "<>");
 	string lToken;
@@ -443,10 +445,18 @@ void XML::Node::readContentAsString(PACC::Tokenizer& inTokenizer)
 	}
 	// remove any leading white space
 	size_type lPos = lString.find_first_not_of(" \t\r\n");
-	if(lPos > 0) lString.erase(0, lPos);
-	// remove any ending white space
-	lPos = lString.find_last_not_of(" \t\r\n");	
-	if(lPos != lString.size()-1) lString.resize(lPos+1);
+	if(lPos == string::npos) {
+		// string is all white space
+		lString.clear();
+	} else {
+		// erase leading white space
+		lString.erase(0, lPos);
+		// remove any ending white space
+		lPos = lString.find_last_not_of(" \t\r\n");	
+		PACC_AssertM(lPos != string::npos, "Internal error!");
+		// erase trailing white space
+		if(lPos < lString.size()-1) lString.resize(lPos+1);
+	}
 }
 
 /*!
@@ -485,21 +495,26 @@ void XML::Node::serialize(XML::Streamer& outStream, bool inIndent) const
 			outStream.closeTag();
 			break;
 		}
+		case eNoParse:
+		{
+			outStream.insertStringContent(getValue(), false);
+			break;
+		}
 		case ePI: 
 		{
 			string lValue = string("<?") + getValue() + string("?>");
-			outStream.insertStringContent(lValue);
+			outStream.insertStringContent(lValue, false);
 			break;
 		}
 		case eSpecial:
 		{
 			string lValue = string("<!") + getValue() + string(">");
-			outStream.insertStringContent(lValue);
+			outStream.insertStringContent(lValue, false);
 			break;
 		}
 		case eString:
 		{
-			outStream.insertStringContent(getValue());
+			outStream.insertStringContent(getValue(), true);
 			break;
 		}
 		case eDecl: 
@@ -510,7 +525,7 @@ void XML::Node::serialize(XML::Streamer& outStream, bool inIndent) const
 			lValue += "\"";
 			if(isDefined("encoding")) lValue += " encoding=\"" + getAttribute("encoding") + "\"";
 			lValue += "?>";
-			outStream.insertStringContent(lValue);
+			outStream.insertStringContent(lValue, false);
 			break;
 		}
 		default:

@@ -29,8 +29,8 @@
  * \file PACC/Threading/Semaphore.hpp
  * \brief Class definition for the portable counting semaphore.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2005/09/17 03:50:14 $
+ * $Revision: 1.17 $
+ * $Date: 2006/08/09 02:57:21 $
  */
 
 #ifndef PACC_Threading_Semaphore_hpp_
@@ -47,7 +47,7 @@ namespace PACC {
 		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 		\ingroup Threading
 		
-		This class incapsulates a counting semaphore with classic Semaphore::post, Semaphore::tryWait, and Semaphore::wait methods. The semaphore is initialized with a count of \c inMaxCount ressources. A post increments the count while a wait decrements it. A count of 0 means that no more ressources are available. Subsequent calls to wait will block until future post releases some of the allocated ressources. When several threads have blocked because of exhausted ressources, the order in which they will be released is undetermined (FIFO should not be assumed).
+		This class incapsulates a counting semaphore with classic Semaphore::post, Semaphore::tryWait, and Semaphore::wait methods. The semaphore is initialized with a count of \c inCount ressources (see constructor). A post increments the count while a wait decrements it. A count of 0 means that no more ressources are available. Subsequent calls to wait will block until future post releases some of the allocated ressources. When several threads have blocked because of exhausted ressources, the order in which they will be released is undetermined (FIFO should not be assumed).
 		
 		This class does not contain any OS dependant code. However, it is built over classes Condition and Mutex which may not be fully cross-platform (see documentation of these classes for more details). 
 		*/

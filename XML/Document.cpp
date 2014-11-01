@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.cpp
  * \brief Class methods for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.41 $
- * $Date: 2006/01/03 17:38:23 $
+ * $Revision: 1.42 $
+ * $Date: 2006/09/26 04:48:11 $
  */
 
 #include "XML/Document.hpp"
@@ -263,6 +263,9 @@ void XML::Document::serialize(ostream& outStream, int inWidth, bool inIndentAttr
 }
 
 /*!
+The content of noparse markups will not be parsed, but simply read as a string. Noparse tags are useful for not wasting time parsing markup that is uninteresting for a given application. It is a compromise between the DOM and SAX models of XML parsers.
+ 
+ \attention The node type for noparse markup is NodeType::eNoParse. Such a node is similar to NodeType::eString, but may embed some unparsed markup.
 */
 void XML::Document::setNoParse(const string& inTag)
 {

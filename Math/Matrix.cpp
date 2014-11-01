@@ -28,15 +28,17 @@
 /*!
  * \file   PACC/Math/Matrix.cpp
  * \brief  Method definitions for class Matrix.
- * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2006/02/21 23:52:57 $
+ * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et 
+ syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.15 $
+ * $Date: 2006/05/14 05:06:53 $
  */
 
 #include "Math/Matrix.hpp"
 #include "Math/Vector.hpp"
 #include "Util/StringFunc.hpp"
 #include <stdexcept>
+#include <iomanip>
 #include <cmath>
 
 using namespace std;
@@ -669,7 +671,9 @@ void Matrix::throwError(const string& inMessage, const XML::Iterator& inNode) co
 }
 
 /*!
-See Matrix::read for the write format.
+ See Matrix::read for a description of the write format. By default, the precision 
+ of the output is set to 15 digits. This value can be changed using method
+ Matrix::setPrecision.
 */
 void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 {
@@ -678,6 +682,7 @@ void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 	outStream.insertAttribute("rows", mRows);
 	outStream.insertAttribute("cols", mCols);
 	ostringstream lContent;
+	lContent.precision(mPrec);
 	for(unsigned int i = 0; i < size(); ++i) {
 		if(i != 0 && i % mCols == 0) lContent << ";";
 		else if(i != 0) lContent << ",";

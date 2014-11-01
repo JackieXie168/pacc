@@ -29,8 +29,8 @@
  *  \file   PACC/Util/Assert.hpp
  *  \brief  Assert macro.
  *  \author Marc Parizeau
- *  $Revision: 1.12 $
- *  $Date: 2005/09/22 23:12:10 $
+ *  $Revision: 1.17 $
+ *  $Date: 2006/09/15 18:13:09 $
  
  This macro can be used to assert the validity of a boolean condition 
  (first argument: \c COND). If the  expression is true nothing happens. Otherwise,
@@ -48,21 +48,33 @@
 /////// for Windows, pop a message box ///////
 #include <windows.h>
 #include <sstream>
+#ifndef UNICODE
 #define PACC_AssertM(COND,MESSAGE) \
 if(!(COND)) { \
 	std::ostringstream lStream; \
 	lStream << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE; \
-	::MessageBox(NULL, lStream.str().c_str(), "PACC error!", MB_ICONERROR | MB_OK); \
+	::MessageBox(NULL, lStream.str().c_str(), "PACC assert error!", MB_ICONERROR | MB_OK); \
 	exit(-1); \
 }
+#else
+#define PACC_AssertM(COND,MESSAGE) \
+if(!(COND)) { \
+	std::wostringstream lStream; \
+	lStream << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE; \
+	::MessageBox(NULL, lStream.str().c_str(), L"PACC assert error!", MB_ICONERROR | MB_OK); \
+	exit(-1); \
+}
+#endif
 
 #else
 /////// otherwise, output message to console ///////
 #include <iostream>
 #define PACC_AssertM(COND,MESSAGE) \
 if(!(COND)) { \
-	std::cerr << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE << std::endl; \
-		exit(-1); \
+	std::cerr << "\n***** PACC assert failed *****\nin "; \
+	std::cerr << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE; \
+	std::cerr << "\n******************************" << endl; \
+	exit(-1); \
 }
 #endif // WIN32
 

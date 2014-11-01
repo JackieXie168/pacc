@@ -29,8 +29,8 @@
  * \file PACC/Util/Timer.hpp
  * \brief Class definition for the portable timer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.17 $
- * $Date: 2006/01/23 23:17:37 $
+ * $Revision: 1.18 $
+ * $Date: 2006/09/13 15:21:02 $
  */
 
 #ifndef PACC_Timer_hpp
@@ -56,7 +56,10 @@ namespace PACC {
 	*/
 	class Timer {
 	 public:
-		//! Construct a timer and reset its value. On supported Unix platforms, argument \c inHardware=true (default) enables the use of the CPU's high resolution hardware time-stamp. Argument \c inHardware=false forces the use of a somewhat lower resolution count based on the Unix gettimeofday method. Note that the use of the hardware counter under Unix requires a preliminary calibration procedure (see Timer::calibrateCountPeriod).
+		/*! \brief Construct a timer and reset its value. 
+		
+		On supported Unix platforms, argument \c inHardware=true (default) enables the use of the CPU's high resolution hardware time-stamp. Argument \c inHardware=false forces the use of a somewhat lower resolution count based on the Unix gettimeofday method. Note that the use of the hardware counter under Unix requires a preliminary calibration procedure (see Timer::calibrateCountPeriod).
+		*/
 		Timer(bool inHardware=true) : mHardware(inHardware) {
 			if(mPeriod == 0) calibrateCountPeriod(); 
 			reset();

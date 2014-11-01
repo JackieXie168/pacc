@@ -1,5 +1,13 @@
 PACC change log:
 
+1.3.1 (September 26th, 2006)
+
+- The output precision of the Matrix::write and Vector::write methods can now be set using method setPrecision (default is 15)
+- Corrected a problem in the automatic conversion of XML special characters to quotes
+- Improved error checking for XML::Streamer
+- Corrected bug that prevented the deep copy of an XML::Document
+- Corrected bug under windows with PACC_AssertM macro when using unicode strings
+
 1.3 (May 12th, 2006)
 
 - Added some error checking in Socket::Port and Threading::Thread

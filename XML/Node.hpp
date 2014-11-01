@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.hpp
  * \brief Class definition for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.34 $
- * $Date: 2005/09/18 03:29:19 $
+ * $Revision: 1.36 $
+ * $Date: 2006/09/26 04:50:21 $
  */
 
 #ifndef PACC_XML_Node_hpp_
@@ -54,8 +54,9 @@ namespace PACC {
 		*/
 		enum NodeType {
 			eCDATA, //!< CDATA section (<![CDATA[ ... ]]>)
-			eComment, //!< Comment (&lt;!-- ... -->).
+			eComment, //!< Comment (<!-- ... -->).
 			eData, //!< Regular data markup element.
+			eNoParse, //!< Unparsed markup content.
 			eDecl, //!< %XML declaration (<?xml ... ?>).
 			ePI, //!< Processing instruction (<? ... ?>).
 			eRoot, //!< %Document root (internal use only).
@@ -147,9 +148,10 @@ namespace PACC {
 			Node* mLastChild; //!< Pointer to last child node.
 			Node* mPrevSibling; //!< Pointer to previous sibling node.
 			Node* mNextSibling; //!< Pointer to next sibling node.
+			static map<string,char> smMap; //!< Conversion map for translating quotes.
 			
 			//! Convert basic xml quotes into ascii characters.
-			static string& convertFromQuotes(string& ioString);
+			static string& convertFromQuotes(string& ioString, map<string,char>& ioMap=smMap);
 			//! Parse the attribute list using stream tokenizer \c inTokenizer.
 			void parseAttributeList(Tokenizer& inTokenizer, string& outToken);
 			//! Parse in stream tokenizer \c inTokenizer the start tag of this node.

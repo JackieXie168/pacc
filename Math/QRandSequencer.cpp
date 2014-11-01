@@ -31,8 +31,8 @@
  *  \author Christian Gagne <cgagne@gmail.com>
  *  \author Olivier Teytaud <olivier.teytaud@lri.fr>
  *  \author Marc Parizeau <marc.parizeau@gel.ulaval.ca>
- *  $Revision: 1.4 $
- *  $Date: 2006/05/14 02:26:22 $
+ *  $Revision: 1.6 $
+ *  $Date: 2006/09/27 02:33:30 $
  */
 
 #include "Util/Assert.hpp"
@@ -40,6 +40,10 @@
 
 #include <cmath>
 #include <sstream>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 using namespace PACC;
 
@@ -141,6 +145,8 @@ void QRandSequencer::getGaussianVector(PACC::Vector& outVector)
  *  \param inCenter Center of the gaussian distribution.
  *  \param inStDev Vector of standard deviations for the Gaussian distribution.
  
+ The covariance of the generated distribution is a diagonal matrix with the values in \c inStDev.
+ 
  \attention The size of arguments \c inCenter and \c inStdDev must be equal to the 
  dimensionality of this sequencer.
  */
@@ -163,14 +169,13 @@ void QRandSequencer::getGaussianVector(PACC::Vector& outVector, const PACC::Vect
  *  \param inCenter Center of the gaussian distribution.
  *  \param inSqRootCovar Square root of the covariance matrix.
  
- This method must be invoqued with the square root of the covariance matrix:
+ This method must be invoqued with the square root of the distribution covariance matrix C:
  \code
- C^0.5 = ZL
+ C^0.5 = ZD
  \endcode
- where C is the covariance matrix, Z the matrix of the eigen vectors of C, and
- L the diagonal matrix that contains the square roots of the eigen values of C. 
- To compute this matrix, the user should call the QRandSequencer::computeSqRootCovar
- helper method.
+ where Z is the matrix of the eigen vectors of C, and D is the diagonal matrix that 
+ contains the square roots of its eigen values. To compute this matrix, the user 
+ should call the QRandSequencer::computeSqRootCovar helper method.
  
  \attention The size of arguments \c inCenter and \c inSqRootCovar must be compatible 
  with the dimensionality of this sequencer.

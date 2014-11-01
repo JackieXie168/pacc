@@ -30,8 +30,8 @@
  * \brief Class methods for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
  
- * $Revision: 1.37 $
- * $Date: 2005/10/05 09:15:08 $
+ * $Revision: 1.38 $
+ * $Date: 2006/08/09 03:01:00 $
  */
 
 #include "XML/Streamer.hpp"
@@ -66,10 +66,10 @@ void XML::Streamer::closeTag(void)
 \return A reference to the converted string.
 Supported characters are '&', '<', '>', "'", and '"'.
 */
-string& XML::Streamer::convertToQuotes(string& ioString, const string& inQuotes)
+string& XML::Streamer::convertToQuotes(string& ioString, const char* inQuotes)
 {
 	string::size_type lPos = 0;
-	while((lPos = ioString.find_first_of(inQuotes, lPos)) < ioString.size())
+	while((lPos = ioString.find_first_of(inQuotes, lPos)) != string::npos)
 	{
 		switch(ioString[lPos]) {
 			case '&':
@@ -92,6 +92,20 @@ string& XML::Streamer::convertToQuotes(string& ioString, const string& inQuotes)
 	return ioString;
 }
 
+/*!
+ */
+void XML::Streamer::insertAttribute(const string& inName, const char* inValue)
+{
+	if(mIndentAttributes && mTags.top().second) {
+		mStream << endl << std::string(mTags.size()*mIndentWidth, ' ');
+	} else mStream << " ";
+	
+	string lValue(inValue);
+	mStream << inName << "=\"" << convertToQuotes(lValue, "&<\"") << "\"";
+	mOneAttribute = true;
+}
+
+
 /*! 
 The header tag has the form <?xml version="1.0" encoding="ISO-8859-1"?>.
 */
@@ -103,7 +117,7 @@ void XML::Streamer::insertHeader(const string& inEncoding)
 }
 
 /*!
-The specified string is assumed not to contain any of the following special characters: '&', '<', or '>'. Argument \c inConvert controls whether these should be automatically converted to quotes ("&amp;", "&lt;", and "&gt;"). By default, no conversion is conducted.
+By default, any occurence of characters '&' and '<' will be automatically converted to quotes "&amp;" and "&lt;". If argument \c inConvert is set to false, this conversion is disabled.
  */
 void XML::Streamer::insertStringContent(const string& inString, bool inConvert)
 {	
@@ -121,10 +135,8 @@ void XML::Streamer::insertStringContent(const string& inString, bool inConvert)
 	}
 	if(inConvert) {
 		string lContent(inString);
-		mStream << convertToQuotes(lContent, "&<>");
-	} else {
-		mStream << inString;
-	}
+		mStream << convertToQuotes(lContent, "&<");
+	} else mStream << inString;
 }
 
 /*!

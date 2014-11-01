@@ -36,8 +36,7 @@ Another alternative is to retrieve the latest distribution of "pacc-lib" at
 the following address: <http://manitou.gel.ulaval.ca/~parizeau/pacc-lib.tar.gz>.
 
 The PACC collection is said to be portable because it can run on both Unix 
-and Windows platforms. In general, the PACC classes have been tested and used 
-under Linux, MacOSX, and Windows 2000/XP.
+and Windows platforms. In general, the PACC classes have been tested and used under Linux, MacOSX, and Windows 2000/XP. They are also known to compile succesfully on AIX.
 
 The PACC collection is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

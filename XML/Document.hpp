@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.hpp
  * \brief Class definition for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.38 $
- * $Date: 2005/11/02 05:09:24 $
+ * $Revision: 1.40 $
+ * $Date: 2006/09/26 04:47:45 $
  */
 
 #ifndef PACC_XML_Document_hpp_
@@ -92,43 +92,57 @@ for(Iterator lChild = lRoot->getFirstChild(); lChild; ++lChild) {
 			Document(void) {}
 			//! Constructs a document from an input stream.
 			Document(istream& inStream, const string& inName="") {parse(inStream, inName);}
-			//! Copy constructs a document.
-			Document(const Document& inDocument) {*this = inDocument;}      
 			//! Delete document.
 			~Document(void) {eraseRoots();}
 			
 			//! Add a new child to the node referenced by iterator \c inPos.
 			Iterator addChild(const Iterator& inPos, const string& inValue, NodeType inType=eData);
+			
 			//! Add a new root node in this document.
 			Iterator addRoot(const string& inValue, NodeType inType=eData);
+			
 			//! Add a new sibling in front of the node referenced by iterator \c inPos.
 			Iterator addSibling(const Iterator& inPos, const string& inValue, NodeType inType=eData);
+			
 			//! Attach node \c inChild as a child of the node referenced by iterator \c inPos.
 			Iterator attachChild(const Iterator& inPos, Node* inChild);
+			
 			//! Attach node \c inNode as a sibling in front of the node referenced by iterator \c inPos.
 			Iterator attachSibling(const Iterator& inPos, Node* inSibling);
+			
 			//! Detach the sub-tree rooted at the node referenced by iterator \c inPos.
 			Node* detach(const Iterator& inPos);
+			
 			//! Delete the node referenced by iterator \c inPos.
 			void erase(Iterator inPos);
+			
 			//! Delete all root elements of this document.
 			void eraseRoots(void);
+			
 			//! Return an iterator on the first data tag of this document.
 			Iterator getFirstDataTag(void);
+			
 			//! Return a const iterator on the first data tag of this document.
 			ConstIterator getFirstDataTag(void) const;
+			
 			//! Return an iterator on the first root element of this document.
 			Iterator getFirstRoot(void);
+			
 			//! Return a const iterator on the first root element of this document.
 			ConstIterator getFirstRoot(void) const;
+			
 			//! Parse a document contained in the file named \c inFileName; 
 			void parse(const string& inFileName);
+			
 			//! Parse a document from input stream \c inStream, using string \c inName as stream name for error messages.
 			void parse(istream& inStream, const string& inName="");
+			
 			//! Serialize document into an output stream \c outStream, using indentation of \c inWidth characters.
 			void serialize(ostream& outStream, int inWidth=2, bool inIndentAttributes=false) const;
+			
 			//! Add \c inTag to the list of tag names for which content should not be parsed for this document. 
 			void setNoParse(const string& inTag);
+			
 			//! Remove \c inTag from the list of tags for which content should not be parsed for this document. 
 			void unsetNoParse(const string& inTag);
 			

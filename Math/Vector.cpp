@@ -29,8 +29,8 @@
  * \file   PACC/Math/Vector.cpp
  * \brief  Method definitions for class Vector.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2005/11/22 15:56:07 $
+ * $Revision: 1.12 $
+ * $Date: 2006/05/14 05:06:53 $
  */
 
 #include "Math/Vector.hpp"
@@ -89,8 +89,10 @@ string Vector::read(const XML::Iterator& inNode)
 }
 
 /*!
-See Vector::read for the write format.
-*/
+ See Vector::read for a description of the write format. By default, the precision 
+ of the output is set to 15 digits. This value can be changed using method
+ Matrix::setPrecision.
+ */
 void Vector::write(XML::Streamer& outStream, const string& inTag) const
 {
 	PACC_AssertM(mCols == 1, "write() invalid vector!");
@@ -99,6 +101,7 @@ void Vector::write(XML::Streamer& outStream, const string& inTag) const
 	outStream.insertAttribute("size", mRows);
 	if(size() > 0) {
 		ostringstream lContent;
+		lContent.precision(mPrec);
 		for(unsigned int i = 0; i < mRows; ++i) {
 			if(i != 0) lContent << ";";
 			lContent << (*this)[i];

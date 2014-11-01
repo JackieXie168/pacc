@@ -29,8 +29,8 @@
  * \file PACC/Threading/Thread.cpp
  * \brief Class methods for the portable thread.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.41 $
- * $Date: 2005/10/27 03:13:46 $
+ * $Revision: 1.43 $
+ * $Date: 2006/09/27 15:26:59 $
  */
 
 #include "Threading/Thread.hpp"
@@ -127,7 +127,12 @@ bool Threading::Thread::isSelf(void) const
 #ifdef WIN32
 	return lThread->mId == ::GetCurrentThreadId();
 #else // Unix...
+#ifdef pthread_equal
+	// On AIX, pthread_equal is defined as a macro.
+	return pthread_equal(*lThread, ::pthread_self());
+#else // pthread_equal
 	return ::pthread_equal(*lThread, ::pthread_self());
+#endif // pthread_equal
 #endif
 }
 
