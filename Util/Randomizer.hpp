@@ -29,8 +29,8 @@
  * \file PACC/Util/Randomizer.hpp
  * \brief Class definition for the random number generator.
  * \author Marc Parizeau and Christian Gagne, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/06/04 04:44:26 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/17 03:50:19 $
  */
 
 #ifndef PACC_Randomizer_hpp_
@@ -43,21 +43,21 @@
 namespace PACC {
 	
 	using namespace std;
-
-   /*!
-   \brief Random number generator
-   \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Util
-   
-   This class encapsulates the "Mersenne Twister" random number generator defined in reference:
-	- M. Matsumoto and T. Nishimura, "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator", ACM Transactions on Modeling and Computer Simulation, Vol. 8, No. 1, January 1998, pp 3-30.
+	
+	/*!
+	\brief Random number generator
+	 \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+	 \ingroup Util
 	 
-	Its implementation is based on the \c %MTRand class by Richard J. Wagner <http://www-personal.engin.umich.edu/~wagnerr/MersenneTwister.html>
-																									  
-	It can generate uniformly distributed booleans, integers and floats, or gaussian distributed floats.
-   */
-   class Randomizer : private MTRand {
-   public:
+	 This class encapsulates the "Mersenne Twister" random number generator defined in reference:
+	 - M. Matsumoto and T. Nishimura, "Mersenne Twister: A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator", ACM Transactions on Modeling and Computer Simulation, Vol. 8, No. 1, January 1998, pp 3-30.
+	 
+	 Its implementation is based on the \c %MTRand class by Richard J. Wagner <http://www-personal.engin.umich.edu/~wagnerr/MersenneTwister.html>
+	 
+	 It can generate uniformly distributed booleans, integers and floats, or gaussian distributed floats.
+	 */
+	class Randomizer : protected MTRand {
+		public:
 		/*! \brief auto-initialize with /dev/urandom or time() and clock()
 		
 		Do NOT use for CRYPTOGRAPHY without securely hashing several returned
@@ -71,10 +71,10 @@ namespace PACC {
 		Randomizer(const vector<unsigned long int>& inSeeds) : MTRand(&inSeeds[0], inSeeds.size()) {}
 		//! Initialize the generator with state \c inState.
 		Randomizer(const string& inState) {setState(inState);}
-
+		
 		//! Return a uniformly distributed random integer in range [0,\c inValue[.
 		unsigned long int operator()(unsigned long inValue) {return randInt(inValue-1);}
-
+		
 		//! Return a uniformly distributed random boolean.
 		bool getBoolean(void) {return randInt(1);}
 		//! Return a uniformly distributed random integer in range [0,2^32[.
@@ -96,10 +96,10 @@ namespace PACC {
 		string getState(void) const;
 		//! Set state of generator.
 		void setState(const string& inState);
-   
-   };
+		
+	};
 
-   extern Randomizer rand; //!< Global random number generator
+	extern Randomizer rand; //!< Global random number generator
 
 } // end of PACC namespace                    
 

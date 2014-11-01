@@ -25,33 +25,35 @@
  *
  */
 
-/*!\file PACC/SVG/Frame.hpp
+/*!
+ * \file PACC/SVG/Frame.hpp
  * \brief Class definition for the %SVG clipping frame.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.6 $
+ * $Date: 2005/09/17 03:50:09 $
  */
 
 #ifndef PACC_SVG_Frame_hpp_
 #define PACC_SVG_Frame_hpp_
 
 #include "SVG/Group.hpp"
+#include "XML/Streamer.hpp"
 
 namespace PACC {
 	
 	namespace SVG {
-   
+		
 		using namespace std;
 		
 		/*!\brief Graphic primitive container with a clipping rectangle.
-		 * \ingroup SVG
-		 *
-		 * The frame is a group that implements a clipping rectangle for its elements. 
-		 * Coordinates for elements inside the frame are relative to the frame
-		 * origin.
-		 */
+		* \ingroup SVG
+		*
+		* The frame is a group that implements a clipping rectangle for its elements. 
+		* Coordinates for elements inside the frame are relative to the frame
+		* origin.
+		*/
 		class Frame : public Group {
-		 public:
+			public:
 			//! Make frame at origin \c inOrigin with size \c inSize, and using style \c inStyle.
 			Frame(const Point &inOrigin, const Size &inSize, const Style &inStyle = Style()) : Group("svg") {
 				setAttribute("x", inOrigin.x);
@@ -60,35 +62,60 @@ namespace PACC {
 				setAttribute("height", inSize.height);
 				*this += inStyle; 
 			}
-						
+			
 			//! Return frame origin.
 			Point getOrigin(void) const {
 				return Point(String::convertToFloat(getAttribute("x")), String::convertToFloat(getAttribute("y")));
-			}			
+			}	
+			
 			//! Set frame origin to point \c inPoint.
 			void setOrigin(const Point& inOrigin) {
 				setAttribute("x", inOrigin.x);
 				setAttribute("y", inOrigin.y);
 			}
+			
 			//! Set frame origin to coordinates \c inX and \c inY.
 			void setOrigin(float inX, float inY) {
 				setAttribute("x", inX);
 				setAttribute("y", inY);
 			}
+			
 			//! Return frame size.
 			Size getSize() const {
 				return Size(String::convertToFloat(getAttribute("width")), String::convertToFloat(getAttribute("height")));
 			}
+			
 			//! Set frame size to size \c inSize.
 			void setSize(const Size& inSize) {
 				setAttribute("width", inSize.width);
 				setAttribute("height", inSize.height);
 			}
+			
 			//! Set frame size to width \c inwidth and height \c inHeight.
 			void setSize(float inWidth, float inHeight) {
 				setAttribute("width", inWidth);
 				setAttribute("height", inHeight);
-			}			
+			}	
+			
+			//! Set viewbox of this frame to origin \c inOrigin and size \c inSize.
+			void setViewBox(const Point& inOrigin, const Size& inSize) {
+				setAttribute("viewBox", String::convert(inOrigin.x) + " "
+										 + String::convert(inOrigin.y) + " "
+										 + String::convert(inSize.width) + " "
+										 + String::convert(inSize.height) + " ");
+			}
+			
+			//! Write serialized frame into stream \c outStream.
+			void write(ostream& outStream) const {
+				XML::Streamer lStream(outStream);
+				lStream.insertHeader();
+				serialize(lStream);
+			}
+			
+			private:
+			// transforms are not allowed in frames
+			void clearTransform(void);
+			void setTransform(const Transform& inTransform);
 			
 		};
 		

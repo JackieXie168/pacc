@@ -26,11 +26,11 @@
  */
 
 /*!
-* \file PACC/Threading/Semaphore.cpp
+ * \file PACC/Threading/Semaphore.cpp
  * \brief Class methods for the portable counting semaphore.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.18 $
- * $Date: 2005/04/19 18:19:30 $
+ * $Revision: 1.19 $
+ * $Date: 2005/09/15 14:13:08 $
  */
 
 #include "Threading/Semaphore.hpp"

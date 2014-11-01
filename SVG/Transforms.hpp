@@ -25,29 +25,31 @@
  *
  */
 
-/*!\file PACC/SVG/Transforms.hpp
+/*!
+ * \file PACC/SVG/Transforms.hpp
  * \brief Class definition for the SVG transform.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2005/06/08 19:34:01 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.6 $
+ * $Date: 2005/09/17 03:50:09 $
  */
 
 #ifndef PACC_SVG_Transforms_hpp_
 #define PACC_SVG_Transforms_hpp_
 
 #include "SVG/Types.hpp"
+#include "Util/StringFunc.hpp"
 
 namespace PACC {
 	
 	namespace SVG {
-   
+		
 		using namespace std;
-   
+		
 		/*!\brief Coordinate tranform for graphic elements.
-		 * \ingroup SVG
-		 */
+		* \ingroup SVG
+		*/
 		class Transform : public string {
-       public:
+			public:
 			//! Return the transform which results from the concatenation of this transform with \c inTranform.
 			Transform operator+(const Transform& inTransform) {
 				return Transform(*this) += inTransform;
@@ -58,15 +60,15 @@ namespace PACC {
 				return *this;
 			}
 			
-       protected:
+			protected:
 			//! Make transform with name \c inName and value \c inValue.
 			Transform(const string &inName, const string &inValue) : string(inName+"("+inValue+")") {}
 		};
-   
+		
 		//! \brief Rotation tranform.
 		//! \ingroup SVG
 		class Rotate : public Transform {
-       public:
+			public:
 			//! Make a rotation transform of angle \c inAngle.
 			Rotate(float inAngle) : Transform("rotate", String::convert(inAngle)) {}
 			//! make a rotation transform of angle \c inAngle from point \c inPoint.
@@ -74,15 +76,15 @@ namespace PACC {
 			//! make a rotation transform of angle \c inAngle from coordinates \c inX and \c inY.
 			Rotate(float inAngle, float inX, float inY) : Transform("rotate", String::convert(inAngle) + " " + String::convert(inX) + " " + String::convert(inY)) {}
 		};
-
+		
 		/*!\brief Translation tranform.
-		 * \ingroup SVG
-		 *
-		 * If you want to set a new origin, you can use the translation. As an 
-		 * example, to put the origin at (1,1), translate by (-1,-1).
-		 */
+			* \ingroup SVG
+			*
+			* If you want to set a new origin, you can use the translation. As an 
+			* example, to put the origin at (1,1), translate by (-1,-1).
+			*/
 		class Translate : public Transform {
-       public:
+			public:
 			//! Make a translation transform to point \c inPoint.
 			Translate(const Point &inPoint) : Transform("translate", String::convert(inPoint.x) + " " + String::convert(inPoint.y)) {}
 			
@@ -93,7 +95,7 @@ namespace PACC {
 		//! \brief Scaling tranform.
 		//! \ingroup SVG
 		class Scale : public Transform {
-       public:
+			public:
 			//! Make a scaling transform of scale \c inScale.
 			Scale(float inScale) : Transform("scale", String::convert(inScale)) {}
 			
@@ -105,7 +107,7 @@ namespace PACC {
 		//! \brief Horizontal skewing tranform.
 		//! \ingroup SVG
 		class SkewX : public Transform {
-       public:
+			public:
 			//! Make a horizontal skewing transform of angle \c inAngle. 
 			SkewX(float inAngle) : Transform("skewX", String::convert(inAngle)) {}
 			
@@ -114,7 +116,7 @@ namespace PACC {
 		//! \brief Vertical skewing tranform.
 		//! \ingroup SVG
 		class SkewY : public Transform {
-       public:
+			public:
 			//! Make a vertical skewing transform of angle \c inAngle.
 			SkewY(float inAngle) : Transform("skewY", String::convert(inAngle)) {}
 			
@@ -123,29 +125,29 @@ namespace PACC {
 		//! \brief General matrix transformation.
 		//! \ingroup SVG
 		class MatrixTransform : public Transform {
-       public:
+			public:
 			/*!\brief  Construct a matrix transform from the six upper values of 
-			 *         the matrix.
-			 * \param  inA  .
-			 * \param  inB  .
-			 * \param  inC  .
-			 * \param  inD  .
-			 * \param  inE  .
-			 * \param  inF  .
-			 *
-			 * Transformation matrix is of the form:
-			 *
-			 * <code>[a b c]<br>
-			 *       [d e f]<br>
-			 *       [0 0 1]</code>
-			 */
+			*         the matrix.
+			* \param  inA  .
+			* \param  inB  .
+			* \param  inC  .
+			* \param  inD  .
+			* \param  inE  .
+			* \param  inF  .
+			*
+			* Transformation matrix is of the form:
+			*
+			* <code>[a b c]<br>
+			*       [d e f]<br>
+			*       [0 0 1]</code>
+			*/
 			MatrixTransform(float inA, float inB, float inC, float inD, float inE, float inF) 
 			: Transform("matrix", String::convert(inA) + " " + String::convert(inB) + " " + String::convert(inC) + " " + String::convert(inD) + " " + String::convert(inE) + " " + String::convert(inF)) {}
 			
 		};
 		
 	} // end of SVG namespace
-
+	
 } // end of PACC namespace
 
 #endif

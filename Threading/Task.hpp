@@ -29,8 +29,8 @@
  * \file PACC/Threading/Task.hpp
  * \brief Class definition for the abstract task of the portable thread pool.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2004/06/02 04:55:55 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/17 03:50:14 $
  */
 
 #ifndef PACC_Threading_Task_hpp_
@@ -39,63 +39,62 @@
 #include "Threading/Condition.hpp"
 
 namespace PACC {
-   
-   namespace Threading {
- 
-   /*! \brief %Task for thread pool execution.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Threading
-   
-   This abstract class encapsulates a primitive task that can be executed by a ThreadPool. It must be subclassed in order to implement virtual method Task::main which defines the task's function. Once pushed onto a thread pool using method ThreadPool::push, the task will start executing as soon as a thread becomes available. A task cannot be canceled after it has started to run.
-   */
-   class Task : public Condition
-   {
-      public: 
-      //! Construct default task: initialize to not running and not completed.
-      Task(void) : mRunning(false), mCompleted(false) {}
-      //! Delete task: wait for task completion.
-      virtual ~Task(void) {lock(); while(!mCompleted) wait(); unlock();}
-      
-      /*! \brief Check wheter task is completed.
-      
-      The embedded mutex should always be locked (using method Task::lock) prior to calling this method.
-      */
-      bool isCompleted(void) const {return mCompleted;}
-      
-      /*! \brief Check wheter task is running.
-      
-      The embedded mutex should always be locked (using method Task::lock) prior to calling this method.
-      */
-      bool isRunning(void) const {return mRunning;}
-      
-      /*! \brief Implements main procedure of task.
-      
-      This virtual method must be overloaded in a derived class in order to implement the main procedure of this task.
-      */
-      virtual void main(void) = 0;
-      
-      //! Reset internal task state to default (not running and not completed).
-      void reset(void) {lock(); mRunning = mCompleted = false; unlock();}
-      
-      /*! \brief Wait for task to complete.
-      
-      If argument \c inLock is true (default), this method locks the embedded mutex prior to waiting on the condition, and unlocks the mutex prior to return. Otherwise, it assumes that the mutex is already locked and does not modify its state. This method should never be called with argument \c inLock=false without first locking the mutex using method Task::lock.
-      */
-      void wait(bool inLock=true) const {
-         if(inLock) lock();
-         while(!mCompleted) Condition::wait();
-         if(inLock) unlock();
-      }
-      
-      protected:
-      bool mRunning; //!< is running flag
-      bool mCompleted; //!< is completed flag
-      
-      friend class SlaveThread;
-   };
-   
-} // end of Threading namespace 
-
+	
+	namespace Threading {
+		
+		/*! \brief %Task for thread pool execution.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Threading
+		
+		This abstract class encapsulates a primitive task that can be executed by a ThreadPool. It must be subclassed in order to implement virtual method Task::main which defines the task's function. Once pushed onto a thread pool using method ThreadPool::push, the task will start executing as soon as a thread becomes available. A task cannot be canceled after it has started to run.
+		*/
+		class Task : public Condition {
+			public: 
+			//! Construct default task: initialize to not running and not completed.
+			Task(void) : mRunning(false), mCompleted(false) {}
+			//! Delete task: wait for task completion.
+			virtual ~Task(void) {lock(); while(!mCompleted) wait(); unlock();}
+			
+			/*! \brief Check wheter task is completed.
+			
+			The embedded mutex should always be locked (using method Task::lock) prior to calling this method.
+			*/
+			bool isCompleted(void) const {return mCompleted;}
+			
+			/*! \brief Check wheter task is running.
+			
+			The embedded mutex should always be locked (using method Task::lock) prior to calling this method.
+			*/
+			bool isRunning(void) const {return mRunning;}
+			
+			/*! \brief Implements main procedure of task.
+			
+			This virtual method must be overloaded in a derived class in order to implement the main procedure of this task.
+			*/
+			virtual void main(void) = 0;
+			
+			//! Reset internal task state to default (not running and not completed).
+			void reset(void) {lock(); mRunning = mCompleted = false; unlock();}
+			
+			/*! \brief Wait for task to complete.
+				
+				If argument \c inLock is true (default), this method locks the embedded mutex prior to waiting on the condition, and unlocks the mutex prior to return. Otherwise, it assumes that the mutex is already locked and does not modify its state. This method should never be called with argument \c inLock=false without first locking the mutex using method Task::lock.
+			*/
+			void wait(bool inLock=true) const {
+				if(inLock) lock();
+				while(!mCompleted) Condition::wait();
+				if(inLock) unlock();
+			}
+			
+			protected:
+			bool mRunning; //!< is running flag
+			bool mCompleted; //!< is completed flag
+			
+			friend class SlaveThread;
+		};
+		
+	} // end of Threading namespace 
+	
 } // end of PACC namespace
 
 #endif // PACC_Threading_Task_hpp_

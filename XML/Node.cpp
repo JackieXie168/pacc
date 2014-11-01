@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.cpp
  * \brief Class methods for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.28 $
- * $Date: 2005/05/30 16:42:04 $
+ * $Revision: 1.34 $
+ * $Date: 2005/09/18 03:29:19 $
  */
 
 #include "XML/Node.hpp"
@@ -72,12 +72,12 @@ XML::Node::Node(const XML::Node& inNode) {
 
 /*!
 This method recursively deletes all of its children. 
-*/
+ */
 XML::Node::~Node(void) {
 	// delete all child nodes
 	eraseChildren();
 	// detach from parent and siblings
-   detachFromSiblingsAndParent();
+	detachFromSiblingsAndParent();
 	// cleanup node pointers
 	mParent = mFirstChild = mLastChild = mPrevSibling = mNextSibling = 0;
 }
@@ -88,20 +88,20 @@ XML::Node::~Node(void) {
 */
 XML::Node& XML::Node::operator=(const Node& inRoot)
 {
-   // do not self assign!
-   if(&inRoot == this) return *this;
-   // delete all child nodes
+	// do not self assign!
+	if(&inRoot == this) return *this;
+	// delete all child nodes
 	XML::Iterator lChild = getFirstChild();
-   while(lChild) delete &(*(lChild++));
+	while(lChild) delete &(*(lChild++));
 	// fix child pointers
 	mFirstChild = mLastChild = 0;
-   // assign type and attributes
-   mType = inRoot.mType;
-   map<string,string>::operator=(inRoot);
-   // copy all children of inRoot
-   for(XML::ConstIterator lNode = inRoot.getFirstChild(); lNode; ++lNode) {
-      // allocate and copy node
-      Node* lChild = new Node(*lNode);
+	// assign type and attributes
+	mType = inRoot.mType;
+	map<string,string>::operator=(inRoot);
+	// copy all children of inRoot
+	for(XML::ConstIterator lNode = inRoot.getFirstChild(); lNode; ++lNode) {
+		// allocate and copy node
+		Node* lChild = new Node(*lNode);
 		// is this the first child?
 		if(mFirstChild == 0) mFirstChild = mLastChild = lChild;
 		else {
@@ -112,8 +112,8 @@ XML::Node& XML::Node::operator=(const Node& inRoot)
 		}
 		// adjust parent pointer
 		lChild->mParent = this;
-   }
-   return *this;
+	}
+	return *this;
 }
 
 /*! 
@@ -133,7 +133,7 @@ string& XML::Node::convertFromQuotes(string& ioString)
 	}
 	string::size_type lStart, lEnd = 0;
 	while((lStart = ioString.find('&', lEnd)) < ioString.size() && 
-			(lEnd = ioString.find(';', lStart)) < ioString.size())
+				(lEnd = ioString.find(';', lStart)) < ioString.size())
 	{
 		string lToken = ioString.substr(lStart+1, lEnd-lStart-1);
 		if(lMap.find(lToken) != lMap.end()) {
@@ -146,8 +146,8 @@ string& XML::Node::convertFromQuotes(string& ioString)
 }
 
 /*!\return A pointer to this node.
- This method removes this node from its parent tree. The list of sibling nodes is repaired accordingly.
- */
+This method removes this node from its parent tree. The list of sibling nodes is repaired accordingly.
+*/
 XML::Node* XML::Node::detachFromSiblingsAndParent(void) {
 	// adjust sibling list
 	if(mPrevSibling) mPrevSibling->mNextSibling = mNextSibling;
@@ -162,12 +162,12 @@ XML::Node* XML::Node::detachFromSiblingsAndParent(void) {
 }
 
 /*!
- */
+*/
 void XML::Node::eraseChildren(void)
 {
-   // delete all child nodes
+	// delete all child nodes
 	XML::Iterator lChild = getFirstChild();
-   while(lChild) delete &(*(lChild++));
+	while(lChild) delete &(*(lChild++));
 }
 
 /*!\return The number of child nodes.
@@ -231,15 +231,15 @@ XML::Node* XML::Node::parse(PACC::Tokenizer& inTokenizer, const set<string>& inN
 	if(!inTokenizer.getNextToken(lToken)) return 0;
 	// remove any leading white space
 	size_type lPos = lToken.find_first_not_of(" \t\r\n");
-	if(lPos != 0) lToken.erase(0, lPos);
-	if(lToken.empty() && !inTokenizer.getNextToken(lToken)) return 0;
+	if(lPos == string::npos) {
+		if(!inTokenizer.getNextToken(lToken)) return 0;
+	} else if(lPos > 0) lToken.erase(0, lPos);
 	if(lToken[0] == '<') {
 		// check for end tag
-		char lChar = ' ';
-		inTokenizer.peekNextChar(lChar);
-		if(lChar == '/') {
+		if(inTokenizer.peekNextChar() == '/') {
 			// found end tag; 
-			inTokenizer.getNextChar(lChar);
+			inTokenizer.setDelimiters("", "/");
+			inTokenizer.getNextToken(lToken);
 			return 0;
 		}
 		// found start tag
@@ -287,48 +287,48 @@ Ending token is returned through argument \c outToken.
 */
 void XML::Node::parseAttributeList(PACC::Tokenizer& inTokenizer, string& outToken)
 {
-   inTokenizer.setDelimiters(" \t\n\r", "=/?>");
-   // next token should be an attribute name
-   if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-   // parse all attributes
-   while(outToken[0] != '>' && outToken[0] != '/' && outToken[0] != '?')
-   {
+	inTokenizer.setDelimiters(" \t\n\r", "=/?>");
+	// next token should be an attribute name
+	if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+	// parse all attributes
+	while(outToken[0] != '>' && outToken[0] != '/' && outToken[0] != '?')
+	{
 		if(outToken[0] == '=') throwError(inTokenizer, "missing attribute name");
-      // ok, found an attribute name!
-      string lName = outToken;
-      // next token should be '='
-      inTokenizer.setDelimiters(" \t\n\r", "=");
-      if(!inTokenizer.getNextToken(outToken) || outToken[0] != '=') 
+		// ok, found an attribute name!
+		string lName = outToken;
+		// next token should be '='
+		inTokenizer.setDelimiters(" \t\n\r", "=");
+		if(!inTokenizer.getNextToken(outToken) || outToken[0] != '=') 
 			throwError(inTokenizer, "invalid attribute");
-      inTokenizer.setDelimiters(" \t\n\r", "'\"");
-      // next token must be '"' or "'"
-      if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+		inTokenizer.setDelimiters(" \t\n\r", "'\"");
+		// next token must be '"' or "'"
+		if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
 		string lValue;
 		switch(outToken[0]) {
 			case '\'':
 				inTokenizer.setDelimiters("", "'");
 				if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-				if(outToken[0] != '\'') {
-					lValue = outToken;
-					if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-				}
-				break;
+					if(outToken[0] != '\'') {
+						lValue = outToken;
+						if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+					}
+						break;
 			case '"':
 				inTokenizer.setDelimiters("", "\"");
 				if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-				if(outToken[0] != '"') {
-					lValue = outToken;
-					if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-				}
-				break;
+					if(outToken[0] != '"') {
+						lValue = outToken;
+						if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+					}
+						break;
 			default:
 				throwError(inTokenizer, "invalid attribute value");
 		}
 		// insert attribute
 		(*this)[lName] = convertFromQuotes(lValue);
-      inTokenizer.setDelimiters(" \t\n\r", "=/?>");
-      if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-   }
+		inTokenizer.setDelimiters(" \t\n\r", "=/?>");
+		if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+	}
 }
 
 /*! 
@@ -336,13 +336,13 @@ This method assumes that token "<" has already been read. It returns the ending 
 */
 void XML::Node::parseStartTag(PACC::Tokenizer& inTokenizer, string& outToken)
 {
-   // parse tag name
-   inTokenizer.setDelimiters("", " \t\n\r/>");
-   if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-   if(outToken.find_first_of(" \t\n\r/>") != string::npos) throwError(inTokenizer, "invalid start tag");
+	// parse tag name
+	inTokenizer.setDelimiters("", " \t\n\r/>");
+	if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+	if(outToken.find_first_of(" \t\n\r/>") != string::npos) throwError(inTokenizer, "invalid start tag");
 	string& lValue = (*this)[""];
-   switch(outToken[0]) {
-      case '!':
+	switch(outToken[0]) {
+		case '!':
 			if(outToken.size() >= 3 && outToken[1] == '-' && outToken[2] == '-') {
 				// process comment
 				mType = eComment;
@@ -375,10 +375,10 @@ void XML::Node::parseStartTag(PACC::Tokenizer& inTokenizer, string& outToken)
 				lValue = outToken.erase(0, 1);
 				inTokenizer.setDelimiters("", ">");
 				if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-            if(outToken[0] != '>') {
-               lValue += outToken;
-               if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
-            }
+				if(outToken[0] != '>') {
+					lValue += outToken;
+					if(!inTokenizer.getNextToken(outToken)) throwError(inTokenizer, "unexpected eof");
+				}
 			}
 			break;
 		case '?':
@@ -406,78 +406,86 @@ void XML::Node::parseStartTag(PACC::Tokenizer& inTokenizer, string& outToken)
 				if(outToken.empty()) throwError(inTokenizer, "unexpected eof");
 			}
 			break;
-      default:
-         // process data markup
-         mType = eData;
-         lValue = outToken;
-         parseAttributeList(inTokenizer, outToken);
-   }
+		default:
+			// process data markup
+			mType = eData;
+			lValue = outToken;
+			parseAttributeList(inTokenizer, outToken);
+	}
 }
 
 /*!
 */
 void XML::Node::readContentAsString(PACC::Tokenizer& inTokenizer)
 {
-   // create child node
-   Node* lChild = new Node;
-   insertAsLastChild(lChild);
-   lChild->setType(eString);
-   // parse until end tag
+	// create child node
+	Node* lChild = new Node;
+	insertAsLastChild(lChild);
+	lChild->setType(eString);
+	// parse until end tag
 	inTokenizer.setDelimiters("", "<>");
-   string lToken;
-   int lCount = 1;
-   const string& lTag = (*this)[""];
-   string& lString = (*lChild)[""];
-   while(lCount > 0) {
-      // check every start tag
-      if(!inTokenizer.getNextToken(lToken)) throwError(inTokenizer, string("unexpected eof"));
-      if(lToken[0] == '<') {
-         if(!inTokenizer.getNextToken(lToken)) throwError(inTokenizer, string("unexpected eof"));
-         if(lToken[0] == '/' && memcmp(lToken.data()+1, lTag.data(), lTag.size()) == 0) --lCount;
-         else if(lToken[lToken.size()-1] != '/' && memcmp(lToken.data(), lTag.data(), lTag.size()) == 0) ++lCount;
+	string lToken;
+	int lCount = 1;
+	const string& lTag = (*this)[""];
+	string& lString = (*lChild)[""];
+	while(lCount > 0) {
+		// check every start tag
+		if(!inTokenizer.getNextToken(lToken)) throwError(inTokenizer, string("unexpected eof"));
+		if(lToken[0] == '<') {
+			if(!inTokenizer.getNextToken(lToken)) throwError(inTokenizer, string("unexpected eof"));
+			if(lToken[0] == '/' && memcmp(lToken.data()+1, lTag.data(), lTag.size()) == 0) --lCount;
+			else if(lToken[lToken.size()-1] != '/' && memcmp(lToken.data(), lTag.data(), lTag.size()) == 0) ++lCount;
 			if(lCount > 0) {
 				lString += "<";
 				lString += lToken;
 			}
 		} else lString += lToken;
-   }
+	}
 	// remove any leading white space
 	size_type lPos = lString.find_first_not_of(" \t\r\n");
-	if(lPos != 0) lString.erase(0, lPos);
+	if(lPos > 0) lString.erase(0, lPos);
 	// remove any ending white space
-	lPos = lString.find_last_not_of(" \t\r\n");
+	lPos = lString.find_last_not_of(" \t\r\n");	
 	if(lPos != lString.size()-1) lString.resize(lPos+1);
 }
 
 /*!
-*/
-void XML::Node::serialize(XML::Streamer& outStream) const
+Argument \c inIndent is used to control indentation. By default (\c inIndent=true), the sub-tree rooted by this node will be serialized with indentation. If \c inIndent=false, then the node will be serialized without any form of indentation (including line feeds).
+ */
+void XML::Node::serialize(XML::Streamer& outStream, bool inIndent) const
 {
-   switch(mType)
-   {
-      case eCDATA: 
+	switch(mType)
+	{
+		case eCDATA:
 		{
 			outStream.insertCDATA(getValue());
 			break;
 		}
-      case eComment: 
+		case eComment: 
 		{
 			outStream.insertComment(getValue());
 			break;
 		}
-      case eData:
+		case eData:
 		{
-         outStream.openTag(getValue());
-         // serialize attribute list
-         for(map<string,string>::const_iterator i = begin(); i != end(); ++i) {
-            if(i->first != "") outStream.insertAttribute(i->first, i->second);
-         }
-         // serialize child nodes
-         for(ConstIterator lChild = getFirstChild(); lChild; ++lChild) lChild->serialize(outStream);
-         outStream.closeTag();
-         break;
+			// check for tag with single string content
+			ConstIterator lChild = getFirstChild();
+			if(lChild && lChild->mType == eString && !lChild->getNextSibling()) {
+				// disable indentation
+				outStream.openTag(getValue(), false);
+			} else {
+				outStream.openTag(getValue(), inIndent);
+			}
+			// serialize attribute list
+			for(map<string,string>::const_iterator i = begin(); i != end(); ++i) {
+				if(i->first != "") outStream.insertAttribute(i->first, i->second);
+			}
+			// serialize child nodes
+			for(ConstIterator lChild = getFirstChild(); lChild; ++lChild) lChild->serialize(outStream, inIndent);
+			outStream.closeTag();
+			break;
 		}
-      case ePI: 
+		case ePI: 
 		{
 			string lValue = string("<?") + getValue() + string("?>");
 			outStream.insertStringContent(lValue);
@@ -485,16 +493,16 @@ void XML::Node::serialize(XML::Streamer& outStream) const
 		}
 		case eSpecial:
 		{
-			string lValue = string("<!") + getValue();
-         outStream.insertStringContent(lValue);
-         break;
+			string lValue = string("<!") + getValue() + string(">");
+			outStream.insertStringContent(lValue);
+			break;
 		}
-      case eString:
+		case eString:
 		{
 			outStream.insertStringContent(getValue());
-         break;
+			break;
 		}
-      case eDecl: 
+		case eDecl: 
 		{
 			string lValue = "<?xml version=\"";
 			if(isDefined("version")) lValue += getAttribute("version");
@@ -505,23 +513,23 @@ void XML::Node::serialize(XML::Streamer& outStream) const
 			outStream.insertStringContent(lValue);
 			break;
 		}
-      default:
+		default:
 		{
-         PACC_AssertM(false, "Unknown node type!");
+			PACC_AssertM(false, "Unknown node type!");
 		}
-   }
+	}
 }
 
 /*!
 */
 void XML::Node::throwError(PACC::Tokenizer& inTokenizer, const string& inMessage) const
 {
-   ostringstream lStream;
-   lStream << "\nXML parse error";
-   if(inTokenizer.getStreamName() != "") 
-      lStream << " in file \"" << inTokenizer.getStreamName() << "\",";
-   lStream << " at line ";
-   lStream << inTokenizer.getLineNumber();
+	ostringstream lStream;
+	lStream << "\nXML parse error";
+	if(inTokenizer.getStreamName() != "")
+		lStream << " in file \"" << inTokenizer.getStreamName() << "\",";
+	lStream << " at line ";
+	lStream << inTokenizer.getLineNumber();
 	switch(mType) {
 		case eCDATA: lStream << "\nfor CDATA \""; break;
 		case eComment: lStream << "\nfor comment \""; break;
@@ -535,5 +543,25 @@ void XML::Node::throwError(PACC::Tokenizer& inTokenizer, const string& inMessage
 	}
 	if(getValue().size() < 40) lStream << getValue() << "\": " << inMessage;
 	else lStream << getValue().substr(0,40) << "...\": " << inMessage;
-   throw runtime_error(lStream.str());
+	throw runtime_error(lStream.str());
+}
+
+/*!
+*/
+ostream& PACC::operator<<(ostream &outStream, const XML::Node& inNode)
+{
+	XML::Streamer lStream(outStream);
+	inNode.serialize(lStream);
+	return outStream;
+}
+
+/*!
+*/
+istream& PACC::operator>>(istream &inStream, XML::Node& outNode)
+{
+	Tokenizer lTokenizer(inStream);
+	XML::Node* lNode = XML::Node::parse(lTokenizer, set<string>());
+	outNode = *lNode;
+	delete lNode;
+	return inStream;
 }

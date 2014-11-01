@@ -26,11 +26,11 @@
  */
 
 /*!
- * \file PACC/XML/Finder.hpp
+* \file PACC/XML/Finder.hpp
  * \brief Class definition for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.15 $
- * $Date: 2005/06/04 04:43:52 $
+ * $Revision: 1.17 $
+ * $Date: 2005/09/17 03:50:24 $
  */
 
 #ifndef PACC_XML_Finder_hpp_
@@ -41,56 +41,56 @@
 #include <queue>
 
 namespace PACC { 
-   
-   using namespace std;
-   
-   namespace XML {
-   
-//! \brief %Finder for data tags.
-//! \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-//! \ingroup XML
-//!
-//! This class is for finding markup tags in a document sub-tree. The search string is inspired from the xpath standard. The following syntax subset is currently supported:
-//! - Path ::= AbsolutePath | RelativePath	
-//! - AbsolutePath ::= '/' RelativePath | '//' RelativePath
-//! - RelativePath ::= Step | RelativePath '/' Step | RelativePath '//' Step
-//! - Step ::= '..' | '*' | TagName
-//! .
-//! Here is a list of simple examples:
-//! - "para" finds the para element children of the root node
-//! - "*" finds all element children of the root node
-//! - "/doc/chapter/section" finds all sections of all chapters for root node doc
-//! - "chapter//para" finds para elements descendants of the chapter element children of the root node
-//! - "//para" finds all the para descendants of the root node
-//! - "//para/*" finds all element children of all para descendants of the root node
-//! - "//para/.." finds the parents of all para descendants of the root node
-//! .
-//! There can be no spaces in a search path.
+	
+	using namespace std;
+	
+	namespace XML {
+		
+		//! \brief %Finder for data tags.
+		//! \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		//! \ingroup XML
+		//!
+		//! This class is for finding markup tags in a document sub-tree. The search string is inspired from the xpath standard. The following syntax subset is currently supported:
+		//! - Path ::= AbsolutePath | RelativePath	
+		//! - AbsolutePath ::= '/' RelativePath | '//' RelativePath
+		//! - RelativePath ::= Step | RelativePath '/' Step | RelativePath '//' Step
+		//! - Step ::= '..' | '*' | TagName
+		//! .
+		//! Here is a list of simple examples:
+		//! - "para" finds the para element children of the root node
+		//! - "*" finds all element children of the root node
+		//! - "/doc/chapter/section" finds all sections of all chapters for root node doc
+		//! - "chapter//para" finds para elements descendants of the chapter element children of the root node
+		//! - "//para" finds all the para descendants of the root node
+		//! - "//para/*" finds all element children of all para descendants of the root node
+		//! - "//para/.." finds the parents of all para descendants of the root node
+		//! .
+		//! There can be no spaces in a search path.
 		class Finder : private Iterator {
-       public:   
+			public:   
 			//! Construct a finder for the sub-tree rooted on \c inRoot.
 			Finder(const Iterator& inRoot) : Iterator(inRoot) {}
-      
+			
 			//! Return the first markup instance that matches path \c inPath.
 			Iterator find(const string& inPath);
 			//! Return the next search result.
 			Iterator findNext(void);
-   
-       protected:
+			
+			protected:
 			vector<string> mSteps; //!< Array of steps in search path.
 			queue<Iterator> mMatches; //!< Search results.
 			
 			//! Internal search function.
 			void search(Iterator inPos, unsigned int inStep);
 		};
-   
-//! \brief Const finder for data tags.
-//! \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-//! \ingroup XML
-//!	
-//! This class is for finding markup tags in a document sub-tree using const iterators (see class Finder for more details).
+		
+		//! \brief Const finder for data tags.
+		//! \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		//! \ingroup XML
+		//!	
+		//! This class is for finding markup tags in a document sub-tree using const iterators (see class Finder for more details).
 		class ConstFinder : private ConstIterator {
-       public:   
+			public:   
 			//! Construct a const finder for the sub-tree rooted on \c inRoot.
 			ConstFinder(const ConstIterator& inRoot) : ConstIterator(inRoot) {}
 			
@@ -99,16 +99,16 @@ namespace PACC {
 			//! Return the next search result.
 			ConstIterator findNext(void);
 			
-       protected:
+			protected:
 			vector<string> mSteps; //!< Array of steps in search path.
 			queue<ConstIterator> mMatches; //!< Search results.
 			
 			//! Internal search function.
 			void search(ConstIterator inPos, unsigned int inStep);
 		};
-   
+		
 	} // end of namespace XML
-
+	
 } // end of namespace PACC
 
 #endif // PACC_XML_Finder_hpp_

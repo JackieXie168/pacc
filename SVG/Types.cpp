@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file PACC/SVG/Types.cpp
+/*!
+ * \file PACC/SVG/Types.cpp
  * \brief Class methods for miscellaneous %SVG data types.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.3 $
+ * $Date: 2005/09/15 14:12:58 $
  */
 
 #include "SVG/Types.hpp"
@@ -188,23 +189,23 @@ const SVG::Color SVG::Color::cYellow("yellow");
 const SVG::Color SVG::Color::cYellowGreen("yellowgreen");
 
 /*!
- * Function that output a string in the form "rgb(10%, 12%, 100%)" representing
+* Function that output a string in the form "rgb(10%, 12%, 100%)" representing
  * a SVG Color.
  */
 std::string makeRGBColorString(float inRed, float inGreen, float inBlue) 
 {
-    ostringstream lStream;
-    lStream << "rgb(" << inRed*100 << "%, " << inGreen*100 << "%, " << inBlue*100 << "%)";
-    return lStream.str();
+	ostringstream lStream;
+	lStream << "rgb(" << inRed*100 << "%, " << inGreen*100 << "%, " << inBlue*100 << "%)";
+	return lStream.str();
 }
 
 SVG::RGBColor::RGBColor(float inRed, float inGreen, float inBlue) : Color(makeRGBColorString(inRed, inGreen, inBlue)) {}
 
 std::string SVG::Point::getStringValue() const 
 {
-    ostringstream lStream;
-    lStream << x << "," << y;
-    return lStream.str();
+	ostringstream lStream;
+	lStream << x << "," << y;
+	return lStream.str();
 }
 
 //! Concatenate with point \c inPoint, and return new point list.
@@ -223,15 +224,15 @@ SVG::PointList SVG::Point::operator+(const SVG::PointList &inList) const
 // Size
 std::string SVG::Size::getStringValue(void) const 
 {
-    ostringstream lStream;
-    lStream << width << "," << height;
-    return lStream.str();
+	ostringstream lStream;
+	lStream << width << "," << height;
+	return lStream.str();
 }
 
 std::string SVG::PointList::getStringValue(void) const {
-    if(size() == 0 ) return string("");
-    string lString((*this)[0].getStringValue());
-    for ( unsigned i = 1; i < size(); i++ ) lString +=  string(" ") + (*this)[i].getStringValue();
-    return lString;
+	if(size() == 0 ) return string("");
+	string lString((*this)[0].getStringValue());
+	for ( unsigned i = 1; i < size(); i++ ) lString +=  string(" ") + (*this)[i].getStringValue();
+	return lString;
 }
 

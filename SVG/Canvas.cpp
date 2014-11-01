@@ -27,13 +27,12 @@
 
 /*!\file PACC/SVG/Canvas.cpp
  * \brief Class methods for the SVG containers (Group, Frame, and Canvas).
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2005/06/09 18:36:29 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.6 $
+ * $Date: 2005/09/17 03:15:01 $
  */
 
 #include "SVG/Canvas.hpp"
-#include "XML/Streamer.hpp"
 #include "XML/Finder.hpp"
 #include <iostream>
 #include <sstream>
@@ -42,11 +41,24 @@ using namespace std;
 using namespace PACC;
 
 /*!
+*/
+void SVG::Canvas::clear(void) 
+{
+	// find embedded group tag
+	XML::Finder lFinder(this);
+	XML::Iterator lPos = lFinder.find("/svg/g");
+	((Group&)*lPos).clear();
+}
+
+/*!
  */
 SVG::Canvas& SVG::Canvas::operator<<(const SVG::Primitive& inElement) 
 {
+	// find embedded group tag
+	XML::Finder lFinder(this);
+	XML::Iterator lPos = lFinder.find("/svg/g");
 	// insert new element into internal group.
-	(Group&) *getLastChild() << inElement;
+	((Group&)*lPos) << inElement;
 	// send serialized canvas to viewer
 	updateViewer();
 	return *this;
@@ -64,8 +76,10 @@ SVG::Canvas& SVG::Canvas::operator=(const SVG::Frame &inFrame)
 //!
 string SVG::Canvas::getTitle(void) const 
 {
+	// find embedded title tag
 	XML::Finder lFinder((XML::Node*)this);
 	XML::Iterator lPos = lFinder.find("/svg/title");
+	// return title value
 	if(lPos && lPos->getFirstChild()) return lPos->getFirstChild()->getValue();
 	else return "";
 }
@@ -77,7 +91,7 @@ void SVG::Canvas::initCanvas(const string& inTitle)
 	setTitle(inTitle);
 	// insert xmlns attribute
 	setAttribute("xmlns", "http://www.w3.org/2000/svg");
-										 // remove position attributes
+	// remove position attributes
 	removeAttribute("x");
 	removeAttribute("y");
 	// insert change of referential group
@@ -103,20 +117,14 @@ void SVG::Canvas::updateViewer(void) const
 	write(lStream);
 	mSocket->sendMessage(lStream.str());
 }
-
-//!
-void SVG::Canvas::write(ostream& outStream) const 
-{
-	XML::Streamer lStream(outStream);
-	lStream.insertHeader();
-	serialize(lStream);
-}
 	
 //!
 void SVG::Canvas::setTitle(const string& inTitle)
 {
+	// find embedded title tag
 	XML::Finder lFinder((XML::Node*)this);
 	XML::Iterator lPos = lFinder.find("/svg/title");
+	// update title value
 	if(lPos) {
 		if(lPos->getFirstChild()) lPos->getFirstChild()->setValue(inTitle);
 		else lPos->insertAsLastChild(new Node(inTitle, XML::eString));

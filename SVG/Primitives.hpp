@@ -25,77 +25,89 @@
  *
  */
 
-/*!\file PACC/SVG/Primitives.hpp
+/*!
+ * \file PACC/SVG/Primitives.hpp
  * \brief Class definitions for the SVG graphic primitives.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.6 $
+ * $Date: 2005/09/22 13:19:31 $
  */
 
 #ifndef PACC_SVG_Graphic_hpp_
 #define PACC_SVG_Graphic_hpp_
 
 #include "XML/Node.hpp"
+#include "XML/Streamer.hpp"
 #include "SVG/Styles.hpp"
 #include "SVG/Transforms.hpp"
 
 namespace PACC {
 	
 	namespace SVG {
-   
+		
 		using namespace std;
-   
+		
 		/*!\brief Base class for graphic elements.
-       * \ingroup SVG
-       *
-       * This class provide no more functionality than it's base class. It is
-       * intended to be able to distinguish graphics element from others. That way
-       * we can restrict at compile time what kind of elements can be inserted in
-       * a Group for example.
-       *
-       * This class must be subclassed to be useful. You may note that the only
-       * constructor is protected to enforce that.
-       */
+		* \ingroup SVG
+		*
+		* This class provide no more functionality than it's base class. It is
+		* intended to be able to distinguish graphics element from others. That way
+		* we can restrict at compile time what kind of elements can be inserted in
+		* a Group for example.
+		*
+		* This class must be subclassed to be useful. You may note that the only
+		* constructor is protected to enforce that.
+		*/
 		class Primitive : protected XML::Node {
-       public:
+			public:
 			/*!\brief  Add some style attributes to element.
-			 * \param  inStyle  A style attribute list to add to this element.
-			 *
-			 * If the same style attribute with the same name is already present, it
-			 * will be replaced by the new value.
-			 */
+			* \param  inStyle  A style attribute list to add to this element.
+			*
+			* If the same style attribute with the same name is already present, it
+			* will be replaced by the new value.
+			*/
 			void addStyle(const Style& inStyle) {operator+=((AttributeList)inStyle);}
+			
 			//! Remove any coordinate transformation applyed to this element.
 			void clearTransform(void) {removeAttribute("transform");}
+			
 			//! Set id of primtive.
 			void setID(const string& inID) {setAttribute("id", inID);}
+			
 			/*!\brief  Set the coordinate transformation to apply.
-			 * \param  inTransform  A transformation to apply to this element.
-			 *
-			 * The current transformation, if any, will be replaced by the new one.
-			 *
-			 * \see transformcomp
-			 */
+			* \param  inTransform  A transformation to apply to this element.
+			*
+			* The current transformation, if any, will be replaced by the new one.
+			*
+			* \see transformcomp
+			*/
 			void setTransform(const Transform& inTransform) {setAttribute("transform", inTransform);}
 			
-       protected:
+			//! Write serialized primitive into stream \c outStream.
+			void write(ostream& outStream) const {
+				XML::Streamer lStream(outStream);
+				serialize(lStream);
+			}
+			
+			protected:
 			/*!\brief  Constructor for a graphic element.
-			 * \param  inName A tag name for the element.
-			 * \param  inAttrList A list of attributes to give to this element.
-			 */
+			* \param  inName A tag name for the element.
+			* \param  inAttrList A list of attributes to give to this element.
+			*/
 			Primitive(const string &inName, const XML::AttributeList &inAttrList = XML::AttributeList()) : XML::Node(inName, inAttrList) {}
 			
 			friend class Group; //!< Allowing the use of Element's << operator.
 			
 		};
+		
 		/*!\brief Graphic primitive for rectangles.
-		 * \ingroup SVG
-		 *
-		 * A rectangle is a four-sided figure with two vertical sides and two
-		 * horizontal ones.
-		 */
+			* \ingroup SVG
+			*
+			* A rectangle is a four-sided figure with two vertical sides and two
+			* horizontal ones.
+			*/
 		class Rectangle : public Primitive {
-       public:
+			public:
 			//! Make rectangle with origin \c inOrigin, size \c inSize, and style \c inStyle.
 			Rectangle(const Point &inOrigin, const Size &inSize, const Style &inStyle = Style()) : Primitive("rect", inStyle) { 
 				setAttribute("x", String::convert(inOrigin.x));
@@ -103,7 +115,7 @@ namespace PACC {
 				setAttribute("width", String::convert(inSize.width));
 				setAttribute("height", String::convert(inSize.height));
 			}
-						
+			
 			//! Return rectangle origin. 
 			Point getOrigin(void) const {
 				return Point(String::convertToFloat(getAttribute("x")), String::convertToFloat(getAttribute("y")));
@@ -137,14 +149,14 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for circles.
-		 * \ingroup SVG
-		 *
-		 * A circle is defined by a central point (called the center) and a radius.
-		 * The shape is formed of the closed curve where the distance between the
-		 * center and each point of the curve is equal to the radius.
-		 */
+			* \ingroup SVG
+			*
+			* A circle is defined by a central point (called the center) and a radius.
+			* The shape is formed of the closed curve where the distance between the
+			* center and each point of the curve is equal to the radius.
+			*/
 		class Circle : public Primitive {
-       public:
+			public:
 			//! make circle centered at point \c inPoint, with radius \c inRadius, and style \c inStyle.
 			Circle(const Point &inCenter, float inRadius, const Style &inStyle = Style()) : Primitive("circle", inStyle) {
 				setAttribute("cx", String::convert(inCenter.x));
@@ -178,19 +190,19 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for ellipses.
-		 * \ingroup SVG
-		 *
-		 * The ellipse is defined by a central point (the center) and two radius
-		 * values: one for the x axis, the other for the y axis.
-		 */
+			* \ingroup SVG
+			*
+			* The ellipse is defined by a central point (the center) and two radius
+			* values: one for the x axis, the other for the y axis.
+			*/
 		class Ellipse : public Primitive {
-       public:
+			public:
 			//! Make ellipse centered at point \c inCenter, with radii \c inXRadius and \c inYRadius, and style \c inStyle.
 			Ellipse(const Point &inCenter, float inXRadius, float inYRadius, const Style &inStyle = Style())  : SVG::Primitive("ellipse", inStyle) {
-						  setAttribute("cx", String::convert(inCenter.x));
-						  setAttribute("cy", String::convert(inCenter.y));
-						  setAttribute("rx", String::convert(inXRadius));
-						  setAttribute("ry", String::convert(inYRadius));
+				setAttribute("cx", String::convert(inCenter.x));
+				setAttribute("cy", String::convert(inCenter.y));
+				setAttribute("rx", String::convert(inXRadius));
+				setAttribute("ry", String::convert(inYRadius));
 			}
 			
 			//! return ellipse center.
@@ -228,22 +240,22 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for straight lines.
-		 * \ingroup SVG
-		 *
-		 * A line link a start point to an end point. Since a line has no fillable
-		 * region and by default shapes do not have a stroke, you must explicitly
-		 * define a stroke if you want the line to be visible.
-		 *
-		 * \see Stroke
-		 */
+			* \ingroup SVG
+			*
+			* A line link a start point to an end point. Since a line has no fillable
+			* region and by default shapes do not have a stroke, you must explicitly
+		* define a stroke if you want the line to be visible.
+			*
+			* \see Stroke
+			*/
 		class Line : public Primitive {
-       public:
+			public:
 			//! Make line segment from start point \c inStart to end point \c inEnd, using style \c inStyle.
 			Line(const Point &inStart, const Point &inEnd, const Style &inStyle = Style()) : SVG::Primitive("line", inStyle) {
-					  setAttribute("x1", String::convert(inStart.x));
-					  setAttribute("y1", String::convert(inStart.y));
-					  setAttribute("x2", String::convert(inEnd.x));
-					  setAttribute("y2", String::convert(inEnd.y));
+				setAttribute("x1", String::convert(inStart.x));
+				setAttribute("y1", String::convert(inStart.y));
+				setAttribute("x2", String::convert(inEnd.x));
+				setAttribute("y2", String::convert(inEnd.y));
 			}
 			
 			//! Return start point of line segment.
@@ -278,23 +290,23 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for polygons
-		 * \ingroup SVG
-		 *
-		 * A polygon is made of a serie of points linked together with strait lines.
-		 * A polygon is a closed path, so the last point is always linked with the 
-		 * first one.
-		 *
-		 * \see  Polyline
-		 */
+			* \ingroup SVG
+			*
+			* A polygon is made of a serie of points linked together with strait lines.
+			* A polygon is a closed path, so the last point is always linked with the 
+			* first one.
+			*
+			* \see  Polyline
+			*/
 		class Polygon : public Primitive {
-       public:
+			public:
 			//! Make an empty polygon with style \c inStyle.
 			Polygon(const Style &inStyle = Style()) : Primitive("polygon", inStyle) {}
 			/*!\brief Make a polygon from point list \c inPointList and style \c inStyle.
-			 * 
-			 * This constructor gives a polygon with predefined points. You can
-			 * always add more points witht the += operator.
-			 */
+			* 
+			* This constructor gives a polygon with predefined points. You can
+			* always add more points witht the += operator.
+			*/
 			Polygon(const PointList &inLinePath, const Style &inStyle = Style()) : Primitive("polygon", inStyle) {
 				setAttribute("points", inLinePath.getStringValue());
 			}
@@ -320,16 +332,16 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for polyline
-		 * \ingroup SVG
-		 *
-		 * A polyline is made of a serie of points linked together with strait 
-		 * lines. Polyline is not closed: so the last point is not linked with the 
-		 * first one.
-		 * 
-		 * \see Polygon
-		 */
+			* \ingroup SVG
+			*
+			* A polyline is made of a serie of points linked together with strait 
+			* lines. Polyline is not closed: so the last point is not linked with the 
+			* first one.
+			* 
+			* \see Polygon
+			*/
 		class Polyline : public Primitive {
-       public:
+			public:
 			//! Make an empty polyline with style \c inStyle.
 			Polyline(const Style &inStyle = Style()) : Primitive("polyline", inStyle) {}
 			//! Make a polyline from point list \c inLinePath using style \c inStyle.
@@ -359,23 +371,23 @@ namespace PACC {
 		};
 		
 		/*!\brief Graphic primitive for text.
-		 * \ingroup SVG
-		 *
-		 * A text object is used to display text in a graphic. Each character of the
-		 * enclosed text is represented by a glyph on with standard stroke and fill
-		 * attributes apply. For example you can put a stroke on the text to make
-		 * an outline, and you can change the color of the character using
-		 * Fill::Color.
-		 *
-		 * There is also some special attributes that can be applyed to text to
-		 * control the appearence of the glyphs, like the font family, size, and
-		 * style. See Font for details.
-		 *
-		 * The text is placed on screen around an anchor point. How text is aligned
-		 * on the anchor depends of the TextAnchor and TextBaseline attributes.
-		 */
+			* \ingroup SVG
+			*
+			* A text object is used to display text in a graphic. Each character of the
+			* enclosed text is represented by a glyph on with standard stroke and fill
+			* attributes apply. For example you can put a stroke on the text to make
+			* an outline, and you can change the color of the character using
+			* Fill::Color.
+			*
+			* There is also some special attributes that can be applyed to text to
+			* control the appearence of the glyphs, like the font family, size, and
+			* style. See Font for details.
+			*
+			* The text is placed on screen around an anchor point. How text is aligned
+			* on the anchor depends of the TextAnchor and TextBaseline attributes.
+			*/
 		class Text : public Primitive {
-       public:
+			public:
 			// Make text from string \c inString, typeset at point \c inAnchor, using style \c inStyle.
 			Text(const string &inString, const Point &inAnchor, const Style inStyle = Style()) : Primitive("text", inStyle) {
 				setAttribute("x", String::convert(inAnchor.x));
@@ -402,7 +414,8 @@ namespace PACC {
 			//! Return string of text.
 			string getText(void) const {
 				return getFirstChild()->getValue();
-			}			
+			}
+			
 			//! Set text to string \c inString.
 			void setText(const string &inString) {
 				getFirstChild()->setValue(inString);
@@ -410,6 +423,12 @@ namespace PACC {
 		};
 		
 	} // end of SVG namespace
+	
+	//! Insert primitive \c inPrimitive into output stream \c outStream.
+	inline ostream& operator<<(ostream &outStream, const SVG::Primitive& inPrimitive) {
+		inPrimitive.write(outStream);
+		return outStream;
+	}
 	
 } // end of PACC namespace
 

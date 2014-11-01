@@ -29,8 +29,8 @@
  * \file PACC/Threading/Condition.hpp
  * \brief Class definition for the portable condition.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2004/06/02 04:55:55 $
+ * $Revision: 1.18 $
+ * $Date: 2005/09/17 03:50:14 $
  */
 
 #ifndef PACC_Threading_Condition_hpp_
@@ -39,39 +39,38 @@
 #include "Threading/Mutex.hpp"
 
 namespace PACC { 
-   
-   namespace Threading {
-
-   /*! \brief %Condition for thread synchronization.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Threading
-
-   This class incapsulates a cross-platform POSIX condition with classic Condition::broadcast, Condition::signal, and Condition::wait methods. It should be compatible with any flavour of Unix that supports POSIX threads. It is also compatible with any version of Windows that support the SignalObjectAndWait method (introduced with NT4). 
-   
-   This class has been tested under Linux, MacOS X and Windows 2000/XP.
-   */
-   class Condition : public Mutex
-   {
-   public:
-      Condition(void);
-      ~Condition(void);
-
-      void broadcast(void) const;
-      void signal(void) const;
-      bool wait(double inMaxTime=0) const;
-      
-   protected:
-      void* mCondition; //!< Opaque structure of native condition
-
-   private:
-      //! restrict (disable) copy constructor.
-      Condition(const Condition&);
-      //! restrict (disable) assignment operator.
-      void operator=(const Condition&);
-   };
-
-} // end of Threading namespace
-
+	
+	namespace Threading {
+		
+		/*! \brief %Condition for thread synchronization.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Threading
+		
+		This class incapsulates a cross-platform POSIX condition with classic Condition::broadcast, Condition::signal, and Condition::wait methods. It should be compatible with any flavour of Unix that supports POSIX threads. It is also compatible with any version of Windows that support the SignalObjectAndWait method (introduced with NT4). 
+		
+		This class has been tested under Linux, MacOS X and Windows 2000/XP.
+		*/
+		class Condition : public Mutex {
+			public:
+			Condition(void);
+			~Condition(void);
+			
+			void broadcast(void) const;
+			void signal(void) const;
+			bool wait(double inMaxTime=0) const;
+			
+			protected:
+			void* mCondition; //!< Opaque structure of native condition
+			
+			private:
+			//! restrict (disable) copy constructor.
+			Condition(const Condition&);
+			//! restrict (disable) assignment operator.
+			void operator=(const Condition&);
+		};
+		
+	} // end of Threading namespace
+	
 } // end of PACC namespace
 
 #endif // PACC_Threading_Condition_hpp_

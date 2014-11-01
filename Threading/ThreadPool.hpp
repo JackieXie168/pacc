@@ -26,11 +26,11 @@
  */
 
 /*!
- * \file PACC/Threading/ThreadPool.hpp
+* \file PACC/Threading/ThreadPool.hpp
  * \brief Class definition for the portable thread pool.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2004/06/02 04:55:55 $
+ * $Revision: 1.8 $
+ * $Date: 2005/09/17 03:50:14 $
  */
 
 #ifndef PACC_Threading_ThreadPool_hpp_
@@ -42,79 +42,77 @@
 #include <vector>
 
 namespace PACC {
-   
-   using namespace std;
-   
-   namespace Threading {
-   
-   class ThreadPool;
-   
-   /*! \brief Slave thread for the portable thread pool.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Threading
-   
-   This class defines a specialized thread for executing thread pool tasks. A slave thread simply sleeps until awakened by its parent thread pool when the later needs to execute a pending Task (see SlaveThread::main for more details). 
-   */
-   class SlaveThread : public Thread 
-   {
-      public:
-      //! Construct a slave thread for a thread pool.
-      SlaveThread(ThreadPool* inPool) : mPool(inPool) {run();}
-      //! Delete slave thread; wait for thread termination.
-      ~SlaveThread(void) {wait(true);}
-      
-      protected:
-      ThreadPool* mPool; //!< Pointer to parent thread pool
-
-      void main(void);
-   };
-
-   /*! \brief Portable thread pool of slaves.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Threading
-   
-   This class implements a thread pool of slave threads that process a FIFO queue of tasks derived from class Threading::Task. A task is simply an object with a Task::main method. Here is a simple usage example:
-   \code
-   #include "Threading/Task.hpp"
-   
-   class MyTask : public Threading::Task
-   {
-      public:
-      void main(void) {
-         cout << "Hello world task!" << endl;
-      }
-   };
-   
-   #include "Threading/ThreadPool.hpp"
-   
-   int void main(int argc, char** argv)
-   {
-      ThreadPool lPool(10);
-      MyTask ltask;
-      lPool.pushTask(lTask);
-      ...
-      lTask.wait();
-      return 0;
-   }
-   \endcode
-   */
-   class ThreadPool : public vector<SlaveThread*>, public Condition
-   {      
-      public:
-      ThreadPool(unsigned int inSlaves);
-      ~ThreadPool(void);
-
-      void push(Task& inTask);
-      
-      protected:
-      queue<Task*> mTasks; //!< Queue of tasks.
-           
-      friend class SlaveThread;
-   };
-   
-} // end of Threading namespace
-
+	
+	using namespace std;
+	
+	namespace Threading {
+		
+		class ThreadPool;
+		
+		/*! \brief Slave thread for the portable thread pool.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Threading
+		
+		This class defines a specialized thread for executing thread pool tasks. A slave thread simply sleeps until awakened by its parent thread pool when the later needs to execute a pending Task (see SlaveThread::main for more details). 
+		*/
+		class SlaveThread : public Thread {
+			public:
+			//! Construct a slave thread for a thread pool.
+			SlaveThread(ThreadPool* inPool) : mPool(inPool) {run();}
+			//! Delete slave thread; wait for thread termination.
+			~SlaveThread(void) {wait(true);}
+			
+			protected:
+			ThreadPool* mPool; //!< Pointer to parent thread pool
+			
+			void main(void);
+		};
+		
+		/*! \brief Portable thread pool of slaves.
+			\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+			\ingroup Threading
+			
+			This class implements a thread pool of slave threads that process a FIFO queue of tasks derived from class Threading::Task. A task is simply an object with a Task::main method. Here is a simple usage example:
+			\code
+#include "Threading/Task.hpp"
+			
+			class MyTask : public Threading::Task
+		{
+public:
+			void main(void) {
+				cout << "Hello world task!" << endl;
+			}
+		};
+		
+#include "Threading/ThreadPool.hpp"
+		
+		int void main(int argc, char** argv)
+		{
+			ThreadPool lPool(10);
+			MyTask ltask;
+			lPool.pushTask(lTask);
+			...
+				lTask.wait();
+			return 0;
+		}
+		\endcode
+			*/
+		class ThreadPool : public vector<SlaveThread*>, public Condition {      
+			public:
+			ThreadPool(unsigned int inSlaves);
+			~ThreadPool(void);
+			
+			void push(Task& inTask);
+			
+			protected:
+			queue<Task*> mTasks; //!< Queue of tasks.
+			
+			friend class SlaveThread;
+		};
+		
+	} // end of Threading namespace
+	
 } // end of PACC namespace
 
 #endif // PACC_Threading_ThreadPool_hpp_
-   
+

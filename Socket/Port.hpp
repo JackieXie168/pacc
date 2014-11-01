@@ -29,8 +29,8 @@
  * \file PACC/Socket/Port.hpp
  * \brief Class definition for the portable socket base class.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.29 $
- * $Date: 2004/11/19 01:51:49 $
+ * $Revision: 1.31 $
+ * $Date: 2005/09/17 03:49:31 $
  */
 
 #ifndef PACC_Socket_Port_hpp_
@@ -40,49 +40,48 @@
 #include "Socket/Exception.hpp"
 
 namespace PACC { 
-   
-   namespace Socket {
-
-   /*! 
-   \brief Supported socket protocols.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Socket
-   */
-   enum Protocol {
+	
+	namespace Socket {
+		
+		/*! 
+		\brief Supported socket protocols.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Socket
+		*/
+		enum Protocol {
       eTCP, //!< Transfer Control Protocol
       eUDP, //!< User Datagram Protocol
       eOther //!< Other protocol
-   };
-
-   /*! 
-   \brief Supported socket options.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Socket
-   */
-   enum Option {
+		};
+		
+		/*! 
+		\brief Supported socket options.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Socket
+		*/
+		enum Option {
       eKeepAlive, //!< Keep connection alive
       eLinger, //!< Time to linger on close (in seconds)
-		eNoDelay, //!< Disable the Nagle algorithm for packet coalescing
+			eNoDelay, //!< Disable the Nagle algorithm for packet coalescing
       eProtocolType, //!< %Socket protocol type
       eReuseAddress, //!< Allow reuse of address
       eRecvBufSize, //!< Size of receive buffer (in number of chars)
       eSendBufSize, //!< Size of send buffer (in number of chars)
       eRecvTimeOut, //!< Time out period for receive operations (in seconds)
       eSendTimeOut //!< Time out period for send operations (in seconds)
-   };
-   
-   /*!
-   \brief Portable socket base class.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Socket
-   
-   This class encapsulates a cross-platform socket port descriptor (not to be confused with the port number). It can be used with both %TCP and %UDP protocols. It is usually subclassed to implement either a client or server connection. Any error raises a Socket::Exception. 
-    
-   This class should be compatible with any POSIX Unix, and with any version of windows. It has been tested under Linux, MacOS X and Windows 2000/XP.
-   */
-   class Port
-   {
-    public:
+		};
+		
+		/*!
+			\brief Portable socket base class.
+		 \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		 \ingroup Socket
+		 
+		 This class encapsulates a cross-platform socket port descriptor (not to be confused with the port number). It can be used with both %TCP and %UDP protocols. It is usually subclassed to implement either a client or server connection. Any error raises a Socket::Exception. 
+		 
+		 This class should be compatible with any POSIX Unix, and with any version of windows. It has been tested under Linux, MacOS X and Windows 2000/XP.
+		 */
+		class Port {
+			public:
       //! Return socket descriptor
       int getDescriptor() const {return mDescriptor;}
       
@@ -91,13 +90,13 @@ namespace PACC {
       Address getSockAddress(void) const;
       double getSockOpt(Option inName) const;
       void setSockOpt(Option inName, double inValue);
-
-    protected:
-      int mDescriptor; //!< socket descriptor
-
+			
+			protected:
+			int mDescriptor; //!< socket descriptor
+			
       explicit Port(int inDescriptor) throw();
       explicit Port(Protocol inProtocol=eTCP);
-
+			
       ~Port();
       
       int  accept(void);
@@ -112,17 +111,17 @@ namespace PACC {
       void send(const char* inBuffer, unsigned int inCount);
       void sendTo(const char* inBuffer, unsigned int inCount, const Address& inPeer);
       bool waitForActivity(double inSeconds);
-
-   private:
-      //! restrict (disable) copy constructor.
-      Port(const Port&);
+			
+			private:
+			//! restrict (disable) copy constructor.
+			Port(const Port&);
       //! restrict (disable) assignment operator.
       void operator=(const Port&);
       
-   };
-
-} // end of Socket namespace
-
+		};
+		
+	} // end of Socket namespace
+	
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Port_hpp_

@@ -29,8 +29,8 @@
  * \file PACC/Util/Date.cpp
  * \brief Class methods for the portable time and date.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.8 $
- * $Date: 2005/04/19 18:19:16 $
+ * $Revision: 1.9 $
+ * $Date: 2005/09/15 14:13:24 $
  */
 
 #include "Util/Date.hpp"
@@ -41,8 +41,8 @@ using namespace PACC;
 //! Construct with specified date \c inYear, \c inMonth, and \c inDay.
 Date::Date(unsigned int inYear, unsigned int inMonth, unsigned int inDay) : mTime(0)
 {
-   setDate(inYear, inMonth, inDay);
-   setTime(0, 0, 0);
+	setDate(inYear, inMonth, inDay);
+	setTime(0, 0, 0);
 }
 
 #include <iostream>
@@ -50,36 +50,36 @@ Date::Date(unsigned int inYear, unsigned int inMonth, unsigned int inDay) : mTim
 //! Return formatted date and time using the std::strftime string format \c inFormat.
 std::string Date::get(const std::string& inFormat) const 
 {
-   tm* lTime = ::localtime(&mTime);
-   string lBuffer;
-   // reserve large enough buffer
-   lBuffer.resize(1);
-   int lSize;
-   while((lSize = ::strftime((char*)lBuffer.data(), lBuffer.size(), inFormat.c_str(), lTime)) == 0) 
-   {
-      // enlarge buffer if necessary
-      lBuffer.resize(2*lBuffer.capacity());
-   }
-   lBuffer.resize(lSize);
-   return lBuffer;
+	tm* lTime = ::localtime(&mTime);
+	string lBuffer;
+	// reserve large enough buffer
+	lBuffer.resize(1);
+	int lSize;
+	while((lSize = ::strftime((char*)lBuffer.data(), lBuffer.size(), inFormat.c_str(), lTime)) == 0) 
+	{
+		// enlarge buffer if necessary
+		lBuffer.resize(2*lBuffer.capacity());
+	}
+	lBuffer.resize(lSize);
+	return lBuffer;
 }
 
 //! Set date to year \c inyear, month \c inMonth, and day \c inDay (time is unchanged).
 void Date::setDate(unsigned int inYear, unsigned int inMonth, unsigned int inDay)
 {
-   struct tm* lTime = localtime(&mTime);
-   lTime->tm_year = inYear-1900;
-   lTime->tm_mon = inMonth-1;
-   lTime->tm_mday = inDay;
-   mTime = ::mktime(lTime);
+	struct tm* lTime = localtime(&mTime);
+	lTime->tm_year = inYear-1900;
+	lTime->tm_mon = inMonth-1;
+	lTime->tm_mday = inDay;
+	mTime = ::mktime(lTime);
 }
 
 //! Set time to \c inHour hour, \c inMinutes minutes, and \c inSeconds seconds (date is unchanged).
 void Date::setTime(unsigned int inHour, unsigned int inMinutes, unsigned int inSeconds)
 {
-   struct tm* lTime = localtime(&mTime);
-   lTime->tm_hour = inHour;
-   lTime->tm_min = inMinutes;
-   lTime->tm_sec = inSeconds;
-   mTime = ::mktime(lTime);
+	struct tm* lTime = localtime(&mTime);
+	lTime->tm_hour = inHour;
+	lTime->tm_min = inMinutes;
+	lTime->tm_sec = inSeconds;
+	mTime = ::mktime(lTime);
 }

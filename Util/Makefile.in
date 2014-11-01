@@ -100,7 +100,6 @@ install_sh = @install_sh@
 h_sources = Assert.hpp \
             Date.hpp \
             MTRand.hpp \
-            NumberGenerator.hpp \
             Randomizer.hpp \
             RandomPermutation.hpp \
             SignalHandler.hpp \
@@ -110,7 +109,6 @@ h_sources = Assert.hpp \
 
 
 cc_sources = Date.cpp \
-                NumberGenerator.cpp \
                 Randomizer.cpp \
                 SignalHandler.cpp \
                 Timer.cpp \
@@ -133,8 +131,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libpaccutil_la_LIBADD =
 am__objects_1 =
-am__objects_2 = Date.lo NumberGenerator.lo Randomizer.lo \
-	SignalHandler.lo Timer.lo Tokenizer.lo
+am__objects_2 = Date.lo Randomizer.lo SignalHandler.lo Timer.lo \
+	Tokenizer.lo
 am_libpaccutil_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libpaccutil_la_OBJECTS = $(am_libpaccutil_la_OBJECTS)
 
@@ -145,9 +143,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Date.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/NumberGenerator.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Randomizer.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Date.Plo ./$(DEPDIR)/Randomizer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/SignalHandler.Plo ./$(DEPDIR)/Timer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tokenizer.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -220,7 +216,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Date.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NumberGenerator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Randomizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignalHandler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Timer.Plo@am__quote@

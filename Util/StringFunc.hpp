@@ -29,8 +29,8 @@
  * \file PACC/Util/StringFunc.hpp
  * \brief Definition of string conversion methods.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/05/31 01:34:23 $
+ * $Revision: 1.7 $
+ * $Date: 2005/09/15 14:13:24 $
  */
 
 /*! \namespace PACC::String
@@ -45,11 +45,11 @@
 #include <stdlib.h>
 
 namespace PACC {
-   
-   using namespace std;
-
-   namespace String {
-
+	
+	using namespace std;
+	
+	namespace String {
+		
 		//! Convert string \c inString to integer value in base \c inBase (default is base 10).
 		inline long int convertToInteger(const string& inString, int inBase=10) {
 			return strtol(inString.c_str(), 0, inBase);
@@ -59,7 +59,7 @@ namespace PACC {
 		inline double convertToFloat(const string& inString) {
 			return strtod(inString.c_str(), 0);
 		}
-
+		
 		//! Convert data type \c inData to string.
 		template <typename Type>
 		string convert(Type inData) {
@@ -69,7 +69,7 @@ namespace PACC {
 		}
 		
 	} // end of String namespace
-
+	
 } // end of PACC namespace
 
 #endif // PACC_StringFunc_hpp_

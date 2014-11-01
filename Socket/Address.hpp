@@ -29,8 +29,8 @@
  * \file PACC/Socket/Address.hpp
  * \brief Class definition for the portable network address.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2004/11/30 02:30:35 $
+ * $Revision: 1.18 $
+ * $Date: 2005/09/17 03:49:31 $
  */
 
 #ifndef PACC_Socket_Address_hpp_
@@ -39,22 +39,21 @@
 #include <string>
 
 namespace PACC { 
-   
-   using namespace std;
-   
-   namespace Socket {
-
+	
+	using namespace std;
+	
+	namespace Socket {
+		
 		/*! \brief Portable network address.
-		 \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-		 \ingroup Socket
-		 
-		 This class encapsulates a cross-platform address for a peer host. It should be compatible with any POSIX Unix, and with any version of windows. It has been tested under Linux, MacOS X and Windows 2000/XP.
-		 
-		 Any error raises a Socket::Exception. 
-		 */
-		class Address
-		{
-		 public:
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Socket
+		
+		This class encapsulates a cross-platform address for a peer host. It should be compatible with any POSIX Unix, and with any version of windows. It has been tested under Linux, MacOS X and Windows 2000/XP.
+		
+		Any error raises a Socket::Exception. 
+		*/
+		class Address {
+			public:
 			explicit Address(unsigned int inPort=0, const string& inName="localhost");
 			
 			//! Return host name.
@@ -64,15 +63,15 @@ namespace PACC {
 			//! Return port number.
 			unsigned int getPortNumber() const {return mPortNumber;}
 			
-		 protected:
+			protected:
 			unsigned int mPortNumber; //!< socket port number
 			string mIPAddress; //!< socket IP address
 			string mHostName; //!< host name
 			
 		};
-
+		
 	} // end of Socket namespace
-
+	
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Address_hpp_

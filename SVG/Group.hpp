@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file PACC/SVG/Group.hpp
+/*!
+ * \file PACC/SVG/Group.hpp
  * \brief Class definition for the SVG primitive group.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.4 $
+ * $Date: 2005/09/17 03:50:09 $
  */
 
 #ifndef PACC_SVG_Group_hpp_
@@ -43,18 +44,18 @@
 namespace PACC {
 	
 	namespace SVG {
-   
+		
 		using namespace std;
 		
 		/*!\brief Basic graphic primitive container.
-		 * \ingroup SVG
-		 *
-		 * A group holds an ordered list of graphic primitives with default
-		 * style and transform. The group style and transform applies to all embedded
-		 * elements that do not define their own. Groups can also be nested.
-		 */
+		* \ingroup SVG
+		*
+		* A group holds an ordered list of graphic primitives with default
+		* style and transform. The group style and transform applies to all embedded
+		* elements that do not define their own. Groups can also be nested.
+		*/
 		class Group : public Primitive {
-		 public:
+			public:
 			//! Make group with style \c inStyle.
 			explicit Group(const Style &inStyle = Style()) : Primitive("g", inStyle) {}
 			
@@ -78,7 +79,7 @@ namespace PACC {
 			//! Remove all primitives in this group.
 			void clear() {eraseChildren();}
 			
-       protected:
+			protected:
 			//! Make group from name \c inName and attribute list \c inAttributes.
 			Group(const string& inName, const XML::AttributeList& inAttributes = XML::AttributeList()): Primitive(inName, inAttributes) {}
 			

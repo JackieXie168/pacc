@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.cpp
  * \brief Class methods for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.36 $
- * $Date: 2005/05/30 16:40:58 $
+ * $Revision: 1.39 $
+ * $Date: 2005/09/15 14:13:33 $
  */
 
 #include "XML/Document.hpp"
@@ -56,7 +56,7 @@ lChild->setAttribute("attribute", "value");
 */
 XML::Iterator XML::Document::addChild(const XML::Iterator& inPos, const string& inValue, NodeType inType)
 {
-   return attachChild(inPos, new Node(inValue, inType));
+	return attachChild(inPos, new Node(inValue, inType));
 }
 
 /*! 
@@ -73,11 +73,11 @@ lChild->setAttribute("attribute", "value");
 */
 XML::Iterator XML::Document::addRoot(const string& inValue, XML::NodeType inType)
 {
-   // allocate new node
-   Node* lNode = new Node(inValue, inType);
-   // insert at end of root list
-   insertAsLastChild(lNode);
-   return lNode;
+	// allocate new node
+	Node* lNode = new Node(inValue, inType);
+	// insert at end of root list
+	insertAsLastChild(lNode);
+	return lNode;
 }
 
 /*! 
@@ -95,7 +95,7 @@ lChild->setAttribute("attribute", "value");
 XML::Iterator XML::Document::addSibling(const XML::Iterator& inPos, const string& inValue, XML::NodeType inType)
 {
 	PACC_AssertM(inPos, "Invalid iterator!");
-   return attachSibling(inPos, new Node(inValue, inType));
+	return attachSibling(inPos, new Node(inValue, inType));
 }
 
 /*! 
@@ -108,9 +108,9 @@ This method inserts the pre-allocated node \c inNode (and its sub-tree) as the l
 XML::Iterator XML::Document::attachChild(const XML::Iterator& inPos, XML::Node* inChild)
 {
 	PACC_AssertM(inPos, "Invalid iterator!");
-   PACC_AssertM(inChild, "Cannot attach nul pointer!");
-   inPos->insertAsLastChild(inChild);
-   return inChild;
+	PACC_AssertM(inChild, "Cannot attach nul pointer!");
+	inPos->insertAsLastChild(inChild);
+	return inChild;
 }
 
 /*! 
@@ -123,9 +123,9 @@ This method inserts the pre-allocated node \c inNode (and its sub-tree) as the s
 XML::Iterator XML::Document::attachSibling(const XML::Iterator& inPos, XML::Node* inSibling)
 {
 	PACC_AssertM(inPos, "Invalid iterator!");
-   PACC_AssertM(inSibling, "Cannot attach nul pointer!");
+	PACC_AssertM(inSibling, "Cannot attach nul pointer!");
 	inPos->insertAsPreviousSibling(inSibling);
-   return inSibling;
+	return inSibling;
 }
 
 /*! 
@@ -136,7 +136,7 @@ Tree nodes should never be owned by multiple document objects because no referen
 XML::Node* XML::Document::detach(const XML::Iterator& inPos)
 {
 	PACC_AssertM(inPos, "Invalid iterator!");
-   return inPos->detachFromSiblingsAndParent();
+	return inPos->detachFromSiblingsAndParent();
 }
 
 /*! 
@@ -176,8 +176,8 @@ void XML::Document::erase(XML::Iterator inPos)
 */
 void XML::Document::eraseRoots(void) 
 {
-   // delete all childs of the root node
-   eraseChildren();
+	// delete all childs of the root node
+	eraseChildren();
 }
 
 /*! 
@@ -185,8 +185,8 @@ An %XML document may contain three types of elements: declarative tags, special 
 */
 XML::Iterator XML::Document::getFirstDataTag(void) 
 {
-   for(Iterator lTag = getFirstChild(); lTag; ++lTag) if(lTag->getType() == eData) return lTag;
-   return 0;
+	for(Iterator lTag = getFirstChild(); lTag; ++lTag) if(lTag->getType() == eData) return lTag;
+	return 0;
 }
 
 /*! 
@@ -194,8 +194,8 @@ An %XML document may contain three types of elements: declarative tags, special 
 */
 XML::ConstIterator XML::Document::getFirstDataTag(void) const
 {
-   for(ConstIterator lTag = getFirstChild(); lTag; ++lTag) if(lTag->getType() == eData) return lTag;
-   return 0;
+	for(ConstIterator lTag = getFirstChild(); lTag; ++lTag) if(lTag->getType() == eData) return lTag;
+	return 0;
 }
 
 /*! 
@@ -203,7 +203,7 @@ An %XML document may contain three types of elements: declarative tags, special 
 */
 XML::Iterator XML::Document::getFirstRoot(void) 
 {
-   return getFirstChild();
+	return getFirstChild();
 }
 
 /*! 
@@ -211,32 +211,31 @@ An %XML document may contain three types of elements: declarative tags, special 
 */
 XML::ConstIterator XML::Document::getFirstRoot(void) const
 {
-   return getFirstChild();
+	return getFirstChild();
 }
 
 /*!
 */
 void XML::Document::parse(const string& inFileName)
 {
-   // open file
-   ifstream lStream(inFileName.c_str());
-   if(!lStream.good()) throw runtime_error(string("<Document::parse> unable to open file ")+inFileName);
-   // parse file content
-   parse(lStream, inFileName);
+	// open file
+	ifstream lStream(inFileName.c_str());
+	if(!lStream.good()) throw runtime_error(string("<Document::parse> unable to open file ")+inFileName);
+	// parse file content
+	parse(lStream, inFileName);
 }
 
 /*!
 */
 void XML::Document::parse(istream& inStream, const string& inName)
 {
-   Tokenizer lTokenizer(inStream);
-   lTokenizer.setStreamName(inName);
-   eraseRoots();
-   Node* lNode = 0;
-   // parse all elements
-   while(lNode = Node::parse(lTokenizer, mNoParseTags)) insertAsLastChild(lNode);
-	char lPeek;
-   if(lTokenizer.peekNextChar(lPeek)) {
+	Tokenizer lTokenizer(inStream);
+	lTokenizer.setStreamName(inName);
+	eraseRoots();
+	Node* lNode = 0;
+	// parse all elements
+	while(lNode = Node::parse(lTokenizer, mNoParseTags)) insertAsLastChild(lNode);
+	if(lTokenizer.peekNextChar() != -1) {
 		// stream contains bad markup
 		lTokenizer.setDelimiters("", "\n\r");
 		Node lBad(string("</")+lTokenizer.getNextToken(), XML::eRoot);
@@ -245,34 +244,36 @@ void XML::Document::parse(istream& inStream, const string& inName)
 }
 
 /*!
-*/
-void XML::Document::serialize(ostream& outStream, unsigned int inWidth, bool inIndentAttributes) const
+A negative value of \c inValue disables all indentation (including line feeds). Argument \c inIndentAttributes controls the indentation of markup attributes. The default is to not indent attributes.
+ */
+void XML::Document::serialize(ostream& outStream, int inWidth, bool inIndentAttributes) const
 {
-   Streamer lStream(outStream, inWidth);
+	bool lIndent = (inWidth >= 0);
+	Streamer lStream(outStream, (lIndent ? (unsigned int)inWidth : 0));
 	lStream.setAttributeIndentation(inIndentAttributes);
-   // retrieve first root
-   ConstIterator lRoot = getFirstRoot();
-   if(lRoot)
-   {
-      // check for xml header
-      if(lRoot->getType() != eDecl) lStream.insertHeader();
-      // serialize all roots
-      while(lRoot) (lRoot++)->serialize(lStream);
-   }
+	// retrieve first root
+	ConstIterator lRoot = getFirstRoot();
+	if(lRoot)
+	{
+		// check for xml header
+		if(lRoot->getType() != eDecl) lStream.insertHeader();
+		// serialize all roots
+		while(lRoot) (lRoot++)->serialize(lStream, lIndent);
+	}
 }
 
 /*!
 */
 void XML::Document::setNoParse(const string& inTag)
 {
-   mNoParseTags.insert(inTag);
+	mNoParseTags.insert(inTag);
 }
 
 /*!
 */
 void XML::Document::unsetNoParse(const string& inTag)
 {
-   mNoParseTags.erase(inTag);
+	mNoParseTags.erase(inTag);
 }
 
 /*!

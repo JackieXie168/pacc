@@ -29,8 +29,8 @@
  * \file PACC/Util/RandomPermutation.hpp
  * \brief Class definition for the random permutation.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.11 $
- * $Date: 2005/06/02 06:59:17 $
+ * $Revision: 1.13 $
+ * $Date: 2005/09/17 03:50:19 $
  */
 
 #ifndef PACC_RandomPermutation_hpp_
@@ -41,30 +41,30 @@
 #include <vector>
 
 namespace PACC {
-   
-   using namespace std;
-
-   /*!\brief Random permutation generator.
-      \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-      \ingroup Util
-   
-   A random permutation of size X is a vector that contains integer 0 to X-1 randomly permutated.
+	
+	using namespace std;
+	
+	/*!\brief Random permutation generator.
+	\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+	\ingroup Util
+	
+	A random permutation of size X is a vector that contains integer 0 to X-1 randomly permutated.
 	*/
-   class RandomPermutation : public vector<int> {
-   public:
-      //! Initialize permutation of size \c inSize, without any shuffling.
-      RandomPermutation(unsigned int inSize=0) : vector<int>(inSize) {
-         for(unsigned int i=0; i < inSize; ++i) (*this)[i] = i;
-      }
-      
-      //! Shuffle permutation randomly using number generator \c inRand.
-      RandomPermutation &permutate(Randomizer &inRand=PACC::rand) {
-         random_shuffle(begin(), end(), inRand);
-         return *this;
-      }
-   
-   };
-
+	class RandomPermutation : public vector<int> {
+		public:
+		//! Initialize permutation of size \c inSize, without any shuffling.
+		RandomPermutation(unsigned int inSize=0) : vector<int>(inSize) {
+			for(unsigned int i=0; i < inSize; ++i) (*this)[i] = i;
+		}
+		
+		//! Shuffle permutation randomly using number generator \c inRand.
+		RandomPermutation &permutate(Randomizer &inRand=PACC::rand) {
+			random_shuffle(begin(), end(), inRand);
+			return *this;
+		}
+		
+	};
+	
 } // end of namespace PACC
 
 #endif

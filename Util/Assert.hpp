@@ -29,8 +29,15 @@
  *  \file   PACC/Util/Assert.hpp
  *  \brief  Assert macro.
  *  \author Marc Parizeau
- *  $Revision: 1.4 $
- *  $Date: 2004/11/23 18:19:22 $
+ *  $Revision: 1.12 $
+ *  $Date: 2005/09/22 23:12:10 $
+ 
+ This macro can be used to assert the validity of a boolean condition 
+ (first argument: \c COND). If the  expression is true nothing happens. Otherwise,
+ an error message (second argument: \c MESSAGE) is outputted with the file name and line
+ number where the macro was executed, and the program exits. On Unix, the 
+ message is send to the standard error stream (std::cerr). On windows, a popup 
+ (message box) is created with the error message.
  */
  
 #ifndef PACC_Assert_hpp
@@ -53,10 +60,10 @@ if(!(COND)) { \
 /////// otherwise, output message to console ///////
 #include <iostream>
 #define PACC_AssertM(COND,MESSAGE) \
-  if(!(COND)) { \
-	  cerr << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE; \
-	  exit(-1); \
-  }
+if(!(COND)) { \
+	std::cerr << __FILE__ << ":" << __LINE__ << "\n" << MESSAGE << std::endl; \
+		exit(-1); \
+}
 #endif // WIN32
 
 #else // PACC_NDEBUG

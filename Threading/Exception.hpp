@@ -26,11 +26,11 @@
  */
 
 /*!
-* \file PACC/Threading/Exception.hpp
+ * \file PACC/Threading/Exception.hpp
  * \brief Class definition for the threading exception.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.12 $
- * $Date: 2004/09/29 14:50:54 $
+ * $Revision: 1.14 $
+ * $Date: 2005/09/17 03:50:14 $
  */
 
 #ifndef PACC_Threading_Exception_hpp_
@@ -40,50 +40,49 @@
 #include <string>
 
 namespace PACC { 
-   
-   using namespace std;
-   
-   namespace Threading {
-
-   //! Supported Multithread error codes.
-   enum Error {
-      eMutexNotOwned, //!< Mutex not own by calling thread
-      eWouldDeadLock, //!< Operation would produce a dead lock.
-		eRunning, //!< Thread is already running
-      eOtherError //!< Any other OS specific error.
-   };
-
-   /*!
-   \brief Multithread exception.
-    \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-    \ingroup Threading
-
-    This class encapsulates most interesting runtime errors that can happen while using multithreading operations.
-    */
-   class Exception : public runtime_error
-   {
-   public:
-      //! Construct with native error code.
-      explicit Exception(int inNativeCode, const string& inMessage)
-      : runtime_error(inMessage), mNativeCode(inNativeCode) {mCode = convertNativeError(inNativeCode);}
-      //! Construct with multithreading error code.
-      explicit Exception(Error inCode, const string& inMessage) : runtime_error(inMessage), mCode(inCode) {mNativeCode = 0;}
-
-      static Error convertNativeError(int inError);
-
-      //! Return error code.
-      int getErrorCode() {return mCode;}
-      
-      string getMessage() const throw();
-      
-   protected:
-      Error mCode; //!< Portable error code.
-      int mNativeCode; //!< Native error code.
-   
-   };
-
-} // end of Threading namespace
-
+	
+	using namespace std;
+	
+	namespace Threading {
+		
+		//! Supported Multithread error codes.
+		enum Error {
+			eMutexNotOwned, //!< Mutex not own by calling thread
+			eWouldDeadLock, //!< Operation would produce a dead lock.
+			eRunning, //!< Thread is already running
+			eOtherError //!< Any other OS specific error.
+		};
+		
+		/*!
+		\brief Multithread exception.
+		 \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		 \ingroup Threading
+		 
+		 This class encapsulates most interesting runtime errors that can happen while using multithreading operations.
+		 */
+		class Exception : public runtime_error {
+			public:
+			//! Construct with native error code.
+			explicit Exception(int inNativeCode, const string& inMessage)
+			: runtime_error(inMessage), mNativeCode(inNativeCode) {mCode = convertNativeError(inNativeCode);}
+			//! Construct with multithreading error code.
+			explicit Exception(Error inCode, const string& inMessage) : runtime_error(inMessage), mCode(inCode) {mNativeCode = 0;}
+			
+			static Error convertNativeError(int inError);
+			
+			//! Return error code.
+			int getErrorCode() {return mCode;}
+			
+			string getMessage() const throw();
+			
+			protected:
+			Error mCode; //!< Portable error code.
+			int mNativeCode; //!< Native error code.
+			
+		};
+		
+	} // end of Threading namespace
+	
 } // end of PACC namespace
 
 #endif  // PACC_Threading_Exception_hpp_

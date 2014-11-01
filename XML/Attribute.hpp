@@ -26,11 +26,11 @@
  */
 
 /*!
-* \file PACC/XML/Attribute.hpp
+ * \file PACC/XML/Attribute.hpp
  * \brief Class definition for the %XML tag attributes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2005/06/02 06:56:43 $
+ * $Revision: 1.12 $
+ * $Date: 2005/09/17 03:50:24 $
  */
 
 #ifndef PACC_XML_Attribute_hpp_
@@ -40,7 +40,7 @@
 #include <map>
 
 namespace PACC {
-   
+	
 	using namespace std;
 	
 	namespace XML {
@@ -48,11 +48,11 @@ namespace PACC {
 		class Attribute;
 		
 		/*!\brief %Attribute list for tree nodes.
-		   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-		   \ingroup XML
-		 */
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup XML
+		*/
 		class AttributeList : public map<string, string> {
-       public:
+			public:
 			//! Construct an empty attribute list.
 			AttributeList() {}
 			//! Construct this attribute list with attribute \c inAttribute.
@@ -100,16 +100,16 @@ namespace PACC {
 				(*this)[inName] = String::convert(inValue);
 			}
 			
-       private:
+			private:
 			const string mEmpty;
 		};
 		
 		/*!\brief Markup attribute.
 			\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
 			\ingroup XML
-		 */
+			*/
 		class Attribute : protected pair<string, string> {
-       public:
+			public:
 			//! Construct an attribute pair with name \c inName and value \c inValue.
 			Attribute(const string &inName, const string &inValue) : pair<string, string>(inName, inValue) {}
 			

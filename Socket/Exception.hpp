@@ -29,8 +29,8 @@
  * \file PACC/Socket/Exception.hpp
  * \brief Class definition for the portable socket exception.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.20 $
- * $Date: 2004/11/29 06:01:14 $
+ * $Revision: 1.22 $
+ * $Date: 2005/09/17 03:49:31 $
  */
 
 #ifndef PACC_Socket_Exception_hpp_
@@ -40,17 +40,17 @@
 #include <string>
 
 namespace PACC { 
-   
-   using namespace std;
-   
-   namespace Socket {
-
-   /*! 
-   \brief Supported socket error codes.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Socket
-   */
-   enum Error {
+	
+	using namespace std;
+	
+	namespace Socket {
+		
+		/*! 
+		\brief Supported socket error codes.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Socket
+		*/
+		enum Error {
       eAddressInUse, //!< %Address is already in use (bind & connect).
       eAddressNotAvailable, //!< %Address not available on machine (bind & connect).
       eBadDescriptor, //!< Invalid socket descriptor (socket).
@@ -65,40 +65,39 @@ namespace PACC {
       ePrivilegedPort, //!< User does not have acces to privileged ports (bind).
       eTimeOut, //!< Time out was reached for operation (receive & send).
       eOtherError //!< Any other OS specific error.
-   };
-
-   /*!
-   \brief %Socket exception.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Socket
-
-    This class encapsulates most interesting runtime errors that can happen while using sockets.
-    */
-   class Exception : public runtime_error
-   {
-   public:
+		};
+		
+		/*!
+		\brief %Socket exception.
+		 \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		 \ingroup Socket
+		 
+		 This class encapsulates most interesting runtime errors that can happen while using sockets.
+		 */
+		class Exception : public runtime_error {
+			public:
       //! Construct exception with native error code \c inCode and message \c inMessage.
       explicit Exception(int inCode, const string& inMessage)
       : runtime_error(inMessage), mNativeCode(inCode) {mCode = convertNativeError(inCode);}
       //! Construct exception with portable error code \c inCode and message \c inMessage.
       explicit Exception(Error inCode, const string& inMessage)
       : runtime_error(inMessage), mCode(inCode) {mNativeCode = 0;}
-
+			
       static Error convertNativeError(int inError);
-
+			
       //! Return error code.
       int getErrorCode(void) const {return mCode;}
       
       string getMessage(void) const throw();
       
-   protected:
-      Error mCode; //!< Portable error code
+			protected:
+			Error mCode; //!< Portable error code
       int mNativeCode; //!< Native error code
-
-   };
-
-} // end of Socket namespace
-
+			
+		};
+		
+	} // end of Socket namespace
+	
 } // end of PACC namespace
 
 #endif  // PACC_Socket_Exception_hpp_

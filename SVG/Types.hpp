@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file PACC/SVG/Types.hpp
+/*!
+* \file PACC/SVG/Types.hpp
  * \brief Class definition for the basic SVG types.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.4 $
+ * $Date: 2005/09/17 03:50:09 $
  */
 
 #ifndef PACC_SVG_Types_hpp_
@@ -44,40 +45,40 @@ namespace PACC {
 	namespace SVG {
 		
 		using namespace std;
-
+		
 		//! \brief Basic %SVG color string.
 		//! \ingroup SVG
 		class Color : public string {
-       public:
-        /*!
-         * \brief  Constructor with color string.
-         * \param  inColorString  A string representing an" SVG color.
-         * 
-         * Here are the valid" SVG colors formats:
-         *
-         * <table>
-         * <tr><th> Format          </th><th> Description             </th></tr>
-         * <tr><td> #rgb            </td><td> Three-digit RGB notation</td></tr>
-         * <tr><td> #rrggbb         </td><td> Six-digit RGB notation  </td></tr>
-         * <tr><td> rgb(R, G, B)    </td>
-         *           <td> Functional notation (integer from 0 to 255) </td></tr>
-         * <tr><td> rgb(R%, G%, B%) </td>
-         *                         <td> Functional notation (percent) </td></tr>
-         * <tr><td> &lt;colorname>  </td><td> Keyword                 </td></tr>
-         * </table>
-         *
-         * If you want to use a color name keyword, you should use constants 
-         * defined in this class instead. If you need to use direct numerical 
-         * values, you should use the RGBColor or Gray subclass to construct
-         * the appropriate string.
-         *
-         * \note   No string format validation is performed to ensure that it
-         *         conform to SVG specifications. Make sure of what you write.
-         */
-			explicit Color(const string &inColorString) : string(inColorString) {}
-        
+			public:
 			/*!
-          * \name  Color Constants Keywords
+			* \brief  Constructor with color string.
+			 * \param  inColorString  A string representing an" SVG color.
+			 * 
+			 * Here are the valid" SVG colors formats:
+			 *
+			 * <table>
+			 * <tr><th> Format          </th><th> Description             </th></tr>
+			 * <tr><td> #rgb            </td><td> Three-digit RGB notation</td></tr>
+			 * <tr><td> #rrggbb         </td><td> Six-digit RGB notation  </td></tr>
+			 * <tr><td> rgb(R, G, B)    </td>
+			 *           <td> Functional notation (integer from 0 to 255) </td></tr>
+			 * <tr><td> rgb(R%, G%, B%) </td>
+			 *                         <td> Functional notation (percent) </td></tr>
+			 * <tr><td> &lt;colorname>  </td><td> Keyword                 </td></tr>
+			 * </table>
+			 *
+			 * If you want to use a color name keyword, you should use constants 
+			 * defined in this class instead. If you need to use direct numerical 
+			 * values, you should use the RGBColor or Gray subclass to construct
+			 * the appropriate string.
+			 *
+			 * \note   No string format validation is performed to ensure that it
+			 *         conform to SVG specifications. Make sure of what you write.
+			 */
+			explicit Color(const string &inColorString) : string(inColorString) {}
+			
+			/*!
+			* \name  Color Constants Keywords
 			 * 
 			 * Borowed from 
 			 * <a href="http://www.w3.org/TR/SVG/types.html#ColorKeywords">SVG color
@@ -232,32 +233,32 @@ namespace PACC {
 			static const Color cWhiteSmoke;     //!< "whitesmoke" SVG color
 			static const Color cYellow;         //!< "yellow" SVG color
 			static const Color cYellowGreen;    //!< "yellowgreen" SVG color
-															//@}
+																					//@}
 		};
-
+		
 		//! \brief Red, green, and blue color.
 		//! \ingroup SVG
 		class RGBColor : public Color {
-       public:
+			public:
 			//! Construct with components \c inRed, \c inGreen, and \c inBlue.
 			RGBColor(float inRed, float inGreen, float inBlue);
 			
 		};
-
+		
 		//! \brief %Color as a shade of gray.
 		//! \ingroup SVG
 		class Gray : public RGBColor {
-       public:
+			public:
 			//! Construct gray color of intensity \c inLevel.
 			Gray(float inLevel) : RGBColor(inLevel, inLevel, inLevel) {}
 		};
-    
+		
 		class PointList;
 		
 		//! \brief Position of graphic component.
 		//! \ingroup SVG
 		class Point {
-       public:
+			public:
 			//! Default constructor.
 			Point(void) : x(0), y(0) {}
 			//! Construct with (\c inX,\c inY)..
@@ -280,26 +281,26 @@ namespace PACC {
 			PointList operator+(const Point &inPoint) const;
 			//! Concatenate with point list \c inList and return new point list.
 			PointList operator+(const PointList &inList) const;
-
+			
 			double x; //!< Horizontal coordinate.
 			double y; //!< Vertical coordinate.
 			
 		};
 		
 		/*!\brief List of points.
-		 * \ingroup SVG
-		 * 
-		 * This class is a standard vector of point (std::vector<Point>) with some
-		 * utility functions and + and += operators to facilitate the concatenation
-		 * of point lists.
-		 */
+			* \ingroup SVG
+			* 
+			* This class is a standard vector of point (std::vector<Point>) with some
+			* utility functions and + and += operators to facilitate the concatenation
+			* of point lists.
+			*/
 		class PointList : public vector<Point> {
-       public:
+			public:
 			//! Make an empty point list.
 			PointList() {}
 			//! Make a point list out of a single point \c inPoint.
 			PointList(const Point inPoint) : std::vector<Point>(1, inPoint) {}
-
+			
 			//! Return the result of cancatenating this list with point list \c inList.
 			PointList operator+(const PointList &inList) const {return PointList(*this) += inList;}
 			//! Append point list \c inList to this list.
@@ -322,7 +323,7 @@ namespace PACC {
 		//! \brief %Size of graphic component.
 		//! \ingroup SVG
 		class Size {
-       public:
+			public:
 			//! Default constructor.
 			Size() : width(0), height(0) {}
 			//! Construct with width \c inWidth and height \c inHeight.
@@ -334,7 +335,7 @@ namespace PACC {
 			void scaleBy(float inFactor) {width *= inFactor; height *= inFactor;}
 			
 			string getStringValue(void) const;
-						
+			
 			double width; //!< Width of graphic component.
 			double height; //!< Height of graphic component.
 		};

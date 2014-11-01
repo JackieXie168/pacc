@@ -73,7 +73,7 @@
 //! its own MTRand object).
 class MTRand {
 	// Data
-public:
+	public:
 	typedef unsigned long uint32;  //!< unsigned integer type, at least 32 bits
 	
 	//! length of state vector
@@ -81,7 +81,7 @@ public:
 	//! length of array for save()
 	enum { SAVE = N + 1 };  
 	
-protected:
+	protected:
 	//! period parameter
 	enum { M = 397 };  
 	
@@ -91,17 +91,17 @@ protected:
 	
 	
 	//Methods
-public:
+	public:
 	//! initialize with a simple uint32
 	MTRand(const uint32& oneSeed); 
 	//! initialize with an array of uint32
 	MTRand(const uint32 *const bigSeed, uint32 const seedLength = N );
 	/*! \brief auto-initialize with /dev/urandom or time() and clock()
-	
+		
 		Do NOT use for CRYPTOGRAPHY without securely hashing several returned
 		values together, otherwise the generator state can be learned after
 		reading 624 consecutive values.
-	*/
+		*/
 	MTRand(void);  
 	
 	// Access to 32-bit random numbers
@@ -130,13 +130,13 @@ public:
 	
 	//! Saving and loading generator state
 	void save( uint32* saveArray ) const;  // to array of size SAVE
-														//! Saving and loading generator state
+																				 //! Saving and loading generator state
 	void load( uint32 *const loadArray );  // from such array
 	
 	friend std::ostream& operator<<( std::ostream& os, const MTRand& mtrand );
 	friend std::istream& operator>>( std::istream& is, MTRand& mtrand );
 	
-protected:
+	protected:
 	void initialize( const uint32 oneSeed );
 	void reload();
 	uint32 hiBit( const uint32& u ) const { return u & 0x80000000UL; }

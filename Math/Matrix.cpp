@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file   PACC/Math/Matrix.cpp
+/*!
+ * \file   PACC/Math/Matrix.cpp
  * \brief  Method definitions for class Matrix.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.5 $
- * $Date: 2005/06/02 07:00:42 $
+ * $Revision: 1.11 $
+ * $Date: 2005/09/19 06:10:42 $
  */
 
 #include "Math/Matrix.hpp"
@@ -41,26 +42,31 @@
 using namespace std;
 using namespace PACC;
 
-//! Add this matrix with scalar \c inScalar and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*! 
+This method also returns a reference to the result.
+*/
 Matrix& Matrix::add(Matrix& outMatrix, double inScalar) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot add!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "add() invalid matrix!");
 	outMatrix.setRowsCols(mRows, mCols);	
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] + inScalar;
 	return outMatrix;
 }
 
-//! Add this matrix with matrix \c inMatrix and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*! 
+This method also returns a reference to the result.
+*/
 Matrix& Matrix::add(Matrix& outMatrix, const Matrix& inMatrix) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot add!");
-	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "matrix mismatch, cannot add!");	
+	PACC_AssertM(mRows > 0 && mCols > 0, "add() invalid matrix!");
+	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "add() matrix mismatch!");	
 	outMatrix.setRowsCols(mRows, mCols);	
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] + inMatrix[i];
 	return outMatrix;
 }
 
-//! Compute back substitution for the L-U decomposition.
+/*!
+*/
 void Matrix::computeBackSubLU(const vector<unsigned int>& inIndexes, Matrix& ioMatrix) const
 {
 	unsigned int lII = UINT_MAX;
@@ -80,11 +86,12 @@ void Matrix::computeBackSubLU(const vector<unsigned int>& inIndexes, Matrix& ioM
 	}
 }
 
-//! Return determinant of this matrix.
+/*!
+*/
 double Matrix::computeDeterminant(void) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot compute determinant!");
-	PACC_AssertM(mRows == mCols, "matrix not square, cannot compute determinant!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "computeDeterminant() invalid matrix!");
+	PACC_AssertM(mRows == mCols, "computeDeterminant() matrix not square!");
 	Matrix lDecompose;
 	vector<unsigned int> lIndexes(mRows);
 	int lD;
@@ -94,11 +101,12 @@ double Matrix::computeDeterminant(void) const
 	return lResult;
 }
 
-//! Compute eigenvalues and eigenvectors of a symetric matrix using the Triagonal QL method (matrix must be symetric).
+/*!
+*/
 void Matrix::computeEigens(Vector& outValues, Matrix& outVectors) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot compute eigen structure!");
-	PACC_AssertM(mRows == mCols, "matrix not square, cannot compute eigen structure!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "computeEigens() invalid matrix!");
+	PACC_AssertM(mRows == mCols, "computeEigens() matrix not square!");
 	outValues.resize(mRows);
 	outVectors.resize(mRows, mCols);
 	
@@ -130,7 +138,8 @@ void Matrix::computeEigens(Vector& outValues, Matrix& outVectors) const
 	}
 }
 
-//! Compute L-U decomposition.
+/*!
+*/
 void Matrix::decomposeLU(Matrix& outDecompose, vector<unsigned int>& outIndexes, int& outD) const
 {
 	outD = 1;
@@ -173,10 +182,12 @@ void Matrix::decomposeLU(Matrix& outDecompose, vector<unsigned int>& outIndexes,
 	}
 }
 
-//! Extract from this matrix a sub-matrix defined by row range \c [inRow1,inRow2] and column range \c [inCol1,inCol2], return result through matrix \c outMatrix. The method also returns a reference to the result. 
+/*!
+This method also returns a reference to the result.
+*/
 Matrix& Matrix::extract(Matrix& outMatrix, unsigned int inRow1, unsigned int inRow2, unsigned int inCol1, unsigned int inCol2) const
 {
-	PACC_AssertM(inRow1 <= inRow2 && inCol1 <= inCol2 & inRow2 < mRows && inCol2 < mCols, "invalid indexes, cannot extract sub-matrix!");
+	PACC_AssertM(inRow1 <= inRow2 && inCol1 <= inCol2 && inRow2 < mRows && inCol2 < mCols, "extract() invalid indexes!");
 	if(&outMatrix != this) {
 		// output matrix is not self assigning
 		outMatrix.setRowsCols(inRow2-inRow1+1, inCol2-inCol1+1);
@@ -198,19 +209,24 @@ Matrix& Matrix::extract(Matrix& outMatrix, unsigned int inRow1, unsigned int inR
 	return outMatrix;
 }
 
-//! Extract column \c inCol from this matrix and return it through matrix \c outMatrix. The method also returns a reference to the result. 
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::extractColumn(Matrix& outMatrix, unsigned int inCol) const
 {
 	return extract(outMatrix, 0, mRows-1, inCol, inCol);
 }
 
-//! Extract row \c inRow from this matrix and return it through matrix \c outMatrix. The method also returns a reference to the result. 
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::extractRow(Matrix& outMatrix, unsigned int inRow) const
 {
-	return extract(outMatrix, inRow, inRow, 0, mCols);
+	return extract(outMatrix, inRow, inRow, 0, mCols-1);
 }
 
-//! Return sqrt(a^2 + b^2) without under/overflow (used internally by method tql2).
+/*!
+ */
 double Matrix::hypot(double a, double b) const
 {
 	double r;
@@ -228,17 +244,20 @@ double Matrix::hypot(double a, double b) const
 	return r;
 }
 
-//! Return the inverse of this matrix.
+/*!
+*/
 Matrix Matrix::invert(void) const 
 {
 	Matrix lMatrix; 
 	return invert(lMatrix);
 }
 
-//! Invert this matrix and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::invert(Matrix& outMatrix) const
 {
-	PACC_AssertM(mRows == mCols, "matrix not square, cannot invert!");
+	PACC_AssertM(mRows == mCols, "invert() matrix not square!");
 	outMatrix = *this;
 	Matrix lDecompose;
 	vector<unsigned int> lIndexes(mRows);
@@ -254,21 +273,25 @@ Matrix& Matrix::invert(Matrix& outMatrix) const
 	return outMatrix;
 }
 
-//! Multiply this matrix with scalar \c inScalar and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::multiply(Matrix& outMatrix, double inScalar) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot multiply!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "multiply() invalid matrix!");
 	outMatrix.setRowsCols(mRows, mCols);
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] * inScalar;
 	return outMatrix;
 }
 
-//! Multiply this matrix with matrix \c inMatrix and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::multiply(Matrix& outMatrix, const Matrix& inMatrix) const
 {
-	PACC_AssertM(mCols == inMatrix.mRows, "matrix mismatch, cannot multiply!");
-	if(&outMatrix != this) {
-		// output matrix is not self assigning
+	PACC_AssertM(mCols == inMatrix.mRows, "multiply() matrix mismatch!");
+	if(&outMatrix != this && &outMatrix != &inMatrix) {
+		// output matrix is neither left or right matrix (no self assigment)
 		outMatrix.setRowsCols(mRows, inMatrix.mCols);
 		for(unsigned int i = 0; i < outMatrix.mRows; ++i) {
 			for(unsigned int j = 0; j < outMatrix.mCols; ++j) {
@@ -278,8 +301,8 @@ Matrix& Matrix::multiply(Matrix& outMatrix, const Matrix& inMatrix) const
 				}
 			}
 		}
-	} else {
-		// use temporary matrix to self assign
+	} else if(&outMatrix == this && &outMatrix != &inMatrix) {
+		// use temporary matrix to self assign with left matrix
 		Matrix lMatrix(*this);
 		outMatrix.setRowsCols(mRows, inMatrix.mCols);
 		for(unsigned int i = 0; i < outMatrix.mRows; ++i) {
@@ -290,25 +313,48 @@ Matrix& Matrix::multiply(Matrix& outMatrix, const Matrix& inMatrix) const
 				}
 			}
 		}
+	} else if(&outMatrix != this && &outMatrix == &inMatrix) {
+		// use temporary matrix to self assign with right matrix
+		Matrix lMatrix(inMatrix);
+		outMatrix.setRowsCols(mRows, inMatrix.mCols);
+		for(unsigned int i = 0; i < outMatrix.mRows; ++i) {
+			for(unsigned int j = 0; j < outMatrix.mCols; ++j) {
+				outMatrix(i,j) = 0;
+				for(unsigned int k = 0; k < mCols; ++k) {
+					outMatrix(i,j) += (*this)(i,k) * lMatrix(k,j);
+				}
+			}
+		}
+	} else {
+		// use temporary matrix to self assign with both left and right matrices
+		Matrix lMatrix(*this);
+		outMatrix.setRowsCols(mRows, inMatrix.mCols);
+		for(unsigned int i = 0; i < outMatrix.mRows; ++i) {
+			for(unsigned int j = 0; j < outMatrix.mCols; ++j) {
+				outMatrix(i,j) = 0;
+				for(unsigned int k = 0; k < mCols; ++k) {
+					outMatrix(i,j) += lMatrix(i,k) * lMatrix(k,j);
+				}
+			}
+		}
 	}
 	return outMatrix;
 }
 
-/*! \brief Read matrix from parse tree node \c inNode.
-
-Matrix elements must be enumerated in row order and delimited by either commas (','), semi-columns (';'), or white space. The recommended style is to seperate elements with comas, and rows with semi-columns. For example:
+/*!
+Matrix elements must be enumerated in row order and delimited by either commas 
+(','), semi-columns (';'), or white space. The recommended style is to seperate 
+elements with comas, and rows with semi-columns. For example:
 \verbatim
-<Matrix name="My Matrix" rows="3" cols="4">
-1,2,3,4;5,6,7,8;9,10,11,12
-</Matrix>
-The number of elements must match the product of the "rows" and "cols" attributes.
+<Matrix name="My Matrix" rows="3" cols="4">1,2,3,4;5,6,7,8;9,10,11,12</Matrix>
 \endverbatim
+The number of elements must match the product of the "rows" and "cols" attributes.
 */
 string Matrix::read(const XML::Iterator& inNode)
 {
-   if(!inNode) throw runtime_error("Matrix::read() nothing to read!");
-   clear();
-   for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
+	if(!inNode) throw runtime_error("Matrix::read() nothing to read!");
+	clear();
+	for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
 		if(lChild->getType() == XML::eString) {
 			istringstream lStream(lChild->getValue());
 			Tokenizer lTokenizer(lStream);
@@ -319,13 +365,16 @@ string Matrix::read(const XML::Iterator& inNode)
 	}
 	mRows = String::convertToInteger(inNode->getAttribute("rows"));
 	mCols = String::convertToInteger(inNode->getAttribute("cols"));
-	if(vector<double>::size() != mRows*mCols) throwError("Matrix::read() number of elements does not match the rows x cols attributes", inNode);
-   string lName = inNode->getAttribute("name");
+	if(vector<double>::size() != mRows*mCols) {
+		throwError("Matrix::read() number of elements does not match the rows x cols attributes", inNode);
+	}
+	string lName = inNode->getAttribute("name");
 	if(lName != "") mName = lName;
 	return lName;
 }
 
-//! Resize matrix to \c inRows rows and \c inCols columns, while filing blanks with null values.
+/*!
+*/
 void Matrix::resize(unsigned int inRows, unsigned int inCols)
 {
 	Matrix lMat(*this);
@@ -337,7 +386,8 @@ void Matrix::resize(unsigned int inRows, unsigned int inCols)
 	}
 }
 
-//! Return in vector \c outScales the scaling values for the L-U decomposition.
+/*!
+*/
 void Matrix::scaleLU(vector<double>& outScales) const
 {
 	outScales.resize(mCols);
@@ -351,8 +401,9 @@ void Matrix::scaleLU(vector<double>& outScales) const
 		outScales[i] = 1./lMax;
 	}
 }
-	
-//! Set this matrix to an identity matrix of size \c inSize.
+
+/*!
+*/
 void Matrix::setIdentity(unsigned int inSize)
 {
 	setRowsCols(inSize, inSize);
@@ -363,27 +414,30 @@ void Matrix::setIdentity(unsigned int inSize)
 	}
 }
 
-//! Substract this matrix with scalar \c inScalar and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::substract(Matrix& outMatrix, double inScalar) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot substract!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "substract() invalid matrix!");
 	outMatrix.setRowsCols(mRows, mCols);
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] - inScalar;
 	return outMatrix;
 }
 
-//! Substract this matrix with matrix \c inMatrix and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::substract(Matrix& outMatrix, const Matrix& inMatrix) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot substract!");
-	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "matrix mismatch!");
+	PACC_AssertM(mRows > 0 && mCols > 0, "substract() invalid matrix!");
+	PACC_AssertM(mRows == inMatrix.mRows && mCols == inMatrix.mCols, "substract() matrix mismatch!");
 	outMatrix.setRowsCols(mRows, mCols);
 	for(unsigned int i = 0; i < size(); ++i) outMatrix[i] = (*this)[i] - inMatrix[i];
 	return outMatrix;
 }
 
 /*!
-*  \brief Triagonalize matrix for computing eigensystem using QL method.
  *  \param d Real part of eigenvalues computed from the matrix.
  *  \param e Imaginary part of eigenvalues computed from the matrix.
  *  \param V Eigenvectors computed from the matrix.
@@ -402,13 +456,13 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 	
 	double f = 0.0;
 	double tst1 = 0.0;
-	double eps = pow(2.0,-52.0);
-	for(unsigned int l = 0; l < n; l++) {		
+	double eps = std::pow(2.0,-52.0);
+	for(unsigned int l = 0; l < n; l++) {
 		// Find small subdiagonal element
-		tst1 = fmax(tst1, abs(d[l]) + abs(e[l]));
+		tst1 = std::max(tst1, std::abs(d[l]) + std::abs(e[l]));
 		unsigned int m=l;
-		while(m<n) {
-			if(abs(e[m]) <= eps*tst1) break;
+		while((m+1) < n) {
+			if(std::abs(e[m]) <= eps*tst1) break;
 			m++;
 		}
 		
@@ -417,8 +471,8 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 		if(m > l) {
 			unsigned int iter = 0;
 			do {
-				iter = iter + 1;  // (Could check iteration count here.)				
-				// Compute implicit shift
+				iter = iter + 1;  // (Could check iteration count here.)
+													// Compute implicit shift
 				double g = d[l];
 				double p = (d[l+1] - g) / (2.0 * e[l]);
 				double r = hypot(p,1.0);
@@ -456,7 +510,7 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 						h = V(k,i+1);
 						V(k,i+1) = s * V(k,i) + c * h;
 						V(k,i) = c * V(k,i) - s * h;
-					}					
+					}
 					if(i == 0) break;
 				}
 				p = -s * s2 * c3 * el1 * e[l] / dl1;
@@ -464,7 +518,7 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 				d[l] = c * p;
 				
 				// Check for convergence.
-			} while (abs(e[l]) > eps*tst1);
+			} while (std::abs(e[l]) > eps*tst1);
 		}
 		d[l] = d[l] + f;
 		e[l] = 0.0;
@@ -472,7 +526,6 @@ void Matrix::tql2(Vector& d, Vector& e, Matrix& V) const
 }
 
 /*!
-*  \brief Diagonalize matrix for computing eigensystem using QL method.
  *  \param d Real part of eigenvalues computed from the matrix.
  *  \param e Imaginary part of eigenvalues computed from the matrix.
  *  \param V Eigenvectors computed from the matrix.
@@ -569,41 +622,60 @@ void Matrix::tred2(Vector& d, Vector& e, Matrix& V) const
 	e[0] = 0.0;
 }
 
-//! Return the transpose of this matrix.
+/*!
+*/
 Matrix Matrix::transpose(void) const 
 {
 	Matrix lMatrix; 
 	return transpose(lMatrix);
 }
 
-//! Transpose this matrix and return result through matrix \c outMatrix. The method also returns a reference to the result.
+/*!
+This method also returns a reference to the result.
+ */
 Matrix& Matrix::transpose(Matrix& outMatrix) const
 {
-	PACC_AssertM(mRows > 0 && mCols > 0, "invalid matrix, cannot transpose!");
-	outMatrix.setRowsCols(mCols,mRows);
-	// transpose elements
-	for(unsigned int i = 0; i< mRows; ++i) {
-		for(unsigned int j = 0; j < mCols; ++j) {
-			outMatrix(j,i) = (*this)(i,j);
+	PACC_AssertM(mRows > 0 && mCols > 0, "transpose() invalid matrix!");
+	if(&outMatrix != this) {
+		// output matrix is not self assigning
+		outMatrix.setRowsCols(mCols,mRows);
+		// transpose elements
+		for(unsigned int i = 0; i< mRows; ++i) {
+			for(unsigned int j = 0; j < mCols; ++j) {
+				outMatrix(j,i) = (*this)(i,j);
+			}
 		}
-	}
+	} else {
+		// use temporary matrix to self assign
+		Matrix lMatrix(*this);
+		outMatrix.setRowsCols(mCols,mRows);
+		// transpose elements
+		for(unsigned int i = 0; i< mRows; ++i) {
+			for(unsigned int j = 0; j < mCols; ++j) {
+				outMatrix(j,i) = lMatrix(i,j);
+			}
+		}
+	}		
 	return outMatrix;
 }
 
-//! Throw runtime error with message \c inMessage using parse tree node \c inNode.
+/*!
+*/
 void Matrix::throwError(const string& inMessage, const XML::Iterator& inNode) const
 {
-   ostringstream lStream;
-   lStream << inMessage << " for markup:\n";
+	ostringstream lStream;
+	lStream << inMessage << " for markup:\n";
 	XML::Streamer lStreamer(lStream);
 	inNode->serialize(lStreamer);
-   throw runtime_error(lStream.str());
+	throw runtime_error(lStream.str());
 }
 
-//! Write this matrix into streamer \c outStream using tag name \c inTag (see Matrix::read for format).
+/*!
+See Matrix::read for the write format.
+*/
 void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 {
-	outStream.openTag(inTag);
+	outStream.openTag(inTag, false);
 	if(mName != "") outStream.insertAttribute("name", mName);
 	outStream.insertAttribute("rows", mRows);
 	outStream.insertAttribute("cols", mCols);
@@ -617,22 +689,23 @@ void Matrix::write(XML::Streamer& outStream, const string& inTag) const
 	outStream.closeTag();
 }
 
-//! Insert matrix \c inMatrix into output stream \c outStream.
+/*!
+*/
 ostream& PACC::operator<<(ostream &outStream, const Matrix& inMatrix)
 {
-   XML::Streamer lStream(outStream);
-   inMatrix.write(lStream);
-   return outStream;
+	XML::Streamer lStream(outStream);
+	inMatrix.write(lStream);
+	return outStream;
 }
 
-/*! \brief Extract matrix \c outMatrix from %XML document \c inDocument.
-
-This method uses the first data tag of the parse tree to read the matrix. The corresponding tree root is then erased. Any read error throws a std::runtime_error.
+/*!
+This method uses the first data tag of the parse tree to read the matrix. The 
+corresponding tree root is then erased. Any read error throws a std::runtime_error.
 */
 XML::Document& PACC::operator>>(XML::Document& inDocument, Matrix& outMatrix)
 {
-   XML::Iterator lNode = inDocument.getFirstDataTag();
+	XML::Iterator lNode = inDocument.getFirstDataTag();
 	outMatrix.read(lNode);
 	inDocument.erase(lNode);
-   return inDocument;
+	return inDocument;
 }

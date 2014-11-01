@@ -29,8 +29,8 @@
  * \file PACC/XML/Finder.cpp
  * \brief Class methods for the %XML tag finder.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.16 $
- * $Date: 2005/06/04 04:43:52 $
+ * $Revision: 1.18 $
+ * $Date: 2005/09/15 14:13:34 $
  */
 
 #include "XML/Finder.hpp"
@@ -75,8 +75,8 @@ XML::Iterator XML::Finder::find(const string& inPath)
 				continue;
 			} else throw runtime_error(string("Finder::find() invalid search path: ")+inPath);
 		}
-		char lNextChar;
-		if(!lTokenizer.peekNextChar(lNextChar)) break;
+		char lNextChar = lTokenizer.peekNextChar();
+		if(lNextChar == -1) break;
 		// process '//' special case
 		if(lNextChar == '/') {
 			// but ignore '///'
@@ -105,8 +105,8 @@ Finder lFinder(lDocument.getFirstDataTag());
 // find all instances of tag
 for(Iterator lTag = lDocument.find("//Mytag"); lTag; lTag = lDocument.findNext())
 {
-   // process each instance
-   ...
+	// process each instance
+	...
 }
 \endcode
 */
@@ -126,7 +126,7 @@ XML::Iterator XML::Finder::findNext(void)
 void XML::Finder::search(XML::Iterator inPos, unsigned int inStep) {
 	// stop recursion?
 	if(!inPos || inStep >= mSteps.size()) return;
-   // process current step
+	// process current step
 	if(mSteps[inStep] == "..") {
 		// move up to parent
 		if(inPos != mNode) {
@@ -201,8 +201,8 @@ XML::ConstIterator XML::ConstFinder::find(const string& inPath)
 				continue;
 			} else throw runtime_error(string("ConstFinder::find() invalid search path: ")+inPath);
 		}
-		char lNextChar;
-		if(!lTokenizer.peekNextChar(lNextChar)) break;
+		char lNextChar = lTokenizer.peekNextChar();
+		if(lNextChar == -1) break;
 		// process '//' special case
 		if(lNextChar == '/') {
 			// but ignore '///'
@@ -231,8 +231,8 @@ ConstFinder lFinder(lDocument.getFirstDataTag());
 // find all instances of tag
 for(ConstIterator lTag = lDocument.find("//Mytag"); lTag; lTag = lDocument.findNext())
 {
-   // process each instance
-   ...
+	// process each instance
+	...
 }
 \endcode
 */
@@ -252,7 +252,7 @@ XML::ConstIterator XML::ConstFinder::findNext(void)
 void XML::ConstFinder::search(XML::ConstIterator inPos, unsigned int inStep) {
 	// stop recursion?
 	if(!inPos || inStep >= mSteps.size()) return;
-   // process current step
+	// process current step
 	if(mSteps[inStep] == "..") {
 		// move up to parent
 		if(inPos != mNode) {

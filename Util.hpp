@@ -29,8 +29,8 @@
  * \file PACC/Util.hpp
  * \brief Include all headers for the utility classes.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.10 $
- * $Date: 2005/06/02 06:56:49 $
+ * $Revision: 1.11 $
+ * $Date: 2005/09/05 16:21:19 $
  */
 
 /*!
@@ -39,7 +39,7 @@
 
 #include "Util/Assert.hpp"
 #include "Util/Date.hpp"
-#include "Util/NumberGenerator.hpp"
+#include "Util/Randomizer.hpp"
 #include "Util/RandomPermutation.hpp"
 #include "Util/SignalHandler.hpp"
 #include "Util/Timer.hpp"

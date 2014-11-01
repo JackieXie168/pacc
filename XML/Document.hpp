@@ -29,8 +29,8 @@
  * \file PACC/XML/Document.hpp
  * \brief Class definition for the %XML document.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.33 $
- * $Date: 2005/05/30 16:40:58 $
+ * $Revision: 1.37 $
+ * $Date: 2005/09/18 03:28:08 $
  */
 
 #ifndef PACC_XML_Document_hpp_
@@ -87,7 +87,7 @@ for(Iterator lChild = lRoot->getFirstChild(); lChild; ++lChild) {
 		A document can also be constructed from scratch, or modified, using methods Document::addChild, Document::addRoot, Document::addSibling, Document::attachChild, Document::attachSibling, Document::detach, Document::erase, and Document::eraseRoots. It can be serialized into a stream using method Document::serialize, and parsed from a stream using Document::parse. To search for specific markup data, one may use an instance of the Finder class.
 		*/
 		class Document : private Node {
-       public:   
+			public:   
 			//! Constructs an empty document.
 			Document(void) {}
 			//! Constructs a document from an input stream.
@@ -126,21 +126,21 @@ for(Iterator lChild = lRoot->getFirstChild(); lChild; ++lChild) {
 			//! Parse a document from input stream \c inStream, using string \c inName as stream name for error messages.
 			void parse(istream& inStream, const string& inName="");
 			//! Serialize document into an output stream \c outStream, using indentation of \c inWidth characters.
-			void serialize(ostream& outStream, unsigned int inWidth=2, bool inIndentAttributes=false) const;
+			void serialize(ostream& outStream, int inWidth=2, bool inIndentAttributes=false) const;
 			//! Add \c inTag to the list of tag names for which content should not be parsed for this document. 
 			void setNoParse(const string& inTag);
 			//! Remove \c inTag from the list of tags for which content should not be parsed for this document. 
 			void unsetNoParse(const string& inTag);
 			
-       protected:
+			protected:
 			set<string> mNoParseTags; //!< Tag names for which content should not be parsed
 			
 		};
 		
 	} // end of XML namespace
 	
-	//! Insert Document \c inDocument into output stream \c outStream.
-   ostream& operator<<(ostream &outStream, const XML::Document& inDocument);
+	//! Insert document \c inDocument into output stream \c outStream.
+	ostream& operator<<(ostream &outStream, const XML::Document& inDocument);
 	//! Extract document \c outDocument from input stream \c inStream.
 	istream& operator>>(istream &inStream, XML::Document& outDocument);
 

@@ -25,68 +25,22 @@
  *
  */
 
-/*!\file   PACC/Math/Vector.cpp
+/*!
+ * \file   PACC/Math/Vector.cpp
  * \brief  Method definitions for class Vector.
  * \author Marc Parizeau and Christian Gagn&eacute;, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.6 $
- * $Date: 2005/06/02 07:00:42 $
+ * $Revision: 1.10 $
+ * $Date: 2005/09/19 06:10:42 $
  */
 
 #include "Math/Vector.hpp"
 #include "Util/StringFunc.hpp"
 #include <stdexcept>
-#include <cmath>
 
 using namespace std;
 using namespace PACC;
 
-//! Compute scalar product of this vector with vector \c inVector.
-double Vector::operator*(const Vector& inVector) const
-{
-	PACC_AssertM(mRows == inVector.mRows, "vector mismatch for multiply!");
-	double lResult = 0;
-	for(unsigned int i = 0; i < mRows; ++i) lResult += (*this)[i] * inVector[i];
-	return lResult;
-}
-
-//! Compute L1 norm for this vector.
-double Vector::computeL1Norm(void) const
-{
-	PACC_AssertM(mRows > 0, "cannot compute L1 norm!");
-	double lResult = 0;
-	for(unsigned int i = 0; i < mRows; ++i) lResult += fabs((*this)[i]);
-	return lResult;
-}
-
-//! Compute L2 norm for this vector.
-double Vector::computeL2Norm(void) const
-{
-	PACC_AssertM(mRows > 0, "cannot compute L2 norm!");
-	double lResult = 0;
-	for(unsigned int i = 0; i < mRows; ++i) lResult += (*this)[i]*(*this)[i];
-	return sqrt(lResult);
-}
-
-//! Compute square of L2 norm for this vector.
-double Vector::computeL2Norm2(void) const
-{
-	PACC_AssertM(mRows > 0, "cannot compute L2 norm!");
-	double lResult = 0;
-	for(unsigned int i = 0; i < mRows; ++i) lResult += (*this)[i]*(*this)[i];
-	return lResult;
-}
-
-//! Compute Linf norm for this vector.
-double Vector::computeLinfNorm(void) const
-{
-	PACC_AssertM(mRows > 0, "cannot compute Linf norm!");
-	double lResult = 0;
-	for(unsigned int i = 0; i < mRows; ++i) if(lResult < fabs((*this)[i])) lResult = (*this)[i];
-	return lResult;
-}
-
-/*! \brief Read from parse tree node \c inNode.
-
+/*!
 Vector elements must be enumerated in row order, and seperated by semi-columns (';'), comas (','), or white space (the semi-column is the recommended delimiter). For example:
 \verbatim
 <Vector name="My Vector" size="4">1;2;3;4</Vector>
@@ -105,8 +59,8 @@ Any read error raises an std::runtime_error exception.
 */
 string Vector::read(const XML::Iterator& inNode)
 {
-   if(!inNode) throw runtime_error("Vector::read() nothing to read!");
-   clear();
+	if(!inNode) throw runtime_error("Vector::read() nothing to read!");
+	clear();
 	for(XML::Iterator lChild = inNode->getFirstChild(); lChild; ++lChild) {
 		if(lChild->getType() == XML::eString) {
 			// this is the recommended markup style
@@ -129,15 +83,18 @@ string Vector::read(const XML::Iterator& inNode)
 		unsigned int lSize = String::convertToInteger(inNode->getAttribute("size"));
 		if(mRows != lSize) throwError("Vector::read() number of elements does not match the size attribute", inNode);
 	}
-   string lName = inNode->getAttribute("name");
+	string lName = inNode->getAttribute("name");
 	if(lName != "") mName = lName;
 	return lName;
 }
 
-//! Write this vector into streamer \c outStream using tag name \c inTag (see Vector::read for format).
+/*!
+See Vector::read for the write format.
+*/
 void Vector::write(XML::Streamer& outStream, const string& inTag) const
 {
-	outStream.openTag(inTag);
+	PACC_AssertM(mCols == 1, "write() invalid vector!");
+	outStream.openTag(inTag, false);
 	if(mName != "") outStream.insertAttribute("name", mName);
 	outStream.insertAttribute("size", mRows);
 	if(size() > 0) {
@@ -151,22 +108,22 @@ void Vector::write(XML::Streamer& outStream, const string& inTag) const
 	outStream.closeTag();
 }
 
-//! Insert vector \c inVector into output stream \c outStream.
+/*!
+*/
 ostream& PACC::operator<<(ostream &outStream, const Vector& inVector)
 {
-   XML::Streamer lStream(outStream);
-   inVector.write(lStream);
-   return outStream;
+	XML::Streamer lStream(outStream);
+	inVector.write(lStream);
+	return outStream;
 }
 
-/*! \brief Extract vector \c outVector from %XML document \c inDocument.
-
+/*! 
 This method uses the first data tag of the parse tree to read the vector. The corresponding tree root is then erased. Any read error throws a std::runtime_error.
 */
 XML::Document& PACC::operator>>(XML::Document& inDocument, Vector& outVector)
 {
-   XML::Iterator lNode = inDocument.getFirstDataTag();
+	XML::Iterator lNode = inDocument.getFirstDataTag();
 	outVector.read(lNode);
 	inDocument.erase(lNode);
-   return inDocument;
+	return inDocument;
 }

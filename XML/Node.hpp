@@ -29,8 +29,8 @@
  * \file PACC/XML/Node.hpp
  * \brief Class definition for the %XML parse tree node.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.29 $
- * $Date: 2005/05/30 16:42:04 $
+ * $Revision: 1.34 $
+ * $Date: 2005/09/18 03:29:19 $
  */
 
 #ifndef PACC_XML_Node_hpp_
@@ -80,8 +80,7 @@ namespace PACC {
 			Nodes are also derived from a map of attribute name/value pairs that can be fetched and set using methods Node::getAttribute and Node::setAttribute. Finally, a node can serialize itself into an %XML Streamer.
 			*/
 		class Node : public AttributeList {
-			
-       public:
+			public:
 			//! Construct empty root node.
 			Node(void);
 			//! Construct node of type \c inType (default NodeType::eTag) with value \c inValue.
@@ -100,9 +99,9 @@ namespace PACC {
 			Node* getFirstChild(void) {return mFirstChild;}
 			//! Return a const iterator pointing to the first child of this node.
 			const Node* getFirstChild(void) const {return mFirstChild;}
-			//! Return an iterator pointing to the first child of this node.
+			//! Return an iterator pointing to the last child of this node.
 			Node* getLastChild(void) {return mLastChild;}
-			//! Return a const iterator pointing to the first child of this node.
+			//! Return a const iterator pointing to the last child of this node.
 			const Node* getLastChild(void) const {return mLastChild;}
 			//! Return an iterator pointing to the next sibling of this node.
 			Node* getNextSibling(void) {return mNextSibling;}
@@ -125,7 +124,7 @@ namespace PACC {
 			void setType(NodeType inType) {mType = inType;}         
 			//! set node value (tag name for nodes of type NodeType::eTag).
 			void setValue(const string& inValue) {setAttribute("", inValue);}         
-
+			
 			//! Detach this node from its siblings and parent.
 			Node* detachFromSiblingsAndParent(void);
 			//! Delete all children.
@@ -139,9 +138,9 @@ namespace PACC {
 			//! Parse next tag using stream tokenizer \c inTokenizer.
 			static Node* parse(Tokenizer& inTokenizer, const set<string>& inNoParseTags);
 			//! Serialize this node into %XML streamer \c outStream.
-			void serialize(Streamer& outStream) const;
+			void serialize(Streamer& outStream, bool inIndent=true) const;
 			
-       protected:
+			protected:
 			NodeType mType; //!< Type of node.
 			Node* mParent; //!< Pointer to parent node.
 			Node* mFirstChild; //!< Pointer to first child node.
@@ -167,6 +166,11 @@ namespace PACC {
 		};
 		
 	} // end of XML namespace 
+	
+	//! Insert node \c inNode into output stream \c outStream.
+	ostream& operator<<(ostream &outStream, const XML::Node& inNode);
+	//! Extract node \c outNode from input stream \c inStream.
+	istream& operator>>(istream &inStream, XML::Node& outNode);
 	
 } // end of PACC namespace
 

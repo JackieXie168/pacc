@@ -26,11 +26,11 @@
  */
 
 /*!
-* \file PACC/Threading/Semaphore.hpp
+ * \file PACC/Threading/Semaphore.hpp
  * \brief Class definition for the portable counting semaphore.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.14 $
- * $Date: 2004/06/02 04:55:55 $
+ * $Revision: 1.16 $
+ * $Date: 2005/09/17 03:50:14 $
  */
 
 #ifndef PACC_Threading_Semaphore_hpp_
@@ -40,38 +40,37 @@
 #include "Threading/Condition.hpp"
 
 namespace PACC { 
-   
-   namespace Threading {
-
-   /*! \brief %Semaphore for thread synchronization.
-   \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-   \ingroup Threading
-
-   This class incapsulates a counting semaphore with classic Semaphore::post, Semaphore::tryWait, and Semaphore::wait methods. The semaphore is initialized with a count of \c inMaxCount ressources. A post increments the count while a wait decrements it. A count of 0 means that no more ressources are available. Subsequent calls to wait will block until future post releases some of the allocated ressources. When several threads have blocked because of exhausted ressources, the order in which they will be released is undetermined (FIFO should not be assumed).
-   
-   This class does not contain any OS dependant code. However, it is built over classes Condition and Mutex which may not be fully cross-platform (see documentation of these classes for more details). 
-   */
-   class Semaphore : public Condition
-   {
-   public:
-      //! Construct semaphore with initial count \c inCount.
-      Semaphore(unsigned int inCount=0) : mCount(inCount), mWaiters(0) {}
-
-      //! Return count of semaphore (semaphore should be locked prior to call).
-      int getCount(void) const {return mCount;}
-      void post(bool inLock=true);
-      //! Set count of semaphore (semaphore should be locked prior to call).
-      void setCount(unsigned int inCount) {mCount = inCount;}
-      bool tryWait(bool inLock=true);
-      bool wait(double inMaxTime=0, bool inLock=true);
-   
-   protected:
-      unsigned int mCount; //!< Current count of semaphore
-      unsigned int mWaiters; //!< Current number of waiting threads
-   };
-
-} // end of Threading namespace
-
+	
+	namespace Threading {
+		
+		/*! \brief %Semaphore for thread synchronization.
+		\author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+		\ingroup Threading
+		
+		This class incapsulates a counting semaphore with classic Semaphore::post, Semaphore::tryWait, and Semaphore::wait methods. The semaphore is initialized with a count of \c inMaxCount ressources. A post increments the count while a wait decrements it. A count of 0 means that no more ressources are available. Subsequent calls to wait will block until future post releases some of the allocated ressources. When several threads have blocked because of exhausted ressources, the order in which they will be released is undetermined (FIFO should not be assumed).
+		
+		This class does not contain any OS dependant code. However, it is built over classes Condition and Mutex which may not be fully cross-platform (see documentation of these classes for more details). 
+		*/
+		class Semaphore : public Condition {
+			public:
+			//! Construct semaphore with initial count \c inCount.
+			Semaphore(unsigned int inCount=0) : mCount(inCount), mWaiters(0) {}
+			
+			//! Return count of semaphore (semaphore should be locked prior to call).
+			int getCount(void) const {return mCount;}
+			void post(bool inLock=true);
+			//! Set count of semaphore (semaphore should be locked prior to call).
+			void setCount(unsigned int inCount) {mCount = inCount;}
+			bool tryWait(bool inLock=true);
+			bool wait(double inMaxTime=0, bool inLock=true);
+			
+			protected:
+			unsigned int mCount; //!< Current count of semaphore
+			unsigned int mWaiters; //!< Current number of waiting threads
+		};
+		
+	} // end of Threading namespace
+	
 } // end of PACC namespace
 
 #endif // PACC_Threading_Semaphore_hpp_

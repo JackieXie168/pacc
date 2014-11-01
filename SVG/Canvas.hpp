@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file PACC/SVG/Canvas.hpp
+/*!
+ * \file PACC/SVG/Canvas.hpp
  * \brief Class definition for the SVG drawing canvas.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.2 $
- * $Date: 2005/06/09 18:36:30 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.9 $
+ * $Date: 2005/09/17 03:50:09 $
  */
 
 #ifndef PACC_SVG_Canvas_hpp_
@@ -42,20 +43,20 @@
 namespace PACC {
 	
 	namespace SVG {
-   
+		
 		using namespace std;
-				
+		
 		/*!\brief Specialized frame to display on screen graphics.
-		 * \ingroup SVG
-		 *
-		 * A canvas opens a TCP/IP connection with a running viewer 
-		 * application on the network. By default it connects to the localhost at port 61250.
-		 *
-		 * The viewer opens a window showing the canvas. Changes made to the
-		 * canvas are updated in real-time on the viewer side.
-		 */
+		* \ingroup SVG
+		*
+		* A canvas opens a TCP/IP connection with a running viewer 
+		* application on the network. By default it connects to the localhost at port 61250.
+		*
+		* The viewer opens a window showing the canvas. Changes made to the
+		* canvas are updated in real-time on the viewer side.
+		*/
 		class Canvas : public Frame {
-		 public:
+			public:
 			//! Pop canvas on viewer at address \c inAddress:inPort with title \c inTitle and size \c inSize.
 			Canvas(const string &inTitle, const Size &inSize, const string &inAddress="localhost", unsigned int inPort=61250) : Frame(Point(0, 0), inSize), mAddress(inAddress), mPort(inPort), mSocket(0) {
 				initCanvas(inTitle);
@@ -73,20 +74,21 @@ namespace PACC {
 			
 			//! Assign frame \c inFrame to this canvas.
 			Canvas &operator=(const Frame& inFrame);
-			//! Insert graphic element \c inGraphic into this frame.
+			//! Insert graphic primitive \c inGraphic into this canvas.
 			Canvas &operator<<(const Primitive& inGraphic);
+			
+			//! Remove all primitives in this Canvas.
+			void clear(void);
 			
 			//! Return title of this canvas.
 			string getTitle() const;
 			//! Set title of this canvas.
 			void setTitle(const string& inTitle);
 			
-			//! Wait for user clic up to \c inMaxDelay.
+			//! Wait up to \c inMaxDelay seconds for the user to click a mouse button.
 			Point waitForClick(int &outButtonClicked, double inMaxDelay=0) const;
-			//! Write serialized canvas into stream \c outStream.
-			void write(ostream& outStream) const;
 			
-       private:
+			private:
 			string mAddress; //<! The IP address of the viewer.
 			unsigned int mPort; //!< The port number of the viewer.
 			Socket::Cafe *mSocket; //<! The network socket of this canvas.
@@ -106,4 +108,4 @@ namespace PACC {
 	
 } // end of namespace PACC
 
-#endif PACC_SVG_Canvas_hpp_
+#endif // PACC_SVG_Canvas_hpp_

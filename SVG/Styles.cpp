@@ -25,11 +25,12 @@
  *
  */
 
-/*!\file PACC/SVG/Styles.cpp
+/*!
+ * \file PACC/SVG/Styles.cpp
  * \brief Class methods for %SVG styles.
- * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
- * $Revision: 1.1 $
- * $Date: 2005/06/08 18:46:50 $
+ * \author Marc Parizeau and Michel Fortin, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
+ * $Revision: 1.4 $
+ * $Date: 2005/09/15 14:12:58 $
  */
 
 #include "SVG/Styles.hpp"
@@ -66,7 +67,7 @@ const SVG::TextDecoration SVG::TextDecoration::cLineThrough("line-through");
 
 SVG::StrokeDashArray::StrokeDashArray(const vector<float>& inDashArray) : XML::Attribute("stroke-dasharray", string()) 
 {
-   string lNumbers;
-   for ( unsigned i = 0; i < inDashArray.size(); i++ ) lNumbers += String::convert(inDashArray[i]) + " ";
-   getValue() = lNumbers;
+	string lNumbers;
+	for ( unsigned i = 0; i < inDashArray.size(); i++ ) lNumbers += String::convert(inDashArray[i]) + " ";
+	getValue() = lNumbers;
 }

@@ -1,7 +1,6 @@
 h_sources = Assert.hpp \
             Date.hpp \
             MTRand.hpp \
-            NumberGenerator.hpp \
             Randomizer.hpp \
             RandomPermutation.hpp \
             SignalHandler.hpp \
@@ -10,7 +9,6 @@ h_sources = Assert.hpp \
             Tokenizer.hpp
 
 cc_sources =    Date.cpp \
-                NumberGenerator.cpp \
                 Randomizer.cpp \
                 SignalHandler.cpp \
                 Timer.cpp \

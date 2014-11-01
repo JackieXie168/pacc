@@ -29,9 +29,9 @@
  * \file PACC/XML/Streamer.cpp
  * \brief Class methods for the %XML streamer.
  * \author Marc Parizeau, Laboratoire de vision et syst&egrave;mes num&eacute;riques, Universit&eacute; Laval
-
- * $Revision: 1.32 $
- * $Date: 2005/05/12 05:01:34 $
+ 
+ * $Revision: 1.35 $
+ * $Date: 2005/09/15 14:13:34 $
  */
 
 #include "XML/Streamer.hpp"
@@ -45,18 +45,21 @@ using namespace PACC;
 */
 void XML::Streamer::closeTag(void)
 {
-   PACC_AssertM(!mTags.empty(), "Streamer::closeTag() no tag to close!");
-	// indentation depends on the number of tags currently on the stack.
-	unsigned int lIndent = mIndentWidth*(mTags.size()-1);
-   if(!mClosed) {
-		if(mIndentAttributes && mAttribute) mStream << "\n" << string(lIndent, ' ');
-		mStream << "/>" << endl;
-		mAttribute = false;
-   } else  {
-		mStream << string(lIndent, ' ') << "</" << mTags.top() << ">" << endl;
+	PACC_AssertM(!mTags.empty(), "Streamer::closeTag() no tag to close!");
+	if(!mClosed) {
+		if(mTags.top().second && mIndentAttributes && mOneAttribute) {
+			mStream << endl << string((mTags.size()-1)*mIndentWidth, ' ');
+		}
+		mStream << "/>" << flush;
+		mOneAttribute = false;
+	} else {
+		if(mTags.top().second == true) {
+			mStream << endl << string((mTags.size()-1)*mIndentWidth, ' ');
+		}
+		mStream << "</" << mTags.top().first << ">" << flush;
 	}
-   mClosed = true;
-   mTags.pop();
+	mTags.pop();
+	mClosed = true;
 }
 
 /*!  
@@ -70,195 +73,77 @@ string& XML::Streamer::convertToQuotes(string& ioString, const string& inQuotes)
 	{
 		switch(ioString[lPos]) {
 			case '&':
-				ioString.replace(lPos, 1, "&amp;");
-				lPos += 5;
+				ioString.replace(lPos++, 1, "&amp;");
 				break;
 			case '<':
-				ioString.replace(lPos, 1, "&lt;");
-				lPos += 4;
+				ioString.replace(lPos++, 1, "&lt;");
 				break;
 			case '>':
-				ioString.replace(lPos, 1, "&gt;");
-				lPos += 4;
+				ioString.replace(lPos++, 1, "&gt;");
 				break;
 			case '\'':
-				ioString.replace(lPos, 1, "&apos;");
-				lPos += 6;
+				ioString.replace(lPos++, 1, "&apos;");
 				break;
 			case '"':
-				ioString.replace(lPos, 1, "&quot;");
-				lPos += 6;
+				ioString.replace(lPos++, 1, "&quot;");
 				break;
 		}
 	}
 	return ioString;
 }
 
-/*!
-*/
-void XML::Streamer::insertAttribute(const string& inName, int inValue)
-{
-	if(mIndentAttributes) {
-		// indentation depends on the number of tags currently on the stack.
-		unsigned int lIndent = mIndentWidth*mTags.size();
-		mStream << "\n" << string(lIndent, ' ');
-	} else mStream << " ";
-   mStream << inName << "=\"" << inValue << "\"";
-	mAttribute = true;
-}
-
-/*!
-*/
-void XML::Streamer::insertAttribute(const string& inName, unsigned int inValue)
-{
-	if(mIndentAttributes) {
-		// indentation depends on the number of tags currently on the stack.
-		unsigned int lIndent = mIndentWidth*mTags.size();
-		mStream << "\n" << string(lIndent, ' ');
-	} else mStream << " ";
-   mStream << inName << "=\"" << inValue << "\"";
-	mAttribute = true;
-}
-
-/*!
-*/
-void XML::Streamer::insertAttribute(const string& inName, double inValue)
-{
-	if(mIndentAttributes) {
-		// indentation depends on the number of tags currently on the stack.
-		unsigned int lIndent = mIndentWidth*mTags.size();
-		mStream << "\n" << string(lIndent, ' ');
-	} else mStream << " ";
-   mStream << inName << "=\"" << inValue << "\"";
-	mAttribute = true;
-}
-
-/*!
-*/
-void XML::Streamer::insertAttribute(const string& inName, const string& inValue)
-{
-	if(mIndentAttributes) {
-		// indentation depends on the number of tags currently on the stack.
-		unsigned int lIndent = mIndentWidth*mTags.size();
-		mStream << "\n" << string(lIndent, ' ');
-	} else mStream << " ";
-	string lValue(inValue);
-   mStream << inName << "=\"" << convertToQuotes(lValue, "&<>\"") << "\"";
-	mAttribute = true;
-}
-
-/*!
-*/
-void XML::Streamer::insertCDATA(const string& inCDATA)
-{
-	insertStringContent(string("<![CDATA[")+inCDATA+string("]]>"));
-}
-
-/*!
-*/
-void XML::Streamer::insertComment(const string& inComment)
-{
-	insertStringContent(string("<!--")+inComment+string("-->"));
-}
-
 /*! 
-The header tag as the form <?xml version="1.0" encoding="ISO-8859-1"?>.
+The header tag has the form <?xml version="1.0" encoding="ISO-8859-1"?>.
 */
 void XML::Streamer::insertHeader(const string& inEncoding)
 {
-   mStream << "<?xml version=\"1.0\"";
-   if(!inEncoding.empty()) mStream << " encoding=\"" << inEncoding << "\"";
-   mStream << "?>" << endl;
-}
-
-/*! 
-If tag name is omitted, default name "Float" is used. If attribute name is omitted, default name "v" is used. The format for this primitive tag is thus <inTagName inAttName="inValue"/>.
-*/
-void XML::Streamer::insertPrimitiveTag(double inValue, const string& inTagName, const string& inAttName)
-{
-   openTag(inTagName);
-   insertAttribute(inAttName, inValue);
-   closeTag();
-}
-
-/*! 
-If tag name is omitted, default name "Integer" is used. If attribute name is omitted, default name "v" is used. The format for this primitive tag is thus <inTagName inAttName="inValue"/>.
-*/
-void XML::Streamer::insertPrimitiveTag(int inValue, const string& inTagName, const string& inAttName)
-{
-   openTag(inTagName);
-   insertAttribute(inAttName, inValue);
-   closeTag();
-}
-
-/*! 
-If tag name is omitted, default name "String" is used. If attribute name is omitted, default name "v" is used. The format for this primitive tag is thus <inTagName inAttName="inValue"/>.
-*/
-void XML::Streamer::insertPrimitiveTag(string inValue, const string& inTagName, const string& inAttName)
-{
-   openTag(inTagName);
-   insertAttribute(inAttName, inValue);
-   closeTag();
+	mStream << "<?xml version=\"1.0\"";
+	if(!inEncoding.empty()) mStream << " encoding=\"" << inEncoding << "\"";
+	mStream << "?>" << flush;
 }
 
 /*!
-*/
+The specified string is assumed not to contain any of the following special characters: '&', '<', or '>'. Argument \c inConvert controls whether these should be automatically converted to quotes ("&amp;", "&lt;", and "&gt;"). By default, no conversion is conducted.
+ */
 void XML::Streamer::insertStringContent(const string& inString, bool inConvert)
-{
-	// indentation depends on the number of tags currently on the stack.
-	unsigned int lIndent = mIndentWidth*mTags.size();
-   if(!mClosed) {
-		if(mIndentAttributes && mAttribute) mStream << "\n" << string(lIndent-mIndentWidth, ' ');
-		mStream << ">" << endl;
-		mAttribute = false;
+{	
+	if(inString.empty()) return;
+	if(!mClosed) {
+		if(mTags.top().second && mIndentAttributes && mOneAttribute) {
+			mStream << endl << string((mTags.size()-1)*mIndentWidth, ' ');
+		}
+		mStream << ">";
+		mOneAttribute = false;
+		mClosed = true;
 	}
-	mStream << string(lIndent, ' ');
-   mClosed = true;
-	if(!inConvert) mStream << inString << endl;
-	else {
-		// make copy
+	if(!mTags.empty() && mTags.top().second == true) {
+		mStream << endl << string(mTags.size()*mIndentWidth, ' ');
+	}
+	if(inConvert) {
 		string lContent(inString);
-		mStream << convertToQuotes(lContent, "&<>") << endl;
+		mStream << convertToQuotes(lContent, "&<>");
+	} else {
+		mStream << inString;
 	}
 }
 
 /*!
-*/
-void XML::Streamer::openTag(const string& inName)
+By default, markup tags are indented by the number of columns specified in the class constructor. However, argument \c inIndent can be set to false to disactivate indentation for all embedded markup. 
+ */
+void XML::Streamer::openTag(const string& inName, bool inIndent)
 {
-	// indentation depends on the number of tags currently on the stack.
-	unsigned int lIndent = mIndentWidth*mTags.size();
-   if(!mClosed) {
-		if(mIndentAttributes && mAttribute) mStream << "\n" << string(lIndent-mIndentWidth, ' ');
-		mStream << ">" << endl;
-		mAttribute = false;
+	if(!mClosed) {
+		if(mTags.top().second == true && mIndentAttributes && mOneAttribute) {
+			mStream << endl << string((mTags.size()-1)*mIndentWidth, ' ');
+		}
+		mStream << ">";
+		mOneAttribute = false;
 	}
-	mStream << string(lIndent, ' ');
-   mStream << "<" << inName;
-   mTags.push(inName);
-   mClosed = false;
-}
-
-/*!
-*/
-XML::Streamer& XML::Streamer::operator<<(int inValue)
-{
-   insertPrimitiveTag(inValue);
-   return *this;
-}
-
-/*!
-*/
-XML::Streamer& XML::Streamer::operator<<(double inValue)
-{
-   insertPrimitiveTag(inValue);
-   return *this;
-}
-
-/*!
-*/
-XML::Streamer& XML::Streamer::operator<<(const string& inValue)
-{
-   insertPrimitiveTag(inValue);
-   return *this;
+	if((mTags.empty() && inIndent) || (!mTags.empty() && mTags.top().second == true)) {
+		mStream << endl << string(mTags.size()*mIndentWidth, ' ');
+	}
+	mStream << "<" << inName;
+	if(!mTags.empty() && mTags.top().second == false) inIndent = false;
+	mTags.push(pair<string, bool>(inName, inIndent));
+	mClosed = false;
 }
